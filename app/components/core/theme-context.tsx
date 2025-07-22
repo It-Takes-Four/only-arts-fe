@@ -9,7 +9,6 @@ interface ThemeContextType {
 
 const THEME_KEY = 'theme';
 
-// Safe storage wrapper
 const storage = {
   get: (key: string) => {
     if (typeof window === 'undefined') return null;
@@ -37,7 +36,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const saved = storage.get(THEME_KEY);
     if (saved) return saved as Theme;
     
-    // Check system preference if no saved theme
     if (typeof window !== 'undefined' && window.matchMedia) {
       return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
@@ -46,14 +44,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   });
 
   useEffect(() => {
-    // For shadcn/ui, we need to add/remove the 'dark' class to/from the document root
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
     
-    // Store in localStorage
     storage.set(THEME_KEY, theme);
   }, [theme]);
 

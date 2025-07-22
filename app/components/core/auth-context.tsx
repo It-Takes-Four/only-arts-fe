@@ -26,10 +26,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const location = useLocation();
 
   useEffect(() => {
-    // Only redirect to login if user is definitely not authenticated and not already on login page
-    // We'll handle logout redirects manually for better control
     if (!auth.isLoading && !auth.isAuthenticated && location.pathname !== '/login') {
-      // Use navigate for SPA navigation instead of window.location
       if (!auth.user) {
         // navigate('/login', { replace: true });
       }

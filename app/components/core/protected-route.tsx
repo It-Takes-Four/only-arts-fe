@@ -13,7 +13,6 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   if (!isAuthenticated) {
-    // The AuthProvider will handle redirecting to login
     return null;
   }
 
