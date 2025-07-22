@@ -148,11 +148,11 @@ export default function Layout() {
         </motion.div>
       </header>
       
-      <ProtectedRoute>
+      {/* <ProtectedRoute> */}
         <main className="min-h-[calc(100vh-4rem)]">
           <Outlet />
         </main>
-      </ProtectedRoute>
+      {/* </ProtectedRoute> */}
     </TooltipProvider>
   );
 }
