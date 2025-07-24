@@ -14,6 +14,7 @@ import {
   UserIcon, 
   Cog6ToothIcon 
 } from "@heroicons/react/24/outline";
+import LiquidChrome from "@/components/blocks/Backgrounds/LiquidChrome/LiquidChrome";
 
 interface NavItem {
   path: string;
@@ -43,7 +44,7 @@ export default function Layout() {
 
   return (
     <TooltipProvider>
-      <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="absolute top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4">
           <div className="flex h-16 items-center justify-between">
             {/* Mobile menu button and Logo */}
@@ -62,7 +63,8 @@ export default function Layout() {
               </Button>
               
               <Link to="/" className="flex items-center space-x-2">
-                <span className="font-bold text-xl text-primary">OnlyArts</span>
+                {/* TODO: Implement dynamic logo based on theme */}
+                <img src="/onlyarts-full-logo-dark.svg" alt="OnlyArts Logo" className="h-16"/>
               </Link>
             </div>
 
@@ -150,6 +152,14 @@ export default function Layout() {
       
       {/* <ProtectedRoute> */}
         <main className="min-h-[calc(100vh-4rem)]">
+            <div className="absolute inset-0 z-[-1]">
+              <div className="absolute inset-0 bg-background/50" />
+              <LiquidChrome
+                baseColor={[0.125, 0.1, 0.3]}
+                speed={0.1}
+                amplitude={0.3}
+              />
+            </div>
           <Outlet />
         </main>
       {/* </ProtectedRoute> */}
