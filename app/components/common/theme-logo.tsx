@@ -1,4 +1,4 @@
-import { useTheme } from "../core/theme-context";
+import { FullLogo } from "./logo";
 
 interface ThemeLogoProps {
   className?: string;
@@ -6,17 +6,5 @@ interface ThemeLogoProps {
 }
 
 export function ThemeLogo({ className = "h-16", alt = "OnlyArts Logo" }: ThemeLogoProps) {
-  const { theme } = useTheme();
-  
-  const logoSrc = theme === 'dark' 
-    ? "/onlyarts-full-logo-dark.svg" 
-    : "/onlyarts-full-logo-light.svg";
-
-  return (
-    <img 
-      src={logoSrc} 
-      alt={alt} 
-      className={className}
-    />
-  );
+  return <FullLogo className={className} alt={alt} />;
 }

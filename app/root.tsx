@@ -12,6 +12,7 @@ import "./app.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "./components/core/theme-context";
 import { AuthProvider } from "./components/core/auth-context";
+import { ToastProvider } from "./components/common/toast-provider";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -52,6 +53,7 @@ export default function App() {
       <ThemeProvider>
         <AuthProvider>
           <Outlet />
+          <ToastProvider />
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>

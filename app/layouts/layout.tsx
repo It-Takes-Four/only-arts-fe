@@ -84,11 +84,6 @@ export default function Layout() {
 							{/* User Profile */}
 							<div className="relative">
 								<div className="flex items-center gap-3">
-									<div className="hidden sm:flex flex-col items-end">
-										<span className="text-sm font-medium">{user?.Name}</span>
-										<span className="text-xs text-muted-foreground">@{user?.Username}</span>
-									</div>
-
 									<div
 										className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center border-2 border-border">
 										{user?.PictureId ? (
