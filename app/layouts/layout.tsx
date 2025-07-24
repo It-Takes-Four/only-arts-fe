@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuthContext } from "app/components/core/auth-context";
 import { NavLinkItem } from "app/components/common/nav-link-item";
 import { ThemeSwitcher } from "app/components/common/theme-switcher";
+import { ThemeLogo } from "app/components/common/theme-logo";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LogOut, Menu, X } from "lucide-react";
@@ -58,8 +59,7 @@ export default function Layout() {
 							</Button>
 
 							<Link to="/" className="flex items-center space-x-2">
-								{/* TODO: Implement dynamic logo based on theme */}
-								<img src="/onlyarts-full-logo-dark.svg" alt="OnlyArts Logo" className="h-16"/>
+								<ThemeLogo />
 							</Link>
 						</div>
 

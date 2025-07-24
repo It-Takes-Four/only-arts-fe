@@ -32,16 +32,21 @@ const storage = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
+  // Always start with light theme to prevent hydration mismatch
+  const [theme, setTheme] = useState<Theme>('light');
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Sync with localStorage and system preference after hydration
+  useEffect(() => {
     const saved = storage.get(THEME_KEY);
-    if (saved) return saved as Theme;
-    
-    if (typeof window !== 'undefined' && window.matchMedia) {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    if (saved) {
+      setTheme(saved as Theme);
+    } else if (typeof window !== 'undefined' && window.matchMedia) {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(prefersDark ? 'dark' : 'light');
     }
-    
-    return 'light';
-  });
+    setIsHydrated(true);
+  }, []);
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -50,8 +55,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       document.documentElement.classList.remove('dark');
     }
     
-    storage.set(THEME_KEY, theme);
-  }, [theme]);
+    // Only save to localStorage after hydration
+    if (isHydrated) {
+      storage.set(THEME_KEY, theme);
+    }
+  }, [theme, isHydrated]);
 
   const value = useMemo(() => ({
     theme,
