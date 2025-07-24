@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle } from "lucide-react";
 import { FullLogo } from "app/components/common/logo";
+import LiquidChrome from "@/components/blocks/Backgrounds/LiquidChrome/LiquidChrome";
 import toast from 'react-hot-toast';
 
 type RegisterFormData = {
@@ -63,10 +64,20 @@ export function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/20 p-4">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="space-y-4 text-center">
-          <div className="flex justify-center">
+    <div className="relative min-h-screen">
+      {/* Background */}
+      <div className="fixed inset-0 z-[-1]">
+        <LiquidChrome
+          baseColor={[0.125, 0.1, 0.3]}
+          speed={0.1}
+          amplitude={0.3}
+        />
+      </div>
+
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <Card className="w-full max-w-md shadow-lg bg-background/80 backdrop-blur-sm border-border/50">
+          <CardHeader className="space-y-4 text-center">
+            <div className="flex justify-center">
             <FullLogo className="h-12" />
           </div>
           <div>
@@ -227,6 +238,7 @@ export function RegisterPage() {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }

@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuthContext } from "app/components/core/auth-context";
 import { Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
 import { FullLogo } from "app/components/common/logo";
+import LiquidChrome from "@/components/blocks/Backgrounds/LiquidChrome/LiquidChrome";
 import toast from 'react-hot-toast';
 
 type LoginFormData = {
@@ -52,17 +53,27 @@ export function LoginPage() {
   const isFormDisabled = isLoggingIn || hasValidationErrors || !hasRequiredFields;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/20 p-4">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="space-y-4 text-center">
-          <div className="flex justify-center">
-            <FullLogo className="h-12" />
-          </div>
-          <div>
-            <CardTitle className="text-2xl font-bold text-primary">
-              Welcome Back
-            </CardTitle>
-            <CardDescription>
+    <div className="relative min-h-screen">
+      {/* Background */}
+      <div className="fixed inset-0 z-[-1]">
+        <LiquidChrome
+          baseColor={[0.125, 0.1, 0.3]}
+          speed={0.1}
+          amplitude={0.3}
+        />
+      </div>
+
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <Card className="w-full max-w-md shadow-lg bg-background/80 backdrop-blur-sm border-border/50">
+          <CardHeader className="space-y-4 text-center">
+            <div className="flex justify-center">
+              <FullLogo className="h-12" />
+            </div>
+            <div>
+              <CardTitle className="text-2xl font-bold text-primary">
+                Welcome Back
+              </CardTitle>
+              <CardDescription>
               Sign in to your account to continue
             </CardDescription>
           </div>
@@ -163,6 +174,7 @@ export function LoginPage() {
           </div>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
