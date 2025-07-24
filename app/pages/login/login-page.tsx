@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router";
-import { Button } from "@/components/ui/button";
+import { Button } from "app/components/common/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,6 +21,19 @@ export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const { loginAsync, isLoggingIn, loginError } = useAuthContext();
   const navigate = useNavigate();
+
+  // Memoize the background to prevent re-renders
+  const backgroundElement = useMemo(() => (
+    <div className="fixed inset-0 z-[-1]">
+      <LiquidChrome
+        baseColor={[0.125, 0.1, 0.3]}
+        speed={0.1}
+        amplitude={0.3}
+        quality="medium"
+        targetFPS={30}
+      />
+    </div>
+  ), []);
 
   const {
     register,
@@ -55,13 +68,7 @@ export function LoginPage() {
   return (
     <div className="relative min-h-screen">
       {/* Background */}
-      <div className="fixed inset-0 z-[-1]">
-        <LiquidChrome
-          baseColor={[0.125, 0.1, 0.3]}
-          speed={0.1}
-          amplitude={0.3}
-        />
-      </div>
+      {backgroundElement}
 
       <div className="min-h-screen flex items-center justify-center p-4">
         <Card className="w-full max-w-md shadow-lg bg-background/80 backdrop-blur-sm border-border/50">

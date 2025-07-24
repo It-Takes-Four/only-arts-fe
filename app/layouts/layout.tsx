@@ -7,7 +7,7 @@ import { ThemeSwitcher } from "app/components/common/theme-switcher";
 import { ThemeLogo } from "app/components/common/theme-logo";
 import { IconLogo } from "app/components/common/logo";
 import { SearchInput } from "app/components/common/search-input";
-import { Button } from "@/components/ui/button";
+import { Button } from "app/components/common/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { LogOut, Menu, X, Settings, Bell, Compass } from "lucide-react";
