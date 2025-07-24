@@ -9,6 +9,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { LogOut, Menu, X } from "lucide-react";
 import { Cog6ToothIcon, HomeIcon, MagnifyingGlassIcon, UserIcon } from "@heroicons/react/24/outline";
 import LiquidChrome from "@/components/blocks/Backgrounds/LiquidChrome/LiquidChrome";
+import { NeuralNetwork } from "@/components/blocks/Backgrounds/NeuralNetwork/NeuralNetwork";
+import { Particles } from "@/components/blocks/Backgrounds/Particles/Particles";
 
 interface NavItem {
 	path: string;
@@ -149,12 +151,13 @@ export default function Layout() {
 			{/* <ProtectedRoute> */}
 			<main className="min-h-[calc(100vh-4rem)]">
 				<div className="fixed inset-0 z-[-1]">
-					<div className="fixed inset-0 bg-background/50"/>
-					<LiquidChrome
-						baseColor={[0.125, 0.1, 0.3]}
-						speed={0.1}
-						amplitude={0.3}
-					/>
+					{/*<div className="fixed inset-0 bg-background/50"/>*/}
+					{/*<LiquidChrome*/}
+					{/*	baseColor={[0.125, 0.1, 0.3]}*/}
+					{/*	speed={0.1}*/}
+					{/*	amplitude={0.3}*/}
+					{/*/>*/}
+					{/*<Particles/>*/}
 				</div>
 				<Outlet/>
 			</main>

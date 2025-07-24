@@ -9,7 +9,7 @@ export function meta() {
 
 export default function Profile() {
 	return (
-		<div className="container mx-auto px-4 py-20">
+		<div className="container mx-auto px-4 pt-20">
 			<GlassCard>
 				<img src="https://placehold.co/600x400" alt="Artist Profile Banner"
 						 className="w-full h-64 object-cover rounded-t-lg"/>
