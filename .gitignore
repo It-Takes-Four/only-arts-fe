@@ -8,3 +8,14 @@
 # IDE and Editor
 /.vscode/
 /.idea/
+
+package-lock.json
+yarn.lock
+# Logs
+/logs
+/.log
+npm-debug.log*
+
+# Environment Variables
+.env
+.env.local
