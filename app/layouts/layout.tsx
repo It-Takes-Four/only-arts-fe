@@ -1,6 +1,6 @@
 import { Link, Outlet } from "react-router";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { type ComponentType, useState } from "react";
 import { useAuthContext } from "app/components/core/auth-context";
 import { NavLinkItem } from "app/components/common/nav-link-item";
 import { ThemeSwitcher } from "app/components/common/theme-switcher";
@@ -8,14 +8,12 @@ import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LogOut, Menu, X } from "lucide-react";
 import { Cog6ToothIcon, HomeIcon, MagnifyingGlassIcon, UserIcon } from "@heroicons/react/24/outline";
-import LiquidChrome from "@/components/blocks/Backgrounds/LiquidChrome/LiquidChrome";
-import { NeuralNetwork } from "@/components/blocks/Backgrounds/NeuralNetwork/NeuralNetwork";
-import { Particles } from "@/components/blocks/Backgrounds/Particles/Particles";
+import { BackgroundBeams } from "@/components/blocks/Backgrounds/BackgroundBeams";
 
 interface NavItem {
 	path: string;
 	label: string;
-	icon: React.ComponentType<{ className?: string }>;
+	icon: ComponentType<{ className?: string }>;
 }
 
 const navigationItems: NavItem[] = [
@@ -152,12 +150,7 @@ export default function Layout() {
 			<main className="min-h-[calc(100vh-4rem)]">
 				<div className="fixed inset-0 z-[-1]">
 					{/*<div className="fixed inset-0 bg-background/50"/>*/}
-					{/*<LiquidChrome*/}
-					{/*	baseColor={[0.125, 0.1, 0.3]}*/}
-					{/*	speed={0.1}*/}
-					{/*	amplitude={0.3}*/}
-					{/*/>*/}
-					{/*<Particles/>*/}
+					<BackgroundBeams />
 				</div>
 				<Outlet/>
 			</main>
