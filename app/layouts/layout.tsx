@@ -1,6 +1,6 @@
 import { Link, Outlet } from "react-router";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { type ComponentType, useState } from "react";
 import { useAuthContext } from "app/components/core/auth-context";
 import { NavLinkItem } from "app/components/common/nav-link-item";
 import { ThemeSwitcher } from "app/components/common/theme-switcher";
@@ -12,11 +12,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { LogOut, Menu, X, Settings, Bell, Compass } from "lucide-react";
 import { Cog6ToothIcon, HomeIcon, MagnifyingGlassIcon, UserIcon } from "@heroicons/react/24/outline";
+import { BackgroundBeams } from "@/components/blocks/Backgrounds/BackgroundBeams";
 
 interface NavItem {
 	path: string;
 	label: string;
-	icon: React.ComponentType<{ className?: string }>;
+	icon: ComponentType<{ className?: string }>;
 }
 
 const navigationItems: NavItem[] = [
@@ -186,6 +187,9 @@ export default function Layout() {
 					{/* Main Content */}
 					<main className="flex-1 overflow-hidden">
 						<div className="h-full">
+							<div className="fixed inset-0 z-[-1]">
+								<BackgroundBeams />
+							</div>
 							<Outlet />
 						</div>
 					</main>
