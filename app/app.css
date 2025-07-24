@@ -162,6 +162,75 @@
     }
 }
 
+/* Toast specific glass styles */
+@layer components {
+    .toast-glass {
+        backdrop-filter: blur(16px) saturate(120%);
+        -webkit-backdrop-filter: blur(16px) saturate(120%);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        transition: all 0.2s ease;
+    }
+    
+    .dark .toast-glass {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+    
+    .toast-glass.success {
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.25);
+        box-shadow: 
+            0 8px 32px rgba(34, 197, 94, 0.15),
+            inset 0 1px 0 rgba(34, 197, 94, 0.2);
+    }
+    
+    .dark .toast-glass.success {
+        background: rgba(34, 197, 94, 0.08);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+    
+    .toast-glass.error {
+        background: rgba(239, 68, 68, 0.12);
+        border: 1px solid rgba(239, 68, 68, 0.25);
+        box-shadow: 
+            0 8px 32px rgba(239, 68, 68, 0.15),
+            inset 0 1px 0 rgba(239, 68, 68, 0.2);
+    }
+    
+    .dark .toast-glass.error {
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    
+    .toast-glass.warning {
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid rgba(245, 158, 11, 0.25);
+        box-shadow: 
+            0 8px 32px rgba(245, 158, 11, 0.15),
+            inset 0 1px 0 rgba(245, 158, 11, 0.2);
+    }
+    
+    .dark .toast-glass.warning {
+        background: rgba(245, 158, 11, 0.08);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+    
+    /* Toast animation improvements */
+    .toast-glass:hover {
+        transform: translateY(-2px);
+        box-shadow: 
+            0 12px 40px rgba(0, 0, 0, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+}
+
 body {
     letter-spacing: var(--tracking-normal);
 }

@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "app/components/common/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function meta() {

@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Button } from "@/components/ui/button";
+import { Button } from "app/components/common/button";
 
 interface NavLinkItemProps {
   to: string;

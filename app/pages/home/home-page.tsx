@@ -2,7 +2,7 @@ import { Button } from "app/components/common/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import StaticGradient from "@/components/blocks/Backgrounds/StaticGradient/StaticGradient";
 
-export function Welcome() {
+export function HomePage() {
   return (
     <div className="fixed inset-0 w-full h-full overflow-auto">
       {/* Background - Covers entire viewport */}
