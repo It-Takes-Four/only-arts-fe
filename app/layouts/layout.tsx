@@ -48,7 +48,7 @@ export default function Layout() {
 
 	return (
 		<TooltipProvider>
-			<div className="flex min-h-screen w-full bg-background">
+			<div className="flex min-h-screen w-full">
 				{/* Sidebar Overlay - Shows on both mobile and desktop */}
 				{sidebarOpen && (
 					<div 
@@ -184,8 +184,8 @@ export default function Layout() {
 					</header>
 
 					{/* Main Content */}
-					<main className="flex-1 overflow-auto p-4 md:p-6 lg:p-8">
-						<div className="mx-auto max-w-7xl">
+					<main className="flex-1 overflow-hidden">
+						<div className="h-full">
 							<Outlet />
 						</div>
 					</main>
