@@ -7,20 +7,13 @@ interface User {
   artist: any | null;
 }
 
-interface LoginRequest {
-  email: string;
-  password: string;
+interface ApiError {
+  message: string | string[];
+  error: string;
+  statusCode: number;
 }
-
-interface LoginResponse {
-  accessToken: string;
-  expiresIn: number;
-  refreshToken?: string;
-}
-
 
 export type {
   User,
-  LoginRequest,
-  LoginResponse,
+  ApiError,
 };

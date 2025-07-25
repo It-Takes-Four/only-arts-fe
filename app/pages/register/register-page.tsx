@@ -5,9 +5,11 @@ import { Button } from "app/components/common/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
 import { FullLogo } from "app/components/common/logo";
 import LiquidChrome from "@/components/blocks/Backgrounds/LiquidChrome/LiquidChrome";
+import { useAuthContext } from "app/components/core/auth-context";
 import { toast } from 'sonner';
 
 type RegisterFormData = {
@@ -20,7 +22,7 @@ type RegisterFormData = {
 export function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isRegistering, setIsRegistering] = useState(false);
+  const { registerAsync, isRegistering, registerError } = useAuthContext();
   const navigate = useNavigate();
 
   // Memoize the background to prevent re-renders
@@ -59,19 +61,19 @@ export function RegisterPage() {
   const isFormDisabled = isRegistering || hasValidationErrors || !hasRequiredFields;
 
   const onSubmit = async (data: RegisterFormData) => {
-    setIsRegistering(true);
     try {
-      // TODO: Implement actual registration logic
-      // For now, simulate an API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await registerAsync({
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        confirm_password: data.confirmPassword,
+      });
       
-      toast.success('Account created successfully! Please sign in.');
-      navigate("/login");
+      toast.success('Account created successfully! Welcome to OnlyArts!');
+      navigate("/");
     } catch (error) {
       toast.error('Registration failed. Please try again.');
       console.error("Registration failed:", error);
-    } finally {
-      setIsRegistering(false);
     }
   };
 
@@ -214,6 +216,15 @@ export function RegisterPage() {
                 <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>
               )}
             </div>
+
+            {registerError && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>
+                  {registerError.message}
+                </AlertDescription>
+              </Alert>
+            )}
 
             <Button 
               type="submit" 

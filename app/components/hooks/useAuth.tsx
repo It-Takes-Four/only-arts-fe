@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { login as loginService, validateToken, logout as logoutService, getToken } from 'app/services/auth-service';
+import { login as loginService, register as registerService, validateToken, logout as logoutService, getToken } from 'app/services/auth-service';
 import { useEffect, useState } from 'react';
 
 export function useAuth() {
@@ -39,6 +39,31 @@ export function useAuth() {
     }
   });
 
+  // Register mutation
+  const registerMutation = useMutation({
+    mutationFn: registerService,
+    onSuccess: async (data) => {
+      console.log('Register mutation successful, data:', data);
+      
+      // After successful registration, fetch user data
+      try {
+        console.log('Fetching user data after registration...');
+        const userData = await validateToken();
+        console.log('User data fetched:', userData);
+        queryClient.setQueryData(['auth', 'user'], userData);
+        // Immediately refresh the auth query to trigger re-render
+        queryClient.invalidateQueries({ queryKey: ['auth', 'user'] });
+      } catch (error) {
+        console.error('Failed to fetch user data after registration:', error);
+      }
+    },
+    onError: (error) => {
+      console.error('Register mutation error:', error);
+      // Clear any cached user data on register error
+      queryClient.setQueryData(['auth', 'user'], null);
+    }
+  });
+
   // Logout function
   const logout = () => {
     logoutService();
@@ -56,6 +81,10 @@ export function useAuth() {
     loginAsync: loginMutation.mutateAsync,
     isLoggingIn: loginMutation.isPending,
     loginError: loginMutation.error,
+    register: registerMutation.mutate,
+    registerAsync: registerMutation.mutateAsync,
+    isRegistering: registerMutation.isPending,
+    registerError: registerMutation.error,
     logout,
   };
 }

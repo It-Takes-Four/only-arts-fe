@@ -1,5 +1,7 @@
 import BaseService from './base-service';
-import type { LoginRequest, LoginResponse, User } from 'app/components/core/_models';
+import type { User, ApiError } from 'app/components/core/_models';
+import type { LoginRequest, LoginResponse } from 'app/pages/login/core';
+import type { RegisterRequest, RegisterResponse } from 'app/pages/register/core';
 import { setCookie, getCookie, deleteCookie, debugCookies } from 'app/utils/cookie';
 
 class AuthService extends BaseService {
@@ -25,7 +27,43 @@ class AuthService extends BaseService {
       return data;
     } catch (error: any) {
       console.error('Login error:', error);
-      throw new Error(error.response?.data?.message || 'Login failed');
+      const apiError = error.response?.data as ApiError;
+      const errorMessage = Array.isArray(apiError?.message) 
+        ? apiError.message.join(', ') 
+        : apiError?.message || 'Login failed';
+      throw new Error(errorMessage);
+    }
+  }
+
+  async register(userData: RegisterRequest): Promise<RegisterResponse> {
+    try {
+      const { data } = await this._axios.post<RegisterResponse>('/auth/register', userData);
+      
+      console.log('Register response received:', data);
+      
+      // Store token in cookie
+      if (data.accessToken) {
+        console.log('Setting auth token cookie after registration:', data.accessToken.substring(0, 20) + '...');
+        setCookie(this.TOKEN_KEY, data.accessToken, 7);
+        
+        // Debug: Check if cookie was set
+        setTimeout(() => {
+          const savedToken = getCookie(this.TOKEN_KEY);
+          console.log('Cookie verification after register - Saved token:', savedToken ? 'Found' : 'Not found');
+          debugCookies();
+        }, 100);
+      } else {
+        console.error('No accessToken in register response');
+      }
+      
+      return data;
+    } catch (error: any) {
+      console.error('Register error:', error);
+      const apiError = error.response?.data as ApiError;
+      const errorMessage = Array.isArray(apiError?.message) 
+        ? apiError.message.join(', ') 
+        : apiError?.message || 'Registration failed';
+      throw new Error(errorMessage);
     }
   }
 
@@ -72,6 +110,7 @@ export const authService = new AuthService();
 
 // Export individual functions for backward compatibility
 export const login = (credentials: LoginRequest) => authService.login(credentials);
+export const register = (userData: RegisterRequest) => authService.register(userData);
 export const validateToken = () => authService.getCurrentUser();
 export const logout = () => authService.logout();
 export const getToken = () => authService.getToken();
