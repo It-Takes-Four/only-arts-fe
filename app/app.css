@@ -154,16 +154,19 @@
     }
 
     body {
-        @apply bg-background text-foreground font-sans;
-    }
-
-    .glass {
-        @apply backdrop-blur bg-card/30 border border-border/75;
+        background-color: var(--color-background);
+        color: var(--color-foreground);
+        font-family: var(--font-sans);
+        letter-spacing: var(--tracking-normal);
     }
 }
 
 /* Toast specific glass styles */
 @layer components {
+    .glass {
+        @apply backdrop-blur-lg bg-card/10 dark:bg-card/30 border border-border/75;
+    }
+
     .toast-glass {
         backdrop-filter: blur(16px) saturate(120%);
         -webkit-backdrop-filter: blur(16px) saturate(120%);
@@ -229,8 +232,4 @@
             0 12px 40px rgba(0, 0, 0, 0.15),
             inset 0 1px 0 rgba(255, 255, 255, 0.15);
     }
-}
-
-body {
-    letter-spacing: var(--tracking-normal);
 }

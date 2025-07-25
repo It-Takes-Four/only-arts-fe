@@ -38,7 +38,7 @@ export const ShinyBadge = React.forwardRef<
 		<motion.span
 			ref={ref}
 			className={cn(
-				"relative inline-block rounded-lg px-4 py-1 font-medium text-sm uppercase transition-shadow duration-300 ease-in-out hover:shadow glass",
+				"relative inline-block rounded-lg px-4 py-1 font-medium text-sm uppercase glass",
 				className,
 			)}
 			{...animationProps}
