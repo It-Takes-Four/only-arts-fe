@@ -20,7 +20,6 @@ interface UserDropdownProps {
 
 export function UserDropdown({ user, onLogout }: UserDropdownProps) {
   const [imageError, setImageError] = useState(false);
-  console.log(user?.profilePicture);
 
   const handleImageError = () => {
     setImageError(true);
