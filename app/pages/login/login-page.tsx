@@ -10,7 +10,7 @@ import { useAuthContext } from "app/components/core/auth-context";
 import { Eye, EyeOff, Loader2, AlertCircle } from "lucide-react";
 import { FullLogo } from "app/components/common/logo";
 import LiquidChrome from "@/components/blocks/Backgrounds/LiquidChrome/LiquidChrome";
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 type LoginFormData = {
   username: string;

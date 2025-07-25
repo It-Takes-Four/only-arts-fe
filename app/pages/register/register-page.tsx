@@ -5,11 +5,10 @@ import { Button } from "app/components/common/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Eye, EyeOff, Loader2, AlertCircle, CheckCircle } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { FullLogo } from "app/components/common/logo";
 import LiquidChrome from "@/components/blocks/Backgrounds/LiquidChrome/LiquidChrome";
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 type RegisterFormData = {
   username: string;

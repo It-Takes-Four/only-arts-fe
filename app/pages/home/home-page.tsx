@@ -5,14 +5,6 @@ import StaticGradient from "@/components/blocks/Backgrounds/StaticGradient/Stati
 export function HomePage() {
   return (
     <div className="fixed inset-0 w-full h-full overflow-auto">
-      {/* Background - Covers entire viewport */}
-      <div className="absolute inset-0 w-full h-full">
-        <StaticGradient
-          baseColor={[0.125, 0.1, 0.3]}
-          variant="subtle"
-        />
-      </div>
-
       {/* Content - Positioned above background with proper spacing for header */}
       <div className="relative z-10 pt-16 min-h-full">
         <div className="container mx-auto px-4 py-16">

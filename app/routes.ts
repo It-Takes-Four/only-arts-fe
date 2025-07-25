@@ -7,5 +7,6 @@ export default [
         index("routes/home.tsx"),
         route("/profile", "routes/profile.tsx"),
         route("/settings", "routes/settings.tsx"),
+        route("/dev-test", "routes/dev-test.tsx"),
     ]),
 ] satisfies RouteConfig;
