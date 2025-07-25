@@ -5,8 +5,11 @@ import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
 import { LogOut, Settings } from "lucide-react";
 
 interface User {
-  PictureId?: string;
-  Name?: string;
+  id: string;
+  email: string;
+  username: string;
+  profilePicture: string | null;
+  artist: any | null;
 }
 
 interface UserDropdownProps {
@@ -19,17 +22,17 @@ export function UserDropdown({ user, onLogout }: UserDropdownProps) {
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Button variant="ghost" className="cursor-pointer relative h-10 w-10 rounded-full bg-primary border-2 border-border text-primary-foreground ">
-          {user?.PictureId ? (
+          {user?.profilePicture ? (
             <img
-              src={`${import.meta.env.VITE_API_BASE_URL}/Account/GetThumbnail?id=${user?.PictureId}`}
-              alt={user?.Name}
+              src={user.profilePicture}
+              alt={user?.username}
               className="w-full h-full rounded-full object-cover"
               onError={(e) => (e.currentTarget.src = "/placeholder-avatar.png")}
             />
           ) : (
             <div className="w-full h-full rounded-full flex items-center justify-center ">
               <span className="text-sm font-semibold">
-                {user?.Name?.charAt(0)?.toUpperCase() || '?'}
+                {user?.username?.charAt(0)?.toUpperCase() || '?'}
               </span>
             </div>
           )}
@@ -38,8 +41,8 @@ export function UserDropdown({ user, onLogout }: UserDropdownProps) {
       <DropdownMenuContent align="end" className="w-64">
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user?.Name}</p>
-            <p className="text-xs leading-none text-muted-foreground">{user?.Name}</p>
+            <p className="text-sm font-medium leading-none">{user?.username}</p>
+            <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

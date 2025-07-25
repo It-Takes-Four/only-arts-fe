@@ -13,7 +13,7 @@ import LiquidChrome from "@/components/blocks/Backgrounds/LiquidChrome/LiquidChr
 import { toast } from 'sonner';
 
 type LoginFormData = {
-  username: string;
+  email: string;
   password: string;
 };
 
@@ -43,7 +43,7 @@ export function LoginPage() {
   } = useForm<LoginFormData>({
     mode: "onTouched",
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
@@ -56,13 +56,12 @@ export function LoginPage() {
     } catch (error) {
       // Error is handled by the auth context, but we can also show a toast
       toast.error('Login failed. Please check your credentials and try again.');
-      console.error("Login failed:", error);
     }
   };
 
   // Custom validation - only disable if there are actual errors after user interaction
   const hasValidationErrors = Object.keys(errors).length > 0;
-  const hasRequiredFields = watch("username") && watch("password");
+  const hasRequiredFields = watch("email") && watch("password");
   const isFormDisabled = isLoggingIn || hasValidationErrors || !hasRequiredFields;
 
   return (
@@ -88,23 +87,23 @@ export function LoginPage() {
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
-                id="username"
-                type="text"
-                placeholder="Enter your username"
-                {...register("username", {
-                  required: "Username is required",
-                  minLength: {
-                    value: 3,
-                    message: "Username must be at least 3 characters",
+                id="email"
+                type="email"
+                placeholder="Enter your email"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Please enter a valid email address",
                   },
                 })}
                 disabled={isLoggingIn}
                 className="h-10"
               />
-              {errors.username && (
-                <p className="text-sm text-destructive">{errors.username.message}</p>
+              {errors.email && (
+                <p className="text-sm text-destructive">{errors.email.message}</p>
               )}
             </div>
             

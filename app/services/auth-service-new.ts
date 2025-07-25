@@ -1,6 +1,6 @@
 import BaseService from './base-service';
 import type { LoginRequest, LoginResponse, User } from 'app/components/core/_models';
-import { setCookie, getCookie, deleteCookie, debugCookies } from 'app/utils/cookie';
+import { setCookie, getCookie, deleteCookie } from 'app/utils/cookie';
 
 class AuthService extends BaseService {
   private TOKEN_KEY = 'auth_token';
@@ -8,23 +8,12 @@ class AuthService extends BaseService {
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     try {
       const { data } = await this._axios.post<LoginResponse>('/auth/login', credentials);
-
+      
       // Store token in cookie
-      if (data.accessToken) {
-        setCookie(this.TOKEN_KEY, data.accessToken, 7);
-        
-        // Debug: Check if cookie was set
-        setTimeout(() => {
-          const savedToken = getCookie(this.TOKEN_KEY);
-          debugCookies();
-        }, 100);
-      } else {
-        console.error('No accessToken in login response');
-      }
+      setCookie(this.TOKEN_KEY, data.access_token, 7);
       
       return data;
     } catch (error: any) {
-      console.error('Login error:', error);
       throw new Error(error.response?.data?.message || 'Login failed');
     }
   }
