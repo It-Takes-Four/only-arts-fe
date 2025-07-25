@@ -2,8 +2,13 @@ import { ShinyBadge } from "@/components/magicui/shiny-badge";
 import { Palette } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { GlassCard } from "../../components/common/glass-card";
+import { useAuthContext } from "../../components/core/auth-context";
+import { ArtCard } from "../../components/common/art-card";
 
 export function ProfilePage() {
+	const { user } = useAuthContext();
+
+
 	return (
 		<div className="container mx-auto px-4 py-8">
 
@@ -22,28 +27,23 @@ export function ProfilePage() {
 
 					{/* User Data */}
 
-					<div className="flex items-center space-x-4">
+					<div className="flex items-center space-x-4 shrink-0">
 						<img src="https://placehold.co/150x150" alt="Artist Avatar"
-								 className="relative rounded-full w-20 h-20 shadow-lg z-10"/>
+								 className="rounded-full w-20 h-20 shadow-lg"/>
 						<div className="h-20 py-4 rounded-lg">
-							<h1 className="text-xl font-bold text-primary-foreground">Artist Name</h1>
+							<h1 className="text-2xl font-bold text-primary-foreground">Artist Name</h1>
 							<p className="text-sm text-white/75">@artist_id</p>
 						</div>
 					</div>
 
-					<div className="w-100 py-4 px-8 rounded-lg flex items-center justify-center space-x-4">
+					<div className="py-4 px-8 rounded-lg flex items-center justify-center space-x-4">
 						<div className="flex flex-col items-center flex-1">
-							<span className="text-sm text-white/75 font-mono uppercase">Arts</span>
+							<span className="text-sm text-white/75 font-mono uppercase">Following</span>
 							<span className="text-lg font-semibold text-white">XXX</span>
 						</div>
 						<Separator orientation="vertical" decorative className="bg-primary-foreground/50"/>
 						<div className="flex flex-col items-center flex-1">
 							<span className="text-sm text-white/75 font-mono uppercase">Followers</span>
-							<span className="text-lg font-semibold text-white">XXX</span>
-						</div>
-						<Separator orientation="vertical" decorative className="bg-primary-foreground/50"/>
-						<div className="flex flex-col items-center flex-1">
-							<span className="text-sm text-white/75 font-mono uppercase">Collections</span>
 							<span className="text-lg font-semibold text-white">XXX</span>
 						</div>
 					</div>
@@ -56,21 +56,18 @@ export function ProfilePage() {
 
 			<div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-				{/* Example Art Card */}
-
-				<div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg overflow-hidden">
-					<img src="https://placehold.co/300x200" alt="Art Piece" className="w-full h-48 object-cover"/>
-					<div className="p-4">
-						<h2 className="text-lg font-semibold">Art Title</h2>
-						<p className="text-sm text-gray-600 dark:text-gray-400">Description of the art piece.</p>
-					</div>
-				</div>
-
-				{/* Repeat for more art pieces */}
-				{/* ... */}
-
-				<div>
-				</div>
+				<ArtCard art={
+					{
+						id: "1",
+						title: "Sample Art",
+						artist: {
+							userId: "artist1",
+							title: "Artist Name",
+						},
+						description: "This is a sample description of the art piece.",
+						imageUrl: "https://placehold.co/300x200"
+					}
+				}/>
 
 			</div>
 

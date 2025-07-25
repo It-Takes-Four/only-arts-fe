@@ -1,3 +1,4 @@
+// User and Authentication Models
 
 interface User {
   id: string;
@@ -5,6 +6,20 @@ interface User {
   username: string;
   profilePicture: string | null;
   artist: any | null;
+}
+
+interface Artist extends User {
+  id: string;
+  userId: string;
+  name: string;
+  bio: string;
+  profilePicture: string | null;
+  profileBanner: string | null;
+  // socialLinks: {
+  //   twitter?: string;
+  //   instagram?: string;
+  //   website?: string;
+  // };
 }
 
 interface LoginRequest {
@@ -18,9 +33,20 @@ interface LoginResponse {
   refreshToken?: string;
 }
 
+// Art Models
+
+interface Art {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  artist: Artist;
+  createdAt: Date;
+}
 
 export type {
   User,
   LoginRequest,
   LoginResponse,
+  Art
 };
