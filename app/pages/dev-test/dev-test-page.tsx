@@ -49,8 +49,8 @@ export default function DevTestPage() {
       debugCookies(); // Check before login
       
       await loginAsync({
-        email: "admin@admin.com",
-        password: "password123"
+        email: "user@example.com",
+        password: "securePass1"
       });
       
       toast.success("Login successful! (No redirect in dev test)");

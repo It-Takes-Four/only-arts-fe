@@ -31,7 +31,7 @@ class AuthService extends BaseService {
 
   async getCurrentUser(): Promise<User> {
     try {
-      const { data } = await this._axios.get<User>('/users/me');
+      const { data } = await this._axios.get<User>('/auth/me');
       return data;
     } catch (error: any) {
       this.clearToken();
