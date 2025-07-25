@@ -1,5 +1,6 @@
 import { Button } from "app/components/common/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
 
 export function meta() {
   return [
@@ -55,18 +56,9 @@ export default function Settings() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Theme</span>
-              <select className="px-3 py-2 border rounded-md">
-                <option value="system">System</option>
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-              </select>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Email Notifications</span>
-              <input type="checkbox" className="rounded" />
+            <div className="space-y-3">
+              <label className="text-sm font-medium">Theme</label>
+              <FancyThemeToggle variant="default" />
             </div>
           </CardContent>
         </Card>

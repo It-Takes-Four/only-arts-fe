@@ -1,23 +1,28 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { login as loginService, validateToken, logout as logoutService } from 'app/services/auth-service';
-
+import { login as loginService, validateToken, logout as logoutService, getToken } from 'app/services/auth-service';
+import { useEffect, useState } from 'react';
 
 export function useAuth() {
   const queryClient = useQueryClient();
+  const [isClient, setIsClient] = useState(false);
 
-  // Query to validate current authentication status
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Query to validate current authentication status - only if token exists and we're on client-side
   const { data: user, isLoading, error } = useQuery({
     queryKey: ['auth', 'user'],
     queryFn: validateToken,
     retry: false, // Don't retry on 401
     staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: isClient && !!getToken(), // Only run on client-side if token exists
   });
 
   // Login mutation
   const loginMutation = useMutation({
     mutationFn: loginService,
     onSuccess: async (data) => {
-      // After successful login, fetch user data
       try {
         const userData = await validateToken();
         queryClient.setQueryData(['auth', 'user'], userData);
@@ -28,7 +33,7 @@ export function useAuth() {
       }
     },
     onError: (error) => {
-      console.error('Login error:', error);
+      console.error('Login mutation error:', error);
       // Clear any cached user data on login error
       queryClient.setQueryData(['auth', 'user'], null);
     }

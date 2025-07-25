@@ -1,21 +1,21 @@
 
 interface User {
-  UserId: string;
-  Username: string;
-  Name: string;
-  PictureId: string;
+  id: string;
+  email: string;
+  username: string;
+  profilePicture: string | null;
+  artist: any | null;
 }
 
 interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
 }
 
 interface LoginResponse {
-  access_token: string;
-  token_type: string;
-  expires_in: number;
-  refresh_token: string;
+  accessToken: string;
+  expiresIn: number;
+  refreshToken?: string;
 }
 
 
