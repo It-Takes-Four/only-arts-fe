@@ -1,8 +1,14 @@
 import { Button } from "app/components/common/button";
 import { toast } from "sonner";
 import { CheckCircle, AlertCircle, AlertTriangle, Info, Loader2 } from "lucide-react";
+import { useAuthContext } from "app/components/core/auth-context";
+import { userService } from "app/services/user-service";
+import { authService } from "app/services/auth-service";
+import { debugCookies, getCookie } from "app/utils/cookie";
 
 export default function DevTestPage() {
+  const { user, isAuthenticated, login, loginAsync, logout, isLoggingIn } = useAuthContext();
+
   const testToasts = () => {
     // Test different toast types
     toast.success("Success! This is a success message.");
@@ -37,11 +43,146 @@ export default function DevTestPage() {
     info: () => toast.info("Info toast test!")
   };
 
+  const testLogin = async () => {
+    try {
+      console.log('Starting login test...');
+      debugCookies(); // Check before login
+      
+      await loginAsync({
+        email: "admin@admin.com",
+        password: "password123"
+      });
+      
+      toast.success("Login successful! (No redirect in dev test)");
+      
+      // Check cookies after login
+      setTimeout(() => {
+        console.log('Checking cookies after login...');
+        debugCookies();
+        const token = getCookie('auth_token');
+        toast.info(`Token saved: ${token ? 'Yes' : 'No'}`);
+      }, 500);
+    } catch (error) {
+      toast.error("Login failed in dev test");
+      console.error("Login error:", error);
+    }
+  };
+
+  const debugAuth = () => {
+    console.log('=== AUTH DEBUG ===');
+    console.log('isAuthenticated:', isAuthenticated);
+    console.log('user:', user);
+    console.log('isLoading:', isLoggingIn);
+    debugCookies();
+    const token = getCookie('auth_token');
+    toast.info(`Debug: Token ${token ? 'exists' : 'missing'}`);
+  };
+
+  const testLogout = () => {
+    logout();
+    toast.info("Logged out successfully");
+  };
+
+  const testDirectUserService = async () => {
+    try {
+      toast.loading("Testing direct user service call...");
+      const userData = await userService.getCurrentUser();
+      toast.success("Direct user service call successful!");
+      console.log("User data from direct service call:", userData);
+    } catch (error) {
+      toast.error("Direct user service call failed");
+      console.error("Direct user service error:", error);
+    }
+  };
+
+  const testDirectAuthService = async () => {
+    try {
+      toast.loading("Testing direct auth service call...");
+      const userData = await authService.getCurrentUser();
+      toast.success("Direct auth service call successful!");
+      console.log("User data from direct auth service call:", userData);
+    } catch (error) {
+      toast.error("Direct auth service call failed");
+      console.error("Direct auth service error:", error);
+    }
+  };
+
   return (
     <div className="container mx-auto p-8 space-y-8">
       <div className="text-center space-y-4">
         <h1 className="text-4xl font-bold">Dev Test Page</h1>
         <p className="text-muted-foreground">Test various components and functionality</p>
+      </div>
+
+      {/* Auth Testing Section */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-semibold">Authentication Testing</h2>
+        
+        <div className="p-4 border rounded-lg bg-card">
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm font-medium">Authentication Status:</p>
+              <p className="text-sm text-muted-foreground">
+                {isAuthenticated ? "✅ Authenticated" : "❌ Not Authenticated"}
+              </p>
+            </div>
+            
+            {user && (
+              <div>
+                <p className="text-sm font-medium">Current User:</p>
+                <pre className="text-xs bg-muted p-2 rounded mt-1">
+                  {JSON.stringify(user, null, 2)}
+                </pre>
+              </div>
+            )}
+            
+            <div className="flex gap-2">
+              <Button 
+                onClick={testLogin} 
+                disabled={isLoggingIn || isAuthenticated}
+                variant="default"
+              >
+                {isLoggingIn ? "Logging in..." : "Test Login (admin@admin.com)"}
+              </Button>
+              
+              <Button 
+                onClick={testLogout} 
+                disabled={!isAuthenticated}
+                variant="outline"
+              >
+                Test Logout
+              </Button>
+            </div>
+
+            <div className="flex gap-2 mt-2">
+              <Button 
+                onClick={testDirectUserService} 
+                disabled={!isAuthenticated}
+                variant="secondary"
+                size="sm"
+              >
+                Test User Service Direct
+              </Button>
+              
+              <Button 
+                onClick={testDirectAuthService} 
+                disabled={!isAuthenticated}
+                variant="secondary"
+                size="sm"
+              >
+                Test Auth Service Direct
+              </Button>
+
+              <Button 
+                onClick={debugAuth} 
+                variant="outline"
+                size="sm"
+              >
+                Debug Auth State
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Toast Testing Section */}

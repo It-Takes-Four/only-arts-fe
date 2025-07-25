@@ -7,8 +7,8 @@ interface AuthContextType {
   user: User | null | undefined;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (credentials: { username: string; password: string }) => void;
-  loginAsync: (credentials: { username: string; password: string }) => Promise<any>;
+  login: (credentials: { email: string; password: string }) => void;
+  loginAsync: (credentials: { email: string; password: string }) => Promise<any>;
   isLoggingIn: boolean;
   loginError: Error | null;
   logout: () => void;
