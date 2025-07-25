@@ -164,7 +164,7 @@
 /* Toast specific glass styles */
 @layer components {
     .glass {
-        @apply backdrop-blur-lg bg-card/10 dark:bg-card/30 border border-border/75;
+        @apply backdrop-blur-lg bg-card/10 dark:bg-card/30 border border-border/25;
     }
 
     .toast-glass {

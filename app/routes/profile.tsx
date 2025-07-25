@@ -1,5 +1,6 @@
 import { ShinyBadge } from "@/components/magicui/shiny-badge";
 import { Separator } from "@/components/ui/separator";
+import { Brush, Palette } from "lucide-react";
 
 export function meta() {
 	return [
@@ -16,27 +17,27 @@ export default function Profile() {
 
 			<div
 				className="bg-cover bg-center h-64 w-full rounded-lg p-4 flex flex-col justify-between"
-				style={{ backgroundImage: `url(${'https://t4.ftcdn.net/jpg/03/86/82/73/360_F_386827376_uWOOhKGk6A4UVL5imUBt20Bh8cmODqzx.jpg'})` }}
+				style={{ backgroundImage: `url(${'https://t3.ftcdn.net/jpg/08/04/92/82/360_F_804928270_ROm9Al5QgQs8NjVJolPPUaFxKwZ6cjUW.jpg'})` }}
 			>
 
 				<div>
-					<ShinyBadge>ARTIST</ShinyBadge>
+					<ShinyBadge><Palette size='14'/>ARTIST</ShinyBadge>
 				</div>
-
 
 				<div className="glass p-4 rounded-lg flex justify-between">
 
 					{/* User Data */}
-					<div className="flex items-center">
+
+					<div className="flex items-center space-x-4">
 						<img src="https://placehold.co/150x150" alt="Artist Avatar"
 								 className="relative rounded-full w-20 h-20 shadow-lg z-10"/>
-						<div className="h-20 ml-[-3rem] py-4 pr-8 pl-16 bg-white/20 dark:bg-white/10 rounded-lg">
+						<div className="h-20 py-4 rounded-lg">
 							<h1 className="text-xl font-bold text-primary-foreground">Artist Name</h1>
 							<p className="text-sm text-white/75">@artist_id</p>
 						</div>
 					</div>
 
-					<div className="w-100 py-4 px-8 bg-white/20 dark:bg-white/10 rounded-lg flex items-center justify-center space-x-4">
+					<div className="w-100 py-4 px-8 rounded-lg flex items-center justify-center space-x-4">
 						<div className="flex flex-col items-center flex-1">
 							<span className="text-sm text-white/75 font-mono uppercase">Arts</span>
 							<span className="text-lg font-semibold text-white">XXX</span>
@@ -52,7 +53,6 @@ export default function Profile() {
 							<span className="text-lg font-semibold text-white">XXX</span>
 						</div>
 					</div>
-
 
 				</div>
 
