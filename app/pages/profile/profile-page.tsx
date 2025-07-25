@@ -1,13 +1,17 @@
 import { ShinyBadge } from "@/components/magicui/shiny-badge";
-import { Palette } from "lucide-react";
+import { Palette, UserPlus } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { GlassCard } from "../../components/common/glass-card";
 import { useAuthContext } from "../../components/core/auth-context";
 import { ArtCard } from "../../components/common/art-card";
+import { Button } from "../../components/common/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/common/tabs";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
 export function ProfilePage() {
 	const { user } = useAuthContext();
-
+	const [tabValue, setTabValue] = useState("artworks");
 
 	return (
 		<div className="container mx-auto px-4 py-8">
@@ -15,12 +19,17 @@ export function ProfilePage() {
 			{/* Profile Header */}
 
 			<div
-				className="bg-cover bg-center h-64 w-full rounded-lg p-4 flex flex-col justify-between"
+				className="bg-cover bg-center h-64 w-full rounded-lg p-4 flex flex-col justify-between mb-6"
 				style={{ backgroundImage: `url(${'https://t3.ftcdn.net/jpg/08/04/92/82/360_F_804928270_ROm9Al5QgQs8NjVJolPPUaFxKwZ6cjUW.jpg'})` }}
 			>
 
-				<div>
+				<div className="flex justify-between">
 					<ShinyBadge><Palette size='14'/>ARTIST</ShinyBadge>
+
+					<Button className="shadow">
+						<UserPlus size={16} className="mr-2"/>
+						Follow
+					</Button>
 				</div>
 
 				<GlassCard className="p-4 flex justify-between">
@@ -54,20 +63,45 @@ export function ProfilePage() {
 
 			{/*	Main Content */}
 
+			<Tabs value={tabValue} onValueChange={setTabValue}>
+				<TabsList>
+					<TabsTrigger value="artworks">
+						Artworks
+						<Badge variant="outline" className="h-5 min-w-5 ml-2 rounded-full px-2 font-mono text-primary-foreground dark:border-primary-foreground">
+							20
+						</Badge>
+					</TabsTrigger>
+					<TabsTrigger value="collections">
+						Collections
+						<Badge variant="outline" className="h-5 min-w-5 ml-2 rounded-full px-2 font-mono text-primary-foreground dark:border-primary-foreground">
+							8
+						</Badge>
+					</TabsTrigger>
+				</TabsList>
+				<TabsContent value="artworks" className="mt-4">
+					<div className="grid grid-cols-4 gap-6">
+						<ArtCard art={
+							{
+								id: "1",
+								title: "Sample Art",
+								artist: {
+									userId: "artist1",
+									title: "Artist Name",
+								},
+								description: "This is a sample description of the art piece.",
+								imageUrl: "https://placehold.co/300x200"
+							}
+						}/>
+					</div>
+				</TabsContent>
+				<TabsContent value="collections">
+					hello1
+				</TabsContent>
+			</Tabs>
+
 			<div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-				<ArtCard art={
-					{
-						id: "1",
-						title: "Sample Art",
-						artist: {
-							userId: "artist1",
-							title: "Artist Name",
-						},
-						description: "This is a sample description of the art piece.",
-						imageUrl: "https://placehold.co/300x200"
-					}
-				}/>
+
 
 			</div>
 
