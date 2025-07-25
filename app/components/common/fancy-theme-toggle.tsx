@@ -89,6 +89,80 @@ export function FancyThemeToggle({
     );
   }
 
+  if (variant === 'gradient') {
+    return (
+      <button
+        onClick={toggleTheme}
+        className="flex items-center justify-between w-full p-4 rounded-xl bg-gradient-to-br from-violet-500/20 via-purple-500/20 to-pink-500/20 dark:from-violet-600/30 dark:via-purple-600/30 dark:to-pink-600/30 border border-gradient-to-r from-violet-200 via-purple-200 to-pink-200 dark:from-violet-700 dark:via-purple-700 dark:to-pink-700 hover:shadow-lg hover:shadow-violet-500/25 dark:hover:shadow-violet-400/25 transition-all duration-300 group backdrop-blur-sm relative overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-purple-500/10 to-pink-500/10 dark:from-violet-400/20 dark:via-purple-400/20 dark:to-pink-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div className="flex items-center gap-4 relative z-10">
+          <div className="relative flex items-center justify-center w-12 h-7 bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500 rounded-full shadow-inner group-hover:shadow-lg transition-shadow duration-300">
+            <motion.div
+                className="absolute w-6 h-6 bg-white rounded-full shadow-xl flex items-center justify-center border border-white/20"
+              animate={{
+                x: theme === 'dark' ? 18 : -18,
+              }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 600, 
+                damping: 30,
+                mass: 0.8
+              }}
+            >
+              <AnimatePresence mode="wait">
+                {theme === 'dark' ? (
+                  <motion.div
+                    key="moon"
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    exit={{ scale: 0, rotate: 180 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <MoonIcon className="w-3.5 h-3.5 text-violet-600" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="sun"
+                    initial={{ scale: 0, rotate: 180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    exit={{ scale: 0, rotate: -180 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <SunIcon className="w-3.5 h-3.5 text-amber-500" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          </div>
+          {showLabel && (
+            <div className="text-left">
+              <p className="text-sm font-semibold bg-gradient-to-r from-violet-600 via-purple-600 to-pink-600 bg-clip-text text-transparent group-hover:from-violet-500 group-hover:via-purple-500 group-hover:to-pink-500 transition-all">
+                Appearance
+              </p>
+              <motion.p 
+                className="text-xs text-muted-foreground capitalize"
+                key={theme}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                {theme} mode
+              </motion.p>
+            </div>
+          )}
+        </div>
+        <motion.div
+          animate={{ rotate: theme === 'dark' ? 180 : 0 }}
+          transition={{ duration: 0.3 }}
+          className="text-2xl relative z-10"
+        >
+          <span className="bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">✨</span>
+        </motion.div>
+      </button>
+    );
+  }
+
   return (
     <button
       onClick={toggleTheme}

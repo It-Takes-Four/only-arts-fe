@@ -3,6 +3,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Button } from "app/components/common/button";
 import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
 import { LogOut, Settings } from "lucide-react";
+import { useState } from "react";
 
 interface User {
   id: string;
@@ -18,19 +19,25 @@ interface UserDropdownProps {
 }
 
 export function UserDropdown({ user, onLogout }: UserDropdownProps) {
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Button variant="ghost" className="cursor-pointer relative h-10 w-10 rounded-full bg-primary border-2 border-border text-primary-foreground ">
-          {user?.profilePicture ? (
+        <Button variant="ghost" className="cursor-pointer relative h-10 w-10 rounded-full bg-primary border-2 border-border text-primary-foreground overflow-hidden p-0">
+          {user?.profilePicture && !imageError ? (
             <img
               src={user.profilePicture}
               alt={user?.username}
-              className="w-full h-full rounded-full object-cover"
-              onError={(e) => (e.currentTarget.src = "/placeholder-avatar.png")}
+              className="w-full h-full rounded-full object-cover absolute inset-0"
+              onError={handleImageError}
             />
           ) : (
-            <div className="w-full h-full rounded-full flex items-center justify-center ">
+            <div className="w-full h-full rounded-full flex items-center justify-center">
               <span className="text-sm font-semibold">
                 {user?.username?.charAt(0)?.toUpperCase() || '?'}
               </span>

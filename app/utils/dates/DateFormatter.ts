@@ -1,4 +1,4 @@
-import {DayOfWeek} from "./_models.ts";
+import type { DayOfWeek } from "./_models";
 
 const formatDate = (date: Date, includeSecond: boolean = false) => {
     const padZero = (value: number) => String(value).padStart(2, "0");

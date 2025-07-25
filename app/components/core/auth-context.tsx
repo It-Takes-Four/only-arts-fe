@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import type { User } from './_models';
+import type { RegisterRequest } from 'app/pages/register/core';
 import { useAuth } from '../hooks/useAuth';
 
 interface AuthContextType {
@@ -11,6 +12,10 @@ interface AuthContextType {
   loginAsync: (credentials: { email: string; password: string }) => Promise<any>;
   isLoggingIn: boolean;
   loginError: Error | null;
+  register: (userData: RegisterRequest) => void;
+  registerAsync: (userData: RegisterRequest) => Promise<any>;
+  isRegistering: boolean;
+  registerError: Error | null;
   logout: () => void;
 }
 
@@ -47,6 +52,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     loginAsync: auth.loginAsync,
     isLoggingIn: auth.isLoggingIn,
     loginError: auth.loginError,
+    register: auth.register,
+    registerAsync: auth.registerAsync,
+    isRegistering: auth.isRegistering,
+    registerError: auth.registerError,
     logout: handleLogout,
   };
 

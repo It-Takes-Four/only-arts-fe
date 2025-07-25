@@ -5,6 +5,7 @@ import { useAuthContext } from "app/components/core/auth-context";
 import { userService } from "app/services/user-service";
 import { authService } from "app/services/auth-service";
 import { debugCookies, getCookie } from "app/utils/cookie";
+import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
 
 export default function DevTestPage() {
   const { user, isAuthenticated, login, loginAsync, logout, isLoggingIn } = useAuthContext();
@@ -49,8 +50,8 @@ export default function DevTestPage() {
       debugCookies(); // Check before login
       
       await loginAsync({
-        email: "admin@admin.com",
-        password: "password123"
+        email: "user@example.com",
+        password: "securePass1"
       });
       
       toast.success("Login successful! (No redirect in dev test)");
@@ -180,6 +181,36 @@ export default function DevTestPage() {
               >
                 Debug Auth State
               </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Theme Testing Section */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-semibold">Theme Testing</h2>
+        
+        <div className="p-4 border rounded-lg bg-card">
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm font-medium mb-4">Theme Toggle Variants:</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <p className="text-xs text-muted-foreground">Default</p>
+                  <FancyThemeToggle variant="default" />
+                </div>
+                
+                <div className="space-y-2">
+                  <p className="text-xs text-muted-foreground">Minimal</p>
+                  <FancyThemeToggle variant="minimal" />
+                </div>
+                
+                <div className="space-y-2">
+                  <p className="text-xs text-muted-foreground">Gradient</p>
+                  <FancyThemeToggle variant="gradient" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
