@@ -9,6 +9,7 @@ import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { Separator } from "@/components/ui/separator";
 import { FollowButton } from "../../components/common/follow-button";
 import { CollectionCard } from "../../components/common/collection-card";
+import { Eye } from "lucide-react";
 
 export function ProfilePage() {
 	const { user } = useAuthContext();
@@ -19,14 +20,15 @@ export function ProfilePage() {
 			value: "explore",
 			label: "Explore",
 			content: <div className="">
-				
+
+
 			</div>,
 		},
 		{
 			value: "collections",
 			label: "Collections",
 			content: <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-				<CollectionCard />
+				<CollectionCard/>
 			</div>,
 		},
 		{
@@ -46,7 +48,7 @@ export function ProfilePage() {
 						createdAt: new Date(),
 						imageUrl: "https://placehold.co/300x300"
 					}
-				} />
+				}/>
 				<ArtCard art={
 					{
 						id: "1",
@@ -60,7 +62,7 @@ export function ProfilePage() {
 						createdAt: new Date(),
 						imageUrl: "https://placehold.co/300x300"
 					}
-				} />
+				}/>
 				<ArtCard art={
 					{
 						id: "1",
@@ -74,7 +76,7 @@ export function ProfilePage() {
 						createdAt: new Date(),
 						imageUrl: "https://placehold.co/300x300"
 					}
-				} />
+				}/>
 				<ArtCard art={
 					{
 						id: "1",
@@ -88,7 +90,7 @@ export function ProfilePage() {
 						createdAt: new Date(),
 						imageUrl: "https://placehold.co/300x300"
 					}
-				} />
+				}/>
 			</div>,
 		},
 	];
@@ -103,9 +105,10 @@ export function ProfilePage() {
 				style={{ backgroundImage: 'url(/profile-background.jpg)' }}
 			>
 
-				<div>
-					<ShinyBadge><CheckBadgeIcon className="size-4 mr-1"/>ARTIST</ShinyBadge>
-				</div>
+				<ShinyBadge className="self-start">
+					<CheckBadgeIcon className="size-4 mr-1"/>
+					ARTIST
+				</ShinyBadge>
 
 				{/* User Data */}
 
@@ -119,7 +122,10 @@ export function ProfilePage() {
 								<Separator orientation="vertical" className="bg-white/25 h-5 mr-1 ml-4"/>
 								<FollowButton/>
 							</span>
-							<Badge variant="outline" className="mt-2 font-mono text-primary-foreground text-xs uppercase border-white/25">
+							{/*bio*/}
+							<p className="text-sm text-white/75 mt-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+							<Badge variant="outline"
+										 className="mt-2 font-mono text-primary-foreground text-xs uppercase border-white/25">
 								JOINED JUN 2022</Badge>
 						</div>
 					</div>
