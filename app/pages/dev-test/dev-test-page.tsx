@@ -4,11 +4,15 @@ import { CheckCircle, AlertCircle, AlertTriangle, Info, Loader2 } from "lucide-r
 import { useAuthContext } from "app/components/core/auth-context";
 import { userService } from "app/services/user-service";
 import { authService } from "app/services/auth-service";
+import { artistService } from "app/services/artist-service";
 import { debugCookies, getCookie } from "app/utils/cookie";
 import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
+import { WalletLinkComponent } from "app/components/common/wallet-link-component";
+import { useNavigate } from "react-router";
 
 export default function DevTestPage() {
   const { user, isAuthenticated, login, loginAsync, logout, isLoggingIn } = useAuthContext();
+  const navigate = useNavigate();
 
   const testToasts = () => {
     // Test different toast types
@@ -108,6 +112,92 @@ export default function DevTestPage() {
     }
   };
 
+  const testDirectWalletService = async () => {
+    try {
+      toast.loading("Testing direct wallet service call...");
+      const { walletService } = await import("app/services/wallet-service");
+      const linkedWallets = await walletService.getLinkedWallets();
+      toast.success("Direct wallet service call successful!");
+      console.log("Linked wallets from direct service call:", linkedWallets);
+    } catch (error) {
+      toast.error("Direct wallet service call failed");
+      console.error("Direct wallet service error:", error);
+    }
+  };
+
+  // Artist Testing Functions
+  const testArtistRegistration = async () => {
+    try {
+      toast.loading("Testing artist registration...");
+      const artistData = {
+        artistName: "Test Artist " + Math.random().toString(36).substring(7),
+        bio: "This is a test artist bio for development testing.",
+        isNsfw: false,
+        agreeToTerms: true
+      };
+      
+      const response = await artistService.registerAsArtist(artistData);
+      toast.success("Artist registration successful!");
+      console.log("Artist registration response:", response);
+    } catch (error: any) {
+      toast.error(error.message || "Artist registration failed");
+      console.error("Artist registration error:", error);
+    }
+  };
+
+  const testGetArtistProfile = async () => {
+    try {
+      toast.loading("Testing get artist profile...");
+      const profile = await artistService.getMyArtistProfile();
+      toast.success("Get artist profile successful!");
+      console.log("Artist profile:", profile);
+    } catch (error: any) {
+      toast.error(error.message || "Get artist profile failed");
+      console.error("Get artist profile error:", error);
+    }
+  };
+
+  const checkArtistStatus = () => {
+    console.log('=== ARTIST STATUS DEBUG ===');
+    console.log('User:', user);
+    console.log('User artist:', user?.artist);
+    console.log('Can become artist:', isAuthenticated && user && !user.artist);
+    console.log('Is already artist:', user?.artist !== null);
+    
+    if (user?.artist) {
+      toast.info(`Already an artist: ${user.artist.artistName || 'No name set'}`);
+    } else if (isAuthenticated && user) {
+      toast.info("Can become an artist!");
+    } else {
+      toast.info("Not authenticated - cannot check artist status");
+    }
+  };
+
+  const navigateToBecomeArtist = () => {
+    if (!isAuthenticated) {
+      toast.warning("Please login first");
+      navigate('/login?returnTo=/become-artist');
+    } else if (user?.artist) {
+      toast.info("You're already an artist!");
+      navigate('/profile');
+    } else {
+      navigate('/become-artist');
+    }
+  };
+
+  const debugWalletConnection = () => {
+    console.log('=== WALLET DEBUG ===');
+    const { useAccount } = require('wagmi');
+    try {
+      // This will only work if called from within the wallet context
+      toast.info("Check console for wallet debug info");
+      console.log("Wallet debugging info would appear here when connected");
+    } catch (error) {
+      console.error("Wallet debug error:", error);
+      toast.error("Wallet debugging failed - check console");
+    }
+  };
+
   return (
     <div className="container mx-auto p-8 space-y-8">
       <div className="text-center space-y-4">
@@ -143,7 +233,7 @@ export default function DevTestPage() {
                 disabled={isLoggingIn || isAuthenticated}
                 variant="default"
               >
-                {isLoggingIn ? "Logging in..." : "Test Login (admin@admin.com)"}
+                {isLoggingIn ? "Logging in..." : "Test Login"}
               </Button>
               
               <Button 
@@ -180,6 +270,111 @@ export default function DevTestPage() {
                 size="sm"
               >
                 Debug Auth State
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Artist Testing Section */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-semibold">Artist Testing</h2>
+        
+        <div className="p-4 border rounded-lg bg-card">
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm font-medium">Artist Status:</p>
+              <p className="text-sm text-muted-foreground">
+                {user?.artist ? `✅ Artist: ${user.artist.artistName || 'No name set'}` : 
+                 isAuthenticated ? "❌ Not an Artist" : "🔒 Not Authenticated"}
+              </p>
+            </div>
+            
+            {user?.artist && (
+              <div>
+                <p className="text-sm font-medium">Artist Data:</p>
+                <pre className="text-xs bg-muted p-2 rounded mt-1">
+                  {JSON.stringify(user.artist, null, 2)}
+                </pre>
+              </div>
+            )}
+            
+            <div className="flex gap-2 flex-wrap">
+              <Button 
+                onClick={checkArtistStatus} 
+                variant="outline"
+                size="sm"
+              >
+                Check Artist Status
+              </Button>
+              
+              <Button 
+                onClick={navigateToBecomeArtist}
+                disabled={!isAuthenticated}
+                variant={user?.artist ? "secondary" : "default"}
+                size="sm"
+              >
+                {user?.artist ? "Go to Profile" : "Become an Artist"}
+              </Button>
+            </div>
+
+            <div className="flex gap-2 flex-wrap mt-2">
+              <Button 
+                onClick={testArtistRegistration} 
+                disabled={!isAuthenticated || !!user?.artist}
+                variant="secondary"
+                size="sm"
+              >
+                Test Artist Registration
+              </Button>
+              
+              <Button 
+                onClick={testGetArtistProfile} 
+                disabled={!isAuthenticated || !user?.artist}
+                variant="secondary"
+                size="sm"
+              >
+                Test Get Artist Profile
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Wallet Testing Section */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-semibold">Wallet Testing</h2>
+        
+        <div className="p-4 border rounded-lg bg-card">
+          <WalletLinkComponent 
+            onWalletLinked={(address) => {
+              toast.success(`Wallet linked: ${address.slice(0, 6)}...${address.slice(-4)}`);
+              console.log('Wallet linked:', address);
+            }}
+            onWalletUnlinked={(address) => {
+              toast.info(`Wallet unlinked: ${address.slice(0, 6)}...${address.slice(-4)}`);
+              console.log('Wallet unlinked:', address);
+            }}
+          />
+          
+          <div className="mt-4 pt-4 border-t">
+            <p className="text-sm font-medium mb-2">Wallet Service Testing:</p>
+            <div className="flex gap-2 flex-wrap">
+              <Button 
+                onClick={testDirectWalletService} 
+                disabled={!isAuthenticated}
+                variant="secondary"
+                size="sm"
+              >
+                Test Wallet Service Direct
+              </Button>
+              
+              <Button 
+                onClick={debugWalletConnection} 
+                variant="outline"
+                size="sm"
+              >
+                Debug Wallet Connection
               </Button>
             </div>
           </div>

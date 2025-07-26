@@ -38,8 +38,9 @@ export default abstract class BaseService {
                     // Clear the auth token cookie (only on client-side)
                     if (typeof window !== 'undefined') {
                         Cookies.remove("auth_token", { path: '/' });
-                        // Redirect to login
-                        window.location.href = '/login';
+                        // Don't automatically redirect here as it interferes with React Router
+                        // Let the auth context handle redirection
+                        console.log('401 received - token cleared');
                     }
                 }
                 return Promise.reject(error);

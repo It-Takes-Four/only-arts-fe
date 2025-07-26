@@ -1,8 +1,28 @@
 import { Button } from "app/components/common/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import StaticGradient from "@/components/blocks/Backgrounds/StaticGradient/StaticGradient";
+import { useAuthContext } from "app/components/core/auth-context";
+import { useNavigate } from "react-router";
 
 export function Welcome() {
+  const { user, isAuthenticated } = useAuthContext();
+  const navigate = useNavigate();
+
+  const handleBecomeArtist = () => {
+    if (!isAuthenticated) {
+      navigate('/login?returnTo=/become-artist');
+    } else {
+      navigate('/become-artist');
+    }
+  };
+
+  const handleExploreGallery = () => {
+    navigate('/gallery');
+  };
+
+  // Check if user can become an artist (logged in but not an artist yet)
+  const canBecomeArtist = isAuthenticated && user && !user.artist;
+
   return (
     <div className="fixed inset-0 w-full h-full overflow-auto">
       {/* Background - Covers entire viewport */}
@@ -35,12 +55,22 @@ export function Welcome() {
                 </div>
               </CardHeader>
               <CardContent className="flex flex-col space-y-4">
-                <Button size="lg" className="w-full">
+                <Button size="lg" className="w-full" onClick={handleExploreGallery}>
                   Explore Gallery
                 </Button>
-                <Button variant="outline" size="lg" className="w-full">
-                  Create Art
-                </Button>
+                {canBecomeArtist ? (
+                  <Button variant="outline" size="lg" className="w-full" onClick={handleBecomeArtist}>
+                    Become an Artist
+                  </Button>
+                ) : user?.artist ? (
+                  <Button variant="outline" size="lg" className="w-full" onClick={() => navigate('/create-art')}>
+                    Create Art
+                  </Button>
+                ) : (
+                  <Button variant="outline" size="lg" className="w-full" onClick={() => navigate('/login')}>
+                    Sign In to Create
+                  </Button>
+                )}
               </CardContent>
             </Card>
           </div>

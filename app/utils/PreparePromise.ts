@@ -1,6 +1,6 @@
-import toast from 'react-hot-toast';
-import { AxiosError, AxiosResponse } from "axios";
-import { EndpointCallResponseMessage } from "../core/_models.ts";
+import { toast } from 'sonner';
+import { AxiosError, type AxiosResponse } from "axios";
+import type { EndpointCallResponseMessage } from "../components/core/_models";
 
 type SuccessCallback<T> = (data: T) => void;
 type ErrorCallback = (error: AxiosError<EndpointCallResponseMessage>) => void;
