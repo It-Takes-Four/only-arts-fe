@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "app/components/common/button";
 import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings, Palette } from "lucide-react";
 import { useState } from "react";
 
 interface User {
@@ -59,6 +59,19 @@ export function UserDropdown({ user, onLogout }: UserDropdownProps) {
           <FancyThemeToggle variant="minimal" />
         </div>
         <DropdownMenuSeparator />
+        
+        {/* Artist Registration */}
+        {!user?.artist && (
+          <>
+            <DropdownMenuItem>
+              <Link to="/become-artist" className="flex items-center gap-2 w-full">
+                <Palette className="h-4 w-4" />
+                <span>Become an Artist</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
         
         <DropdownMenuItem>
           <Link to="/settings" className="flex items-center gap-2 w-full">

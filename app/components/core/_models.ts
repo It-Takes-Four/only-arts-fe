@@ -1,11 +1,25 @@
 
+interface Artist {
+  id: string;
+  artistName: string;
+  bio: string | null;
+  isNsfw: boolean;
+  userId: string;
+  isVerified: boolean;
+  createdAt: string;
+  updatedAt?: string;
+}
+
 interface User {
   id: string;
   email: string;
   username: string;
   profilePicture: string | null;
-  artist: any | null;
+  artist: Artist | null;
   wallets?: WalletInfo[];
+  comments?: any[];
+  followers?: any[];
+  notifications?: any[];
 }
 
 interface WalletInfo {
@@ -44,6 +58,7 @@ export type DataResponse<T> = {
 
 export type {
   User,
+  Artist,
   WalletInfo,
   ApiError,
 };

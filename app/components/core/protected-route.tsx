@@ -69,14 +69,22 @@ export function PublicOnlyRoute({
   children: React.ReactNode;
   redirectTo?: string;
 }) {
-  const { isLoading, isAuthenticated } = useAuthContext();
+  const { isLoading, isAuthenticated, user } = useAuthContext();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoading && isAuthenticated) {
+    console.log('PublicOnlyRoute Debug:', {
+      isLoading,
+      isAuthenticated,
+      user: !!user,
+      redirectTo
+    });
+
+    if (!isLoading && isAuthenticated && user) {
+      console.log('PublicOnlyRoute: Redirecting authenticated user to', redirectTo);
       navigate(redirectTo, { replace: true });
     }
-  }, [isLoading, isAuthenticated, navigate, redirectTo]);
+  }, [isLoading, isAuthenticated, user, navigate, redirectTo]);
 
   // Show loading while checking authentication
   if (isLoading) {
@@ -88,7 +96,7 @@ export function PublicOnlyRoute({
   }
 
   // If user is authenticated, don't render children (will redirect)
-  if (isAuthenticated) {
+  if (isAuthenticated && user) {
     return null;
   }
 

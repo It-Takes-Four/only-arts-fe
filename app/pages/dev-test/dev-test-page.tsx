@@ -4,12 +4,15 @@ import { CheckCircle, AlertCircle, AlertTriangle, Info, Loader2 } from "lucide-r
 import { useAuthContext } from "app/components/core/auth-context";
 import { userService } from "app/services/user-service";
 import { authService } from "app/services/auth-service";
+import { artistService } from "app/services/artist-service";
 import { debugCookies, getCookie } from "app/utils/cookie";
 import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
 import { WalletLinkComponent } from "app/components/common/wallet-link-component";
+import { useNavigate } from "react-router";
 
 export default function DevTestPage() {
   const { user, isAuthenticated, login, loginAsync, logout, isLoggingIn } = useAuthContext();
+  const navigate = useNavigate();
 
   const testToasts = () => {
     // Test different toast types
@@ -122,6 +125,66 @@ export default function DevTestPage() {
     }
   };
 
+  // Artist Testing Functions
+  const testArtistRegistration = async () => {
+    try {
+      toast.loading("Testing artist registration...");
+      const artistData = {
+        artistName: "Test Artist " + Math.random().toString(36).substring(7),
+        bio: "This is a test artist bio for development testing.",
+        isNsfw: false,
+        agreeToTerms: true
+      };
+      
+      const response = await artistService.registerAsArtist(artistData);
+      toast.success("Artist registration successful!");
+      console.log("Artist registration response:", response);
+    } catch (error: any) {
+      toast.error(error.message || "Artist registration failed");
+      console.error("Artist registration error:", error);
+    }
+  };
+
+  const testGetArtistProfile = async () => {
+    try {
+      toast.loading("Testing get artist profile...");
+      const profile = await artistService.getMyArtistProfile();
+      toast.success("Get artist profile successful!");
+      console.log("Artist profile:", profile);
+    } catch (error: any) {
+      toast.error(error.message || "Get artist profile failed");
+      console.error("Get artist profile error:", error);
+    }
+  };
+
+  const checkArtistStatus = () => {
+    console.log('=== ARTIST STATUS DEBUG ===');
+    console.log('User:', user);
+    console.log('User artist:', user?.artist);
+    console.log('Can become artist:', isAuthenticated && user && !user.artist);
+    console.log('Is already artist:', user?.artist !== null);
+    
+    if (user?.artist) {
+      toast.info(`Already an artist: ${user.artist.artistName || 'No name set'}`);
+    } else if (isAuthenticated && user) {
+      toast.info("Can become an artist!");
+    } else {
+      toast.info("Not authenticated - cannot check artist status");
+    }
+  };
+
+  const navigateToBecomeArtist = () => {
+    if (!isAuthenticated) {
+      toast.warning("Please login first");
+      navigate('/login?returnTo=/become-artist');
+    } else if (user?.artist) {
+      toast.info("You're already an artist!");
+      navigate('/profile');
+    } else {
+      navigate('/become-artist');
+    }
+  };
+
   const debugWalletConnection = () => {
     console.log('=== WALLET DEBUG ===');
     const { useAccount } = require('wagmi');
@@ -207,6 +270,71 @@ export default function DevTestPage() {
                 size="sm"
               >
                 Debug Auth State
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Artist Testing Section */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-semibold">Artist Testing</h2>
+        
+        <div className="p-4 border rounded-lg bg-card">
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm font-medium">Artist Status:</p>
+              <p className="text-sm text-muted-foreground">
+                {user?.artist ? `✅ Artist: ${user.artist.artistName || 'No name set'}` : 
+                 isAuthenticated ? "❌ Not an Artist" : "🔒 Not Authenticated"}
+              </p>
+            </div>
+            
+            {user?.artist && (
+              <div>
+                <p className="text-sm font-medium">Artist Data:</p>
+                <pre className="text-xs bg-muted p-2 rounded mt-1">
+                  {JSON.stringify(user.artist, null, 2)}
+                </pre>
+              </div>
+            )}
+            
+            <div className="flex gap-2 flex-wrap">
+              <Button 
+                onClick={checkArtistStatus} 
+                variant="outline"
+                size="sm"
+              >
+                Check Artist Status
+              </Button>
+              
+              <Button 
+                onClick={navigateToBecomeArtist}
+                disabled={!isAuthenticated}
+                variant={user?.artist ? "secondary" : "default"}
+                size="sm"
+              >
+                {user?.artist ? "Go to Profile" : "Become an Artist"}
+              </Button>
+            </div>
+
+            <div className="flex gap-2 flex-wrap mt-2">
+              <Button 
+                onClick={testArtistRegistration} 
+                disabled={!isAuthenticated || !!user?.artist}
+                variant="secondary"
+                size="sm"
+              >
+                Test Artist Registration
+              </Button>
+              
+              <Button 
+                onClick={testGetArtistProfile} 
+                disabled={!isAuthenticated || !user?.artist}
+                variant="secondary"
+                size="sm"
+              >
+                Test Get Artist Profile
               </Button>
             </div>
           </div>

@@ -28,6 +28,19 @@ export function useAuth() {
     refetchOnMount: true, // Always refetch on mount to verify current user
   });
 
+  // Log auth state for debugging
+  useEffect(() => {
+    if (isClient) {
+      console.log('Auth Debug:', {
+        user,
+        isLoading,
+        error,
+        hasToken: !!getToken(),
+        isAuthenticated: !!user
+      });
+    }
+  }, [user, isLoading, error, isClient]);
+
   // Login mutation
   const loginMutation = useMutation({
     mutationFn: loginService,
