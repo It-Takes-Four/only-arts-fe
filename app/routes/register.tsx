@@ -1,4 +1,5 @@
 import { RegisterPage } from "app/pages/register";
+import { PublicOnlyRoute } from "app/components/core/protected-route";
 
 export function meta() {
   return [
@@ -8,5 +9,9 @@ export function meta() {
 }
 
 export default function Register() {
-  return <RegisterPage />;
+  return (
+    <PublicOnlyRoute>
+      <RegisterPage />
+    </PublicOnlyRoute>
+  );
 }

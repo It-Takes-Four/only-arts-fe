@@ -31,9 +31,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const location = useLocation();
 
   useEffect(() => {
-    if (!auth.isLoading && !auth.isAuthenticated && location.pathname !== '/login') {
-      if (!auth.user) {
-        // navigate('/login', { replace: true });
+    // Enable authentication redirection for protected routes
+    if (!auth.isLoading && !auth.isAuthenticated) {
+      // Only redirect if we're on a protected route and don't have a token
+      const protectedRoutes = ['/', '/profile', '/settings'];
+      const isProtectedRoute = protectedRoutes.includes(location.pathname);
+      
+      if (isProtectedRoute && !auth.user) {
+        console.log('Redirecting unauthenticated user from protected route:', location.pathname);
+        navigate('/login', { 
+          replace: true,
+          state: { from: location.pathname }
+        });
       }
     }
   }, [auth.isLoading, auth.isAuthenticated, auth.user, location.pathname, navigate]);

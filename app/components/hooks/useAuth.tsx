@@ -14,9 +14,18 @@ export function useAuth() {
   const { data: user, isLoading, error } = useQuery({
     queryKey: ['auth', 'user'],
     queryFn: validateToken,
-    retry: false, // Don't retry on 401
+    retry: (failureCount, error: any) => {
+      // Don't retry on 401 (unauthorized) or 403 (forbidden)
+      if (error?.response?.status === 401 || error?.response?.status === 403) {
+        return false;
+      }
+      // Retry up to 2 times for other errors
+      return failureCount < 2;
+    },
     staleTime: 5 * 60 * 1000, // 5 minutes
     enabled: isClient && !!getToken(), // Only run on client-side if token exists
+    refetchOnWindowFocus: false, // Don't refetch when window gains focus
+    refetchOnMount: true, // Always refetch on mount to verify current user
   });
 
   // Login mutation

@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, Link } from "react-router";
+import { useNavigate, Link, useLocation } from "react-router";
 import { Button } from "app/components/common/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,6 +21,7 @@ export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const { loginAsync, isLoggingIn, loginError } = useAuthContext();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Memoize the background to prevent re-renders
   const backgroundElement = useMemo(() => (
@@ -52,7 +53,10 @@ export function LoginPage() {
     try {
       await loginAsync(data);
       toast.success('Welcome back! You have been successfully logged in.');
-      navigate("/");
+      
+      // Redirect to the original page they were trying to access, or home
+      const from = location.state?.from || '/';
+      navigate(from, { replace: true });
     } catch (error) {
       // Error is handled by the auth context, but we can also show a toast
       toast.error('Login failed. Please check your credentials and try again.');

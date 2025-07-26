@@ -6,6 +6,7 @@ import { userService } from "app/services/user-service";
 import { authService } from "app/services/auth-service";
 import { debugCookies, getCookie } from "app/utils/cookie";
 import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
+import { WalletLinkComponent } from "app/components/common/wallet-link-component";
 
 export default function DevTestPage() {
   const { user, isAuthenticated, login, loginAsync, logout, isLoggingIn } = useAuthContext();
@@ -108,6 +109,32 @@ export default function DevTestPage() {
     }
   };
 
+  const testDirectWalletService = async () => {
+    try {
+      toast.loading("Testing direct wallet service call...");
+      const { walletService } = await import("app/services/wallet-service");
+      const linkedWallets = await walletService.getLinkedWallets();
+      toast.success("Direct wallet service call successful!");
+      console.log("Linked wallets from direct service call:", linkedWallets);
+    } catch (error) {
+      toast.error("Direct wallet service call failed");
+      console.error("Direct wallet service error:", error);
+    }
+  };
+
+  const debugWalletConnection = () => {
+    console.log('=== WALLET DEBUG ===');
+    const { useAccount } = require('wagmi');
+    try {
+      // This will only work if called from within the wallet context
+      toast.info("Check console for wallet debug info");
+      console.log("Wallet debugging info would appear here when connected");
+    } catch (error) {
+      console.error("Wallet debug error:", error);
+      toast.error("Wallet debugging failed - check console");
+    }
+  };
+
   return (
     <div className="container mx-auto p-8 space-y-8">
       <div className="text-center space-y-4">
@@ -143,7 +170,7 @@ export default function DevTestPage() {
                 disabled={isLoggingIn || isAuthenticated}
                 variant="default"
               >
-                {isLoggingIn ? "Logging in..." : "Test Login (admin@admin.com)"}
+                {isLoggingIn ? "Logging in..." : "Test Login"}
               </Button>
               
               <Button 
@@ -180,6 +207,46 @@ export default function DevTestPage() {
                 size="sm"
               >
                 Debug Auth State
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Wallet Testing Section */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-semibold">Wallet Testing</h2>
+        
+        <div className="p-4 border rounded-lg bg-card">
+          <WalletLinkComponent 
+            onWalletLinked={(address) => {
+              toast.success(`Wallet linked: ${address.slice(0, 6)}...${address.slice(-4)}`);
+              console.log('Wallet linked:', address);
+            }}
+            onWalletUnlinked={(address) => {
+              toast.info(`Wallet unlinked: ${address.slice(0, 6)}...${address.slice(-4)}`);
+              console.log('Wallet unlinked:', address);
+            }}
+          />
+          
+          <div className="mt-4 pt-4 border-t">
+            <p className="text-sm font-medium mb-2">Wallet Service Testing:</p>
+            <div className="flex gap-2 flex-wrap">
+              <Button 
+                onClick={testDirectWalletService} 
+                disabled={!isAuthenticated}
+                variant="secondary"
+                size="sm"
+              >
+                Test Wallet Service Direct
+              </Button>
+              
+              <Button 
+                onClick={debugWalletConnection} 
+                variant="outline"
+                size="sm"
+              >
+                Debug Wallet Connection
               </Button>
             </div>
           </div>
