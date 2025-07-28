@@ -9,6 +9,8 @@ export function useWalletLink() {
   const [isLinking, setIsLinking] = useState(false);
   const [linkedWallets, setLinkedWallets] = useState<WalletLinkResponse[]>([]);
   const [isLoadingWallets, setIsLoadingWallets] = useState(false);
+  // Local session storage for currently linked wallets (no backend persistence)
+  const [sessionLinkedWallets, setSessionLinkedWallets] = useState<Set<string>>(new Set());
 
   const linkWallet = async (): Promise<WalletLinkResponse | null> => {
     if (!address || !isConnected) {
@@ -16,23 +18,31 @@ export function useWalletLink() {
       return null;
     }
 
+    // Check if already linked in current session
+    if (sessionLinkedWallets.has(address.toLowerCase())) {
+      toast.info('Wallet is already linked in this session');
+      return null;
+    }
+
     setIsLinking(true);
     try {
-      // Step 1: Get verification message from backend
+      // Step 1: Get verification message (local only)
       const { message } = await walletService.verifyWalletOwnership(address);
 
-      // Step 2: Sign the message
+      // Step 2: Sign the message to verify ownership
       const signature = await signMessageAsync({ message });
 
-      // Step 3: Link wallet with signature
+      // Step 3: "Link" wallet (local only - no backend)
       const linkResponse = await walletService.linkWallet({
         walletAddress: address,
         signature,
         message
       });
 
-      toast.success('Wallet linked successfully!');
-      await loadLinkedWallets(); // Refresh the list
+      // Add to session storage
+      setSessionLinkedWallets(prev => new Set(prev).add(address.toLowerCase()));
+      
+      toast.success('Wallet linked successfully! (Session only - no backend storage)');
       return linkResponse;
     } catch (error: any) {
       console.error('Error linking wallet:', error);
@@ -46,9 +56,16 @@ export function useWalletLink() {
   const unlinkWallet = async (walletAddress: string): Promise<boolean> => {
     try {
       setIsLoadingWallets(true);
+      
+      // Remove from session storage
+      setSessionLinkedWallets(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(walletAddress.toLowerCase());
+        return newSet;
+      });
+      
       await walletService.unlinkWallet(walletAddress);
-      toast.success('Wallet unlinked successfully!');
-      await loadLinkedWallets(); // Refresh the list
+      toast.success('Wallet unlinked successfully! (Session only)');
       return true;
     } catch (error: any) {
       console.error('Error unlinking wallet:', error);
@@ -62,7 +79,19 @@ export function useWalletLink() {
   const loadLinkedWallets = async (): Promise<void> => {
     try {
       setIsLoadingWallets(true);
-      const wallets = await walletService.getLinkedWallets();
+      // Since backend is disabled, we only show currently connected wallet if it's been "linked" in session
+      const wallets: WalletLinkResponse[] = [];
+      
+      if (address && sessionLinkedWallets.has(address.toLowerCase())) {
+        wallets.push({
+          id: 'session-' + address,
+          userId: 'current-user',
+          walletAddress: address,
+          isVerified: true,
+          linkedAt: new Date().toISOString()
+        });
+      }
+      
       setLinkedWallets(wallets);
     } catch (error: any) {
       console.error('Error loading linked wallets:', error);
@@ -73,9 +102,7 @@ export function useWalletLink() {
   };
 
   const isWalletLinked = (walletAddress: string): boolean => {
-    return linkedWallets.some(wallet => 
-      wallet.walletAddress.toLowerCase() === walletAddress.toLowerCase()
-    );
+    return sessionLinkedWallets.has(walletAddress.toLowerCase());
   };
 
   return {

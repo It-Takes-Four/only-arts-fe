@@ -126,11 +126,11 @@ export default function DevTestPage() {
 
   const testDirectWalletService = async () => {
     try {
-      toast.loading("Testing direct wallet service call...");
+      toast.loading("Testing direct wallet service call (local mode)...");
       const { walletService } = await import("app/services/wallet-service");
       const linkedWallets = await walletService.getLinkedWallets();
-      toast.success("Direct wallet service call successful!");
-      console.log("Linked wallets from direct service call:", linkedWallets);
+      toast.success("Direct wallet service call successful! (Local mode - no backend)");
+      console.log("Linked wallets from direct service call (local mode):", linkedWallets);
     } catch (error) {
       toast.error("Direct wallet service call failed");
       console.error("Direct wallet service error:", error);
@@ -197,12 +197,11 @@ export default function DevTestPage() {
   };
 
   const debugWalletConnection = () => {
-    console.log('=== WALLET DEBUG ===');
-    const { useAccount } = require('wagmi');
+    console.log('=== WALLET DEBUG (Local Mode) ===');
+    console.log('Note: Wallet connection works via wagmi/RainbowKit but no backend persistence');
     try {
-      // This will only work if called from within the wallet context
-      toast.info("Check console for wallet debug info");
-      console.log("Wallet debugging info would appear here when connected");
+      toast.info("Check console for wallet debug info (local mode active)");
+      console.log("Wallet debugging - backend disabled, using local session storage");
     } catch (error) {
       console.error("Wallet debug error:", error);
       toast.error("Wallet debugging failed - check console");
@@ -354,7 +353,7 @@ export default function DevTestPage() {
 
       {/* Wallet Testing Section */}
       <div className="space-y-6">
-        <h2 className="text-2xl font-semibold">Wallet Testing</h2>
+        <h2 className="text-2xl font-semibold">Wallet Testing (Local Mode)</h2>
         
         <div className="p-4 border rounded-lg bg-card">
           <WalletLinkComponent 
