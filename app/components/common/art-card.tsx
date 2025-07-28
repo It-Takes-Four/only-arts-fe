@@ -23,7 +23,7 @@ export function ArtCard({ art }: ArtCardProps) {
 					alt={"Portfolio Item"}
 					className="w-full h-full object-cover"
 					animate={{ scale: isHovered ? 1.1 : 1 }}
-					transition={{ duration: 0.7 }}
+					transition={{ duration: 0.3 }}
 				/>
 			</div>
 
@@ -32,7 +32,7 @@ export function ArtCard({ art }: ArtCardProps) {
 				className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
 				initial={{ opacity: 0 }}
 				animate={{ opacity: isHovered ? 1 : 0 }}
-				transition={{ duration: 0.5 }}
+				transition={{ duration: 0.3 }}
 			>
 				{/* Artist Badge */}
 				<motion.span
@@ -43,7 +43,7 @@ export function ArtCard({ art }: ArtCardProps) {
 						opacity: isHovered ? 1 : 0
 					}}
 					transition={{
-						duration: 0.5,
+						duration: 0.3,
 						ease: "easeOut"
 					}}
 				>
@@ -60,7 +60,7 @@ export function ArtCard({ art }: ArtCardProps) {
 						opacity: isHovered ? 1 : 0
 					}}
 					transition={{
-						duration: 0.5,
+						duration: 0.3,
 						delay: isHovered ? 0.1 : 0,
 						ease: "easeOut"
 					}}
