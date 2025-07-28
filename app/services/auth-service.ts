@@ -78,18 +78,24 @@ class AuthService extends BaseService {
   }
 
   logout(): void {
+    console.log('AuthService logout called');
+    
+    // Clear the auth token cookie
     this.clearToken();
     
     // Clear any other localStorage/sessionStorage items if needed
     try {
       Object.keys(localStorage).forEach(key => {
         if (key.startsWith('auth_')) {
+          console.log('Clearing localStorage key:', key);
           localStorage.removeItem(key);
         }
       });
     } catch (error) {
       console.warn('Failed to clear localStorage:', error);
     }
+    
+    console.log('AuthService logout completed');
   }
 
   getToken(): string | undefined {

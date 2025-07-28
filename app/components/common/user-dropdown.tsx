@@ -20,13 +20,20 @@ interface UserDropdownProps {
 
 export function UserDropdown({ user, onLogout }: UserDropdownProps) {
   const [imageError, setImageError] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleImageError = () => {
     setImageError(true);
   };
 
+  const handleLogout = () => {
+    console.log('UserDropdown logout clicked');
+    setIsOpen(false); // Close dropdown immediately
+    onLogout();
+  };
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger>
         <Button variant="ghost" className="cursor-pointer relative h-10 w-10 rounded-full bg-primary border-2 border-border text-primary-foreground overflow-hidden p-0">
           {user?.profilePicture && !imageError ? (
@@ -82,7 +89,7 @@ export function UserDropdown({ user, onLogout }: UserDropdownProps) {
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <button
-            onClick={onLogout}
+            onClick={handleLogout}
             className="flex items-center gap-2 w-full text-destructive focus:text-destructive cursor-pointer border-none bg-transparent p-0 text-left"
           >
             <LogOut className="h-4 w-4" />
