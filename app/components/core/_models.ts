@@ -1,3 +1,4 @@
+// User and Authentication Models
 
 interface Artist {
   id: string;
@@ -34,9 +35,9 @@ export type YupError = {
     message: string
 }
 interface ApiError {
-  message: string | string[];
-  error: string;
-  statusCode: number;
+	message: string | string[];
+	error: string;
+	statusCode: number;
 }
 
 export type EndpointCallResponse = {
