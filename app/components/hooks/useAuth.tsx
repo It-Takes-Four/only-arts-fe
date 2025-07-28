@@ -112,6 +112,59 @@ export function useAuth() {
     }
   };
 
+  // Enhanced refresh user with cookie validation and redirect
+  const refreshUserWithValidation = async () => {
+    try {
+      console.log('Starting enhanced user refresh with validation...');
+      
+      // First, check if auth token exists in cookies
+      const token = getToken();
+      console.log('Auth token check:', token ? 'Found' : 'Not found');
+      
+      if (!token) {
+        console.log('No auth token found, clearing user state and redirecting to login');
+        
+        // Clear user state immediately
+        setIsLoggedOut(true);
+        setForceDisableQuery(true);
+        queryClient.setQueryData(['auth', 'user'], null);
+        queryClient.removeQueries({ queryKey: ['auth'] });
+        
+        // Return null to indicate no user and that redirect should happen
+        return null;
+      }
+      
+      // Token exists, try to fetch user data
+      console.log('Token found, fetching user data from /me endpoint...');
+      const userData = await validateToken();
+      console.log('User data successfully fetched:', userData);
+      
+      // Reset any logout states since we have valid data
+      setIsLoggedOut(false);
+      setForceDisableQuery(false);
+      
+      // Update the cache with fresh user data
+      queryClient.setQueryData(['auth', 'user'], userData);
+      queryClient.invalidateQueries({ queryKey: ['auth', 'user'] });
+      
+      return userData;
+    } catch (error) {
+      console.error('Failed to refresh user data:', error);
+      
+      // If the API call failed (likely due to invalid token), clear everything
+      console.log('API call failed, clearing user state');
+      setIsLoggedOut(true);
+      setForceDisableQuery(true);
+      queryClient.setQueryData(['auth', 'user'], null);
+      queryClient.removeQueries({ queryKey: ['auth'] });
+      
+      // Clear the invalid token
+      logoutService();
+      
+      throw error;
+    }
+  };
+
   // Logout function
   const logout = () => {
     console.log('Logout called - clearing auth state');
@@ -165,6 +218,7 @@ export function useAuth() {
     isRegistering: registerMutation.isPending,
     registerError: registerMutation.error,
     refreshUser,
+    refreshUserWithValidation,
     logout,
   };
 }

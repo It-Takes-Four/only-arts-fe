@@ -3,14 +3,38 @@ import { useNavigate } from "react-router";
 import { useAuthContext } from "app/components/core/auth-context";
 import { ArtistAgreementPage } from "./artist-agreement-page";
 import { ArtistRegistrationForm } from "./artist-registration-form";
+import { Button } from "app/components/common/button";
+import { RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 
 type RegistrationStep = 'agreement' | 'form' | 'success';
 
 export function ArtistRegistrationPage() {
   const [currentStep, setCurrentStep] = useState<RegistrationStep>('agreement');
   const [artistData, setArtistData] = useState<any>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const navigate = useNavigate();
-  const { user } = useAuthContext();
+  const { user, refreshUserWithValidation } = useAuthContext();
+
+  const handleRefreshUser = async () => {
+    setIsRefreshing(true);
+    try {
+      console.log('Refreshing user state...');
+      const result = await refreshUserWithValidation();
+      
+      if (result) {
+        toast.success('User state refreshed successfully!');
+        console.log('User state refreshed:', result);
+      } else {
+        toast.info('No authentication found, redirecting to login...');
+      }
+    } catch (error) {
+      console.error('Failed to refresh user state:', error);
+      toast.error('Failed to refresh user state. Redirecting to login...');
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   // Check if user is already an artist
   if (user?.artist) {
@@ -24,12 +48,23 @@ export function ArtistRegistrationPage() {
           <p className="text-sm text-muted-foreground">
             Artist Name: {user.artist.artistName || 'Not set'}
           </p>
-          <button 
-            onClick={() => navigate('/profile')}
-            className="text-primary hover:underline"
-          >
-            Go to your profile
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+            <Button 
+              onClick={() => navigate('/profile')}
+              variant="default"
+            >
+              Go to your profile
+            </Button>
+            <Button 
+              onClick={handleRefreshUser}
+              variant="outline"
+              disabled={isRefreshing}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              {isRefreshing ? 'Refreshing...' : 'Refresh User State'}
+            </Button>
+          </div>
         </div>
       </div>
     );
