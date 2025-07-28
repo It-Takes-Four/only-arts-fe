@@ -50,11 +50,9 @@ export function ArtistRegistrationForm({ onSuccess, onCancel }: ArtistRegistrati
     setIsSubmitting(true);
     try {
       const registrationData: ArtistRegistrationRequest = {
-        userId: user.id,
         artistName: data.artistName,
         bio: data.bio,
-        isNsfw: data.isNsfw,
-        agreeToTerms: true, // Already agreed in previous step
+        isNsfw: data.isNsfw
       };
 
       const response = await artistService.registerAsArtist(registrationData);

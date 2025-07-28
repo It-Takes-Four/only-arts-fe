@@ -144,8 +144,7 @@ export default function DevTestPage() {
       const artistData = {
         artistName: "Test Artist " + Math.random().toString(36).substring(7),
         bio: "This is a test artist bio for development testing.",
-        isNsfw: false,
-        agreeToTerms: true
+        isNsfw: false
       };
       
       const response = await artistService.registerAsArtist(artistData);
