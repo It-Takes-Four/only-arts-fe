@@ -154,14 +154,15 @@
     }
 
     body {
-        @apply bg-background text-foreground font-sans;
-    }
-
-    .glass {
-        @apply backdrop-blur bg-card/30 border border-border/75;
+        background-color: var(--color-background);
+        color: var(--color-foreground);
+        font-family: var(--font-sans);
+        letter-spacing: var(--tracking-normal);
     }
 }
 
-body {
-    letter-spacing: var(--tracking-normal);
+@layer components {
+    .glass {
+        @apply backdrop-blur-lg bg-card/20 dark:bg-card/30 border border-border/50;
+    }
 }
