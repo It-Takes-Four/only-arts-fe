@@ -9,7 +9,6 @@ import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { Separator } from "@/components/ui/separator";
 import { FollowButton } from "../../components/common/follow-button";
 import { CollectionCard } from "../../components/common/collection-card";
-import { Eye } from "lucide-react";
 
 export function ProfilePage() {
 	const { user } = useAuthContext();
@@ -19,16 +18,17 @@ export function ProfilePage() {
 		{
 			value: "explore",
 			label: "Explore",
-			content: <div className="">
+			content: <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
 
-
+			<CollectionCard id='1' name="Feet collection" description="Irvin's collection of feet pics >:D" artworkCount={100} previewImage="/profile-background.jpg" createdBy="piipipipi" price={1.99} totalSales={2} />
 			</div>,
 		},
 		{
 			value: "collections",
 			label: "Collections",
 			content: <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-				<CollectionCard/>
+				<CollectionCard id='1' name="Feet collection" description="Irvin's collection of feet pics >:D" artworkCount={100} previewImage="/profile-background.jpg" createdBy="piipipipi" price={1.99} totalSales={2} />
+
 			</div>,
 		},
 		{

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import type { Art } from "../core/_models";
-import { Eye, Images } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface ArtCardProps {
@@ -35,9 +34,9 @@ export function ArtCard({ art }: ArtCardProps) {
 				animate={{ opacity: isHovered ? 1 : 0 }}
 				transition={{ duration: 0.5 }}
 			>
-				{/* Artist Badge - appears from top */}
+				{/* Artist Badge */}
 				<motion.span
-					className="absolute top-4 left-4 flex px-2 py-1.5 glass rounded-full text-sm font-medium border-border text-white items-center gap-x-1"
+					className="absolute top-3 left-3 flex px-2 py-1.5 glass rounded-full text-sm font-medium border-border text-white items-center gap-x-1.5"
 					initial={{ y: -50, opacity: 0 }}
 					animate={{
 						y: isHovered ? 0 : -50,
