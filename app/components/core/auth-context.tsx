@@ -17,6 +17,8 @@ interface AuthContextType {
   registerAsync: (userData: RegisterRequest) => Promise<any>;
   isRegistering: boolean;
   registerError: Error | null;
+  refreshUser: () => Promise<User>;
+  refreshUserWithValidation: () => Promise<User | null>;
   logout: () => void;
 }
 
@@ -75,6 +77,31 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }, 2000); // Increased from 500ms to 2 seconds
   };
 
+  const handleRefreshUserWithValidation = async () => {
+    try {
+      const result = await auth.refreshUserWithValidation();
+      
+      // If result is null, it means no token was found and user should be redirected
+      if (result === null) {
+        console.log('AuthProvider: No auth token found, redirecting to login');
+        navigate('/login', { 
+          replace: true,
+          state: {} 
+        });
+        return null;
+      }
+      
+      return result;
+    } catch (error) {
+      console.log('AuthProvider: Refresh failed, redirecting to login');
+      navigate('/login', { 
+        replace: true,
+        state: {} 
+      });
+      throw error;
+    }
+  };
+
   const contextValue: AuthContextType = {
     user: auth.user,
     isLoading: auth.isLoading,
@@ -88,6 +115,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     registerAsync: auth.registerAsync,
     isRegistering: auth.isRegistering,
     registerError: auth.registerError,
+    refreshUser: auth.refreshUser,
+    refreshUserWithValidation: handleRefreshUserWithValidation,
     logout: handleLogout,
   };
 

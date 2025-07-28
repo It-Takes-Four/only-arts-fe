@@ -24,7 +24,7 @@ type FormData = {
 
 export function ArtistRegistrationForm({ onSuccess, onCancel }: ArtistRegistrationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user } = useAuthContext();
+  const { user, refreshUserWithValidation } = useAuthContext();
 
   const {
     register,
@@ -50,17 +50,27 @@ export function ArtistRegistrationForm({ onSuccess, onCancel }: ArtistRegistrati
     setIsSubmitting(true);
     try {
       const registrationData: ArtistRegistrationRequest = {
-        userId: user.id,
         artistName: data.artistName,
         bio: data.bio,
-        isNsfw: data.isNsfw,
-        agreeToTerms: true, // Already agreed in previous step
+        isNsfw: data.isNsfw
       };
 
       const response = await artistService.registerAsArtist(registrationData);
       
-      toast.success("Congratulations! You're now an OnlyArts artist!");
-      onSuccess(response.artist);
+      // Refresh user data to include the new artist information using enhanced validation
+      console.log('Artist registration successful, refreshing user data...');
+      const refreshedUser = await refreshUserWithValidation();
+      
+      if (refreshedUser) {
+        console.log('User data refreshed after artist registration:', refreshedUser);
+        toast.success("Congratulations! You're now an OnlyArts artist!");
+        onSuccess(response.artist);
+      } else {
+        // This shouldn't happen after successful artist registration, but handle it gracefully
+        console.warn('User refresh returned null after artist registration');
+        toast.success("Artist registration completed! Please refresh the page to see changes.");
+        onSuccess(response.artist);
+      }
     } catch (error: any) {
       console.error('Artist registration error:', error);
       toast.error(error.message || 'Failed to register as artist');

@@ -80,7 +80,7 @@ export function WalletLinkComponent({
               {isLinking 
                 ? "Linking..." 
                 : isCurrentWalletLinked 
-                  ? "Already Linked" 
+                  ? "Linked (Session)" 
                   : "Link Wallet"
               }
             </Button>
@@ -91,7 +91,7 @@ export function WalletLinkComponent({
           <div className="text-sm text-muted-foreground">
             Current wallet: {currentWalletAddress.slice(0, 6)}...{currentWalletAddress.slice(-4)}
             {isCurrentWalletLinked && (
-              <span className="ml-2 text-green-600 dark:text-green-400">✓ Linked</span>
+              <span className="ml-2 text-green-600 dark:text-green-400">✓ Linked (Session Only)</span>
             )}
           </div>
         )}
@@ -100,7 +100,7 @@ export function WalletLinkComponent({
       {/* Linked Wallets List */}
       {linkedWallets.length > 0 && (
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Linked Wallets</h3>
+          <h3 className="text-lg font-semibold">Linked Wallets (Session Only)</h3>
           <div className="space-y-2">
             {linkedWallets.map((wallet) => (
               <div 
@@ -112,7 +112,7 @@ export function WalletLinkComponent({
                     {wallet.walletAddress.slice(0, 6)}...{wallet.walletAddress.slice(-4)}
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    Linked: {new Date(wallet.linkedAt).toLocaleDateString()}
+                    Linked: {new Date(wallet.linkedAt).toLocaleDateString()} (Session Only)
                     {wallet.isVerified && (
                       <span className="ml-2 text-green-600 dark:text-green-400">✓ Verified</span>
                     )}
