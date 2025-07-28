@@ -97,6 +97,21 @@ export function useAuth() {
     }
   });
 
+  // Refresh user data function
+  const refreshUser = async () => {
+    try {
+      console.log('Refreshing user data...');
+      const userData = await validateToken();
+      console.log('User data refreshed:', userData);
+      queryClient.setQueryData(['auth', 'user'], userData);
+      queryClient.invalidateQueries({ queryKey: ['auth', 'user'] });
+      return userData;
+    } catch (error) {
+      console.error('Failed to refresh user data:', error);
+      throw error;
+    }
+  };
+
   // Logout function
   const logout = () => {
     console.log('Logout called - clearing auth state');
@@ -149,6 +164,7 @@ export function useAuth() {
     registerAsync: registerMutation.mutateAsync,
     isRegistering: registerMutation.isPending,
     registerError: registerMutation.error,
+    refreshUser,
     logout,
   };
 }

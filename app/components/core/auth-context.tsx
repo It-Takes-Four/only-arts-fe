@@ -17,6 +17,7 @@ interface AuthContextType {
   registerAsync: (userData: RegisterRequest) => Promise<any>;
   isRegistering: boolean;
   registerError: Error | null;
+  refreshUser: () => Promise<User>;
   logout: () => void;
 }
 
@@ -88,6 +89,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     registerAsync: auth.registerAsync,
     isRegistering: auth.isRegistering,
     registerError: auth.registerError,
+    refreshUser: auth.refreshUser,
     logout: handleLogout,
   };
 

@@ -88,9 +88,6 @@ export function ArtistRegistrationPage() {
               {artistData && (
                 <div className="mt-4 p-4 bg-muted/50 rounded-lg">
                   <p className="font-medium">Artist Name: {artistData.artistName}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Type: {artistData.artistType}
-                  </p>
                 </div>
               )}
             </div>

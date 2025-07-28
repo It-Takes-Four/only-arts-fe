@@ -24,7 +24,7 @@ type FormData = {
 
 export function ArtistRegistrationForm({ onSuccess, onCancel }: ArtistRegistrationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user } = useAuthContext();
+  const { user, refreshUser } = useAuthContext();
 
   const {
     register,
@@ -56,6 +56,9 @@ export function ArtistRegistrationForm({ onSuccess, onCancel }: ArtistRegistrati
       };
 
       const response = await artistService.registerAsArtist(registrationData);
+      
+      // Refresh user data to include the new artist information
+      await refreshUser();
       
       toast.success("Congratulations! You're now an OnlyArts artist!");
       onSuccess(response.artist);
