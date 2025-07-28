@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import type { User } from './_models';
 import type { RegisterRequest } from 'app/pages/register/core';
@@ -8,6 +8,7 @@ interface AuthContextType {
   user: User | null | undefined;
   isLoading: boolean;
   isAuthenticated: boolean;
+  isLoggingOut: boolean;
   login: (credentials: { email: string; password: string }) => void;
   loginAsync: (credentials: { email: string; password: string }) => Promise<any>;
   isLoggingIn: boolean;
@@ -29,34 +30,56 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
-    // Enable authentication redirection for protected routes
-    if (!auth.isLoading && !auth.isAuthenticated) {
-      // Only redirect if we're on a protected route and don't have a token
-      const protectedRoutes = ['/', '/profile', '/settings'];
-      const isProtectedRoute = protectedRoutes.includes(location.pathname);
-      
-      if (isProtectedRoute && !auth.user) {
-        console.log('Redirecting unauthenticated user from protected route:', location.pathname);
-        navigate('/login', { 
-          replace: true,
-          state: { from: location.pathname }
-        });
+    // Don't redirect during logout process
+    if (isLoggingOut) return;
+    
+    // Handle authentication state changes
+    if (!auth.isLoading) {
+      if (!auth.isAuthenticated && !auth.user) {
+        // User is not authenticated
+        const protectedRoutes = ['/', '/profile', '/settings', '/become-artist'];
+        const isProtectedRoute = protectedRoutes.includes(location.pathname);
+        
+        if (isProtectedRoute) {
+          console.log('AuthProvider: Redirecting unauthenticated user from protected route:', location.pathname);
+          navigate('/login', { 
+            replace: true,
+            state: { from: location.pathname }
+          });
+        }
       }
     }
-  }, [auth.isLoading, auth.isAuthenticated, auth.user, location.pathname, navigate]);
+  }, [auth.isLoading, auth.isAuthenticated, auth.user, location.pathname, navigate, isLoggingOut]);
 
   const handleLogout = () => {
+    console.log('AuthProvider: handleLogout called');
+    setIsLoggingOut(true);
+    
+    // Clear auth state first
     auth.logout();
-    // Use navigate for SPA navigation
-    navigate('/login', { replace: true });
+    
+    // Force navigate to login page, clearing any navigation state
+    console.log('AuthProvider: Navigating to login');
+    navigate('/login', { 
+      replace: true,
+      state: {} // Clear any previous state
+    });
+    
+    // Keep logout state longer to prevent redirect conflicts
+    setTimeout(() => {
+      console.log('AuthProvider: Resetting isLoggingOut state');
+      setIsLoggingOut(false);
+    }, 2000); // Increased from 500ms to 2 seconds
   };
 
   const contextValue: AuthContextType = {
     user: auth.user,
     isLoading: auth.isLoading,
     isAuthenticated: auth.isAuthenticated,
+    isLoggingOut,
     login: auth.login,
     loginAsync: auth.loginAsync,
     isLoggingIn: auth.isLoggingIn,

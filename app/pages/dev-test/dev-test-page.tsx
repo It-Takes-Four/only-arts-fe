@@ -84,8 +84,20 @@ export default function DevTestPage() {
   };
 
   const testLogout = () => {
+    console.log('testLogout called from dev-test');
+    console.log('Current user before logout:', user);
+    console.log('Current isAuthenticated before logout:', isAuthenticated);
+    
     logout();
+    
     toast.info("Logged out successfully");
+    
+    // Check state after logout
+    setTimeout(() => {
+      console.log('User after logout:', user);
+      console.log('isAuthenticated after logout:', isAuthenticated);
+      debugCookies();
+    }, 500);
   };
 
   const testDirectUserService = async () => {

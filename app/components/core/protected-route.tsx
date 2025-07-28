@@ -14,15 +14,16 @@ export function ProtectedRoute({
   redirectTo = '/login', 
   requireAuth = true 
 }: ProtectedRouteProps) {
-  const { isLoading, isAuthenticated, user } = useAuthContext();
+  const { isLoading, isAuthenticated, user, isLoggingOut } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    // Don't redirect while loading
-    if (isLoading) return;
+    // Don't redirect while loading or during logout process
+    if (isLoading || isLoggingOut) return;
 
     if (requireAuth && !isAuthenticated) {
+      console.log('ProtectedRoute: Redirecting unauthenticated user to', redirectTo);
       // Store the current location to redirect back after login
       const returnTo = location.pathname + location.search;
       navigate(redirectTo, { 
@@ -30,10 +31,10 @@ export function ProtectedRoute({
         state: { from: returnTo }
       });
     }
-  }, [isLoading, isAuthenticated, requireAuth, navigate, redirectTo, location]);
+  }, [isLoading, isAuthenticated, requireAuth, navigate, redirectTo, location, isLoggingOut]);
 
-  // Show loading spinner while checking authentication
-  if (isLoading) {
+  // Show loading spinner while checking authentication or during logout
+  if (isLoading || isLoggingOut) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loading />
@@ -42,7 +43,8 @@ export function ProtectedRoute({
   }
 
   // If authentication is required but user is not authenticated, don't render children
-  if (requireAuth && !isAuthenticated) {
+  // But don't check this during logout process as AuthProvider handles it
+  if (requireAuth && !isAuthenticated && !isLoggingOut) {
     return null;
   }
 

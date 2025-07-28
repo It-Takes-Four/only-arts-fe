@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 export function useAuth() {
   const queryClient = useQueryClient();
   const [isClient, setIsClient] = useState(false);
+  const [forceDisableQuery, setForceDisableQuery] = useState(false);
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -23,9 +25,10 @@ export function useAuth() {
       return failureCount < 2;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: isClient && !!getToken(), // Only run on client-side if token exists
+    enabled: isClient && !!getToken() && !forceDisableQuery && !isLoggedOut, // Also disable if logged out
     refetchOnWindowFocus: false, // Don't refetch when window gains focus
     refetchOnMount: true, // Always refetch on mount to verify current user
+    refetchInterval: false, // Don't auto-refresh
   });
 
   // Log auth state for debugging
@@ -46,6 +49,10 @@ export function useAuth() {
     mutationFn: loginService,
     onSuccess: async (data) => {
       try {
+        // Reset logged out state on successful login
+        setIsLoggedOut(false);
+        setForceDisableQuery(false);
+        
         const userData = await validateToken();
         queryClient.setQueryData(['auth', 'user'], userData);
         // Immediately refresh the auth query to trigger re-render
@@ -66,6 +73,10 @@ export function useAuth() {
     mutationFn: registerService,
     onSuccess: async (data) => {
       console.log('Register mutation successful, data:', data);
+      
+      // Reset logged out state on successful registration
+      setIsLoggedOut(false);
+      setForceDisableQuery(false);
       
       // After successful registration, fetch user data
       try {
@@ -88,16 +99,47 @@ export function useAuth() {
 
   // Logout function
   const logout = () => {
-    logoutService();
+    console.log('Logout called - clearing auth state');
+    
+    // Set logged out state immediately to prevent query from running
+    setIsLoggedOut(true);
+    setForceDisableQuery(true);
+    
+    // Cancel any ongoing queries
+    queryClient.cancelQueries({ queryKey: ['auth', 'user'] });
+    
+    // Clear token from cookies first
+    logoutService(); 
+    
+    // Immediately clear user data from cache
     queryClient.setQueryData(['auth', 'user'], null);
-    queryClient.invalidateQueries({ queryKey: ['auth', 'user'] });
-    queryClient.clear(); // Clear all cached data
+    queryClient.setQueryData(['auth', 'user'], undefined);
+    
+    // Aggressively clear all auth-related cache
+    queryClient.removeQueries({ queryKey: ['auth'] });
+    queryClient.invalidateQueries({ 
+      queryKey: ['auth'], 
+      refetchType: 'none',
+      exact: false 
+    });
+    
+    // Clear all cached data to prevent any state persistence
+    queryClient.clear();
+    
+    console.log('Auth state cleared after logout');
+    
+    // Keep query disabled for longer to ensure clean logout
+    setTimeout(() => {
+      setForceDisableQuery(false);
+      setIsLoggedOut(false);
+      console.log('Query re-enabled after logout');
+    }, 3000); // Increased from 1 second to 3 seconds
   };
 
   return {
-    user,
-    isLoading,
-    isAuthenticated: !!user,
+    user: isLoggedOut ? null : user, // Force null if logged out
+    isLoading: isLoggedOut ? false : isLoading, // Don't show loading if logged out
+    isAuthenticated: isLoggedOut ? false : !!user, // Force false if logged out
     error,
     login: loginMutation.mutate,
     loginAsync: loginMutation.mutateAsync,

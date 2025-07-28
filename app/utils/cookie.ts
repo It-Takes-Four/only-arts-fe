@@ -45,6 +45,12 @@ export function deleteCookie(name: string) {
   try {
     Cookies.remove(name, { path: '/' });
     console.log('Cookie deleted with js-cookie:', name);
+    
+    // Verify the cookie was deleted
+    setTimeout(() => {
+      const verification = getCookie(name);
+      console.log('Cookie deletion verification for', name, ':', verification ? 'Failed - still exists' : 'Success - deleted');
+    }, 50);
   } catch (error) {
     console.error('Error deleting cookie with js-cookie:', error);
   }
