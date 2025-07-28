@@ -5,7 +5,7 @@ export interface ArtistRegistrationRequest {
   artistName: string;
   bio?: string;
   isNsfw?: boolean;
-  agreeToTerms: boolean;
+  agreeToTerms?: boolean;
 }
 
 export interface ArtistRegistrationResponse {

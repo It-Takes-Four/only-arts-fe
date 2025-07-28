@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, User, Palette } from "lucide-react";
 import { toast } from 'sonner';
 import { artistService, type ArtistRegistrationRequest } from "app/services/artist-service";
+import { useAuthContext } from "app/components/core/auth-context";
 
 interface ArtistRegistrationFormProps {
   onSuccess: (artist: any) => void;
@@ -23,6 +24,7 @@ type FormData = {
 
 export function ArtistRegistrationForm({ onSuccess, onCancel }: ArtistRegistrationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useAuthContext();
 
   const {
     register,
@@ -40,10 +42,18 @@ export function ArtistRegistrationForm({ onSuccess, onCancel }: ArtistRegistrati
   });
 
   const onSubmit = async (data: FormData) => {
+    if (!user?.id) {
+      toast.error("User ID not found. Please try logging in again.");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const registrationData: ArtistRegistrationRequest = {
-        ...data,
+        userId: user.id,
+        artistName: data.artistName,
+        bio: data.bio,
+        isNsfw: data.isNsfw,
         agreeToTerms: true, // Already agreed in previous step
       };
 
