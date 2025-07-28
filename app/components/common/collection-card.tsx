@@ -13,13 +13,9 @@ export function CollectionCard() {
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 		>
-
 			<div className="h-64 relative overflow-hidden rounded-md">
-				<div className="w-full h-full object-cover rounded-md p-2 flex justify-end items-start" style={{
+				<div className="w-full h-full object-cover rounded-md p-2 flex justify-end items-start bg-cover bg-center bg-no-repeat" style={{
 					backgroundImage: `url('/profile-background.jpg')`,
-					backgroundSize: 'cover',
-					backgroundPosition: 'center',
-					backgroundRepeat: 'no-repeat'
 				}}>
 					<Tooltip>
 						<TooltipTrigger asChild>
