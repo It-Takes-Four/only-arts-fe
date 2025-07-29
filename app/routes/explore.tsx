@@ -1,4 +1,4 @@
-import { ExplorePage } from "../pages/explore";
+import { ExplorePage } from "app/pages/explore/explore-page";
 
 export function meta() {
 	return [
