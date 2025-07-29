@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FeedGridList } from "app/components/common/feed-grid-list";
+import { MasonryFeedGrid } from "app/components/common/masonry-feed-grid";
 import { TagSelector } from "app/components/common/tag-selector";
 import { FloatingActionButton } from "app/components/common/floating-action-button";
 import StaticGradient from "@/components/blocks/Backgrounds/StaticGradient/StaticGradient";
@@ -68,7 +68,7 @@ export function ExplorePage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.5 }}
           >
-            <FeedGridList tagId={selectedTagId} />
+            <MasonryFeedGrid tagId={selectedTagId} />
           </motion.div>
         </motion.div>
       </div>

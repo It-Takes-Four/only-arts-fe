@@ -13,14 +13,18 @@ interface TagSelectorProps {
 }
 
 export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
-  const { tags, popularTags, loading, searchTags } = useTags();
+  const { tags, popularTags, loading, searchTags, loadPopularTags } = useTags();
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
     if (value.trim()) {
-      searchTags(value);
+      // Use popular search for better results
+      loadPopularTags(value);
+    } else {
+      // Load default popular tags when search is cleared
+      loadPopularTags();
     }
   };
 
@@ -38,8 +42,8 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
     onTagSelect(undefined);
   };
 
-  const displayTags = searchQuery.trim() ? tags : popularTags;
-  const selectedTag = [...popularTags, ...tags].find(tag => tag.id === selectedTagId);
+  const displayTags = popularTags; // Always use popular tags since we're searching within them
+  const selectedTag = popularTags.find(tag => tag.id === selectedTagId);
 
   return (
     <motion.div
@@ -70,7 +74,7 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
                     className="cursor-pointer hover:bg-destructive/10 hover:text-destructive transition-colors"
                     onClick={clearSelection}
                   >
-                    {selectedTag.name}
+                    {selectedTag.tagName}
                     <X className="h-3 w-3 ml-1" />
                   </Badge>
                 </motion.div>
@@ -136,10 +140,10 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
                     }`}
                     onClick={() => handleTagClick(tag)}
                   >
-                    {tag.name}
-                    {tag.count && (
+                    {tag.tagName}
+                    {tag._count?.arts && (
                       <span className="ml-1 text-xs opacity-70">
-                        {tag.count}
+                        {tag._count.arts}
                       </span>
                     )}
                   </Badge>

@@ -2,12 +2,15 @@ import BaseService from './base-service';
 
 export interface Tag {
   id: string;
-  name: string;
-  description?: string;
-  color?: string;
-  count?: number;
+  tagName: string;
+  usageCount: number;
   createdAt: string;
   updatedAt: string;
+  _count: {
+    arts: number;
+  };
+  description?: string;
+  color?: string;
 }
 
 export interface TagsResponse {
@@ -66,15 +69,15 @@ export class TagsService extends BaseService {
   /**
    * Get popular tags
    */
-  async getPopularTags(limit: number = 10): Promise<Tag[]> {
+  async getPopularTags(limit: number = 10, search?: string): Promise<Tag[]> {
     try {
-      const response = await this._axios.get('/tags/popular', {
-        params: {
-          limit
-        }
-      });
+      const params: Record<string, any> = { limit };
+      if (search && search.trim()) {
+        params.search = search.trim();
+      }
 
-      return response.data.tags || [];
+      const response = await this._axios.get('/tags/popular', { params });
+      return response.data || [];
     } catch (error) {
       console.error('Error fetching popular tags:', error);
       throw new Error('Failed to fetch popular tags');

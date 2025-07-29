@@ -7,11 +7,11 @@ export function useTags() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const loadPopularTags = useCallback(async () => {
+  const loadPopularTags = useCallback(async (search?: string) => {
     setLoading(true);
     setError(null);
     try {
-      const popularTagsData = await tagsService.getPopularTags(20);
+      const popularTagsData = await tagsService.getPopularTags(20, search);
       setPopularTags(popularTagsData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load tags');
