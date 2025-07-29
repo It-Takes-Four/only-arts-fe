@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,6 +14,18 @@ interface FeedArtCardProps {
 
 export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check for mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const formatDate = (dateString: string) => {
     try {
@@ -45,6 +57,9 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
       }
     }
   };
+
+  // Show overlay based on hover state or mobile mode
+  const showOverlay = isHovered || isMobile;
 
   const handleClick = () => {
     // TODO: Navigate to post detail page or open modal
@@ -135,20 +150,22 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
         <>
           {/* Overlay with content */}
           <motion.div
-            className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: isHovered ? 1 : 0 }}
-            transition={{ duration: 0.3 }}
+            className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent ${
+              isMobile ? 'opacity-100' : ''
+            }`}
+            initial={{ opacity: isMobile ? 1 : 0 }}
+            animate={{ opacity: showOverlay ? 1 : 0 }}
+            transition={{ duration: isMobile ? 0 : 0.3 }}
           >
             {/* Artist info at top */}
             <motion.div
               className="absolute top-3 left-3 right-3 flex items-center space-x-2"
-              initial={{ y: -20, opacity: 0 }}
+              initial={{ y: isMobile ? 0 : -20, opacity: isMobile ? 1 : 0 }}
               animate={{
-                y: isHovered ? 0 : -20,
-                opacity: isHovered ? 1 : 0
+                y: showOverlay ? 0 : -20,
+                opacity: showOverlay ? 1 : 0
               }}
-              transition={{ duration: 0.3, delay: 0.1 }}
+              transition={{ duration: isMobile ? 0 : 0.3, delay: isMobile ? 0 : 0.1 }}
             >
               <Avatar className="h-8 w-8 border-2 border-white/20">
                 <AvatarImage src={post.artist.user.profilePicture} alt={post.artist.user.username} />
@@ -169,12 +186,12 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
             {/* Content at bottom */}
             <motion.div
               className="absolute bottom-0 left-0 right-0 p-4 text-white"
-              initial={{ y: 20, opacity: 0 }}
+              initial={{ y: isMobile ? 0 : 20, opacity: isMobile ? 1 : 0 }}
               animate={{
-                y: isHovered ? 0 : 20,
-                opacity: isHovered ? 1 : 0
+                y: showOverlay ? 0 : 20,
+                opacity: showOverlay ? 1 : 0
               }}
-              transition={{ duration: 0.3, delay: 0.2 }}
+              transition={{ duration: isMobile ? 0 : 0.3, delay: isMobile ? 0 : 0.2 }}
             >
               <h3 className={`${isSingleColumn ? 'text-xl' : 'text-lg'} font-semibold mb-2 line-clamp-2`}>
                 {post.title}
