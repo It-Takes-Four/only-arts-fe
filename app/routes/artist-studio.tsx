@@ -1,4 +1,4 @@
-import { ArtistStudioPage } from "../pages/artist-studio";
+import { ArtistStudioPage } from "app/pages/artist-studio/artist-studio-page";
 
 export function meta() {
 	return [

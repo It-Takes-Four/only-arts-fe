@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, Link } from "react-router";
+import { useNavigate, Link, useLocation } from "react-router";
 import { Button } from "app/components/common/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,8 +22,32 @@ type RegisterFormData = {
 export function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { registerAsync, isRegistering, registerError } = useAuthContext();
+  const { registerAsync, isRegistering, registerError, isAuthenticated, user, isLoading } = useAuthContext();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Redirect authenticated users away from register page
+  useEffect(() => {
+    if (!isLoading && isAuthenticated && user) {
+      const intendedDestination = location.state?.from || '/';
+      console.log('RegisterPage: User already authenticated, redirecting to', intendedDestination);
+      navigate(intendedDestination, { replace: true });
+    }
+  }, [isLoading, isAuthenticated, user, navigate, location]);
+
+  // Show loading while checking authentication
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
+  // Don't render register form if user is already authenticated
+  if (isAuthenticated && user) {
+    return null;
+  }
 
   // Memoize the background to prevent re-renders
   const backgroundElement = useMemo(() => (
@@ -70,7 +94,9 @@ export function RegisterPage() {
       });
       
       toast.success('Account created successfully! Welcome to OnlyArts!');
-      navigate("/");
+      // Redirect to the original page they were trying to access, or home
+      const from = location.state?.from || '/';
+      navigate(from, { replace: true });
     } catch (error) {
       toast.error('Registration failed. Please try again.');
       console.error("Registration failed:", error);

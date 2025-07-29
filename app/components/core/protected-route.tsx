@@ -82,20 +82,31 @@ export function PublicOnlyRoute({
 }) {
   const { isLoading, isAuthenticated, user } = useAuthContext();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     console.log('PublicOnlyRoute Debug:', {
       isLoading,
       isAuthenticated,
       user: !!user,
-      redirectTo
+      redirectTo,
+      locationState: location.state,
+      pathname: location.pathname
     });
 
+    // Only redirect if user is authenticated and we're on a public-only route
+    // But don't redirect if we're already in the process of navigating
     if (!isLoading && isAuthenticated && user) {
-      console.log('PublicOnlyRoute: Redirecting authenticated user to', redirectTo);
-      navigate(redirectTo, { replace: true });
+      // Check if there's a 'from' location in the state (where user was trying to go)
+      const intendedDestination = location.state?.from || redirectTo;
+      
+      // Don't redirect if we're already where we need to be
+      if (location.pathname !== intendedDestination) {
+        console.log('PublicOnlyRoute: Redirecting authenticated user from', location.pathname, 'to', intendedDestination);
+        navigate(intendedDestination, { replace: true, state: {} });
+      }
     }
-  }, [isLoading, isAuthenticated, user, navigate, redirectTo]);
+  }, [isLoading, isAuthenticated, user, navigate, redirectTo, location]);
 
   // Show loading while checking authentication
   if (isLoading) {

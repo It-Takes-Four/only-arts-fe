@@ -1,5 +1,4 @@
 import { LoginPage } from "app/pages/login";
-import { PublicOnlyRoute } from "app/components/core/protected-route";
 
 export function meta() {
   return [
@@ -9,9 +8,5 @@ export function meta() {
 }
 
 export default function Login() {
-  return (
-    <PublicOnlyRoute>
-      <LoginPage />
-    </PublicOnlyRoute>
-  );
+  return <LoginPage />;
 }
