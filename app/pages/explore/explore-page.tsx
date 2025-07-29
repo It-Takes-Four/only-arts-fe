@@ -44,8 +44,8 @@ export function ExplorePage() {
         </motion.div>
       </div>
       
-      {/* Floating Action Button */}
-      <FloatingActionButton />
+      {/* Floating Action Button - Hidden for now */}
+      {/* <FloatingActionButton /> */}
     </div>
   );
 }
