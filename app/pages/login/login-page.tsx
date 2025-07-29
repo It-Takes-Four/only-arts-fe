@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link, useLocation } from "react-router";
 import { Button } from "app/components/common/button";
@@ -19,9 +19,32 @@ type LoginFormData = {
 
 export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const { loginAsync, isLoggingIn, loginError } = useAuthContext();
+  const { loginAsync, isLoggingIn, loginError, isAuthenticated, user, isLoading } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Redirect authenticated users away from login page
+  useEffect(() => {
+    if (!isLoading && isAuthenticated && user) {
+      const intendedDestination = location.state?.from || '/';
+      console.log('LoginPage: User already authenticated, redirecting to', intendedDestination);
+      navigate(intendedDestination, { replace: true });
+    }
+  }, [isLoading, isAuthenticated, user, navigate, location]);
+
+  // Show loading while checking authentication
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
+  // Don't render login form if user is already authenticated
+  if (isAuthenticated && user) {
+    return null;
+  }
 
   // Memoize the background to prevent re-renders
   const backgroundElement = useMemo(() => (

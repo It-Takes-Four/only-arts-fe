@@ -34,27 +34,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const location = useLocation();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  useEffect(() => {
-    // Don't redirect during logout process
-    if (isLoggingOut) return;
-    
-    // Handle authentication state changes
-    if (!auth.isLoading) {
-      if (!auth.isAuthenticated && !auth.user) {
-        // User is not authenticated
-        const protectedRoutes = ['/', '/profile', '/settings', '/become-artist'];
-        const isProtectedRoute = protectedRoutes.includes(location.pathname);
-        
-        if (isProtectedRoute) {
-          console.log('AuthProvider: Redirecting unauthenticated user from protected route:', location.pathname);
-          navigate('/login', { 
-            replace: true,
-            state: { from: location.pathname }
-          });
-        }
-      }
-    }
-  }, [auth.isLoading, auth.isAuthenticated, auth.user, location.pathname, navigate, isLoggingOut]);
+  // Remove the useEffect that was causing conflicts - let ProtectedRoute handle redirects
 
   const handleLogout = () => {
     console.log('AuthProvider: handleLogout called');
