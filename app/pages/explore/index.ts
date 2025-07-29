@@ -1,1 +1,1 @@
-export {ExplorePage} from './explore-page';
+export {OldExplorePage} from './old-explore-page';
