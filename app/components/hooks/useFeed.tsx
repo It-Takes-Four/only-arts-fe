@@ -10,7 +10,12 @@ interface UseFeedReturn {
   refresh: () => void;
 }
 
-export function useFeed(): UseFeedReturn {
+interface UseFeedOptions {
+  tagId?: string;
+}
+
+export function useFeed(options: UseFeedOptions = {}): UseFeedReturn {
+  const { tagId } = options;
   const [feeds, setFeeds] = useState<FeedPost[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -24,7 +29,7 @@ export function useFeed(): UseFeedReturn {
     setError(null);
 
     try {
-      const response = await feedService.getFeeds(currentPage, 10);
+      const response = await feedService.getFeeds(currentPage, 10, tagId);
       
       if (isRefresh) {
         setFeeds(response.data);
@@ -42,7 +47,7 @@ export function useFeed(): UseFeedReturn {
     } finally {
       setLoading(false);
     }
-  }, [loading, feeds.length]);
+  }, [loading, feeds.length, tagId]);
 
   const loadMore = useCallback(() => {
     if (!hasMore || loading) return;
@@ -57,10 +62,12 @@ export function useFeed(): UseFeedReturn {
     loadFeeds(1, true);
   }, [loadFeeds]);
 
-  // Load initial data
+  // Load initial data and refresh when tagId changes
   useEffect(() => {
+    setPage(1);
+    setHasMore(true);
     loadFeeds(1, true);
-  }, []);
+  }, [tagId]);
 
   return {
     feeds,

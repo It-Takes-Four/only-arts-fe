@@ -29,9 +29,18 @@ export class FeedService extends BaseService {
     super();
   }
 
-  async getFeeds(page: number = 1, limit: number = 10): Promise<FeedResponse> {
+  async getFeeds(page: number = 1, limit: number = 10, tagId?: string): Promise<FeedResponse> {
     try {
-      const { data } = await this._axios.get<FeedResponse>(`/feeds?page=${page}&limit=${limit}`);
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString()
+      });
+      
+      if (tagId) {
+        params.append('tagId', tagId);
+      }
+      
+      const { data } = await this._axios.get<FeedResponse>(`/feeds?${params.toString()}`);
       return data;
     } catch (error) {
       console.error('Error fetching feeds:', error);
