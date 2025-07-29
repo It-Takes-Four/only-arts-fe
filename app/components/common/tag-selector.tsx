@@ -75,8 +75,9 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
     }
   };
 
-  const displayTags = popularTags; // Always use popular tags since we're searching within them
+  
   const selectedTag = popularTags.find(tag => tag.id === selectedTagId);
+  const displayTags = popularTags.filter(x => x.id !== selectedTagId || !selectedTagId);
 
   return (
     <motion.div
@@ -229,6 +230,20 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
         ) : (
           /* Desktop Layout */
           <div className="flex items-center gap-3">
+            {/* Search Input */}
+            <div className="flex-1 max-w-xs">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search tags..."
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className="pl-9 h-8 bg-background/60 border-border/60 text-sm focus:bg-background"
+                  onFocus={() => setShowSearch(true)}
+                />
+              </div>
+            </div>
+
             {/* Selected Tag Display */}
             {selectedTag && (
               <motion.div
@@ -247,20 +262,6 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
                 </Badge>
               </motion.div>
             )}
-
-            {/* Search Input */}
-            <div className="flex-1 max-w-xs">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search tags..."
-                  value={searchQuery}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  className="pl-9 h-8 bg-background/60 border-border/60 text-sm focus:bg-background"
-                  onFocus={() => setShowSearch(true)}
-                />
-              </div>
-            </div>
 
             {/* Popular Tags */}
             <div className="flex-1 flex flex-wrap gap-1.5 items-center overflow-hidden">
