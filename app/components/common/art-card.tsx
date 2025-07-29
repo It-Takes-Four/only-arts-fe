@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import type { Art } from "../core/_models";
 import { Badge } from "@/components/ui/badge";
+import { ImageIcon } from "lucide-react";
 
 interface ArtCardProps {
 	art: Art;
@@ -18,13 +19,19 @@ export function ArtCard({ art }: ArtCardProps) {
 			onHoverEnd={() => setIsHovered(false)}
 		>
 			<div className="aspect-square overflow-hidden">
-				<motion.img
-					src={"/profile-background.jpg"}
-					alt={"Portfolio Item"}
-					className="w-full h-full object-cover"
-					animate={{ scale: isHovered ? 1.1 : 1 }}
-					transition={{ duration: 0.3 }}
-				/>
+				{art.imageUrl ? (
+					<motion.img
+						src={art.imageUrl}
+						alt={art.title}
+						className="w-full h-full object-cover"
+						animate={{ scale: isHovered ? 1.1 : 1 }}
+						transition={{ duration: 0.3 }}
+					/>
+				) : (
+					<div className="flex items-center justify-center h-full">
+						<ImageIcon className="h-4 w-4 text-muted-foreground"/>
+					</div>
+				)}
 			</div>
 
 			{/* Overlay */}
@@ -47,8 +54,8 @@ export function ArtCard({ art }: ArtCardProps) {
 						ease: "easeOut"
 					}}
 				>
-					<img src={"https://placehold.co/50x50"} alt="Artist Avatar" className="h-5 rounded-full"/>
-					{"Artist Name"}
+					<img src={art.artist.profilePicture || "https://placehold.co/50x50"} alt="Artist Avatar" className="h-5 rounded-full"/>
+					{art.artist.name}
 				</motion.span>
 
 				{/* Content at bottom */}
@@ -65,17 +72,19 @@ export function ArtCard({ art }: ArtCardProps) {
 						ease: "easeOut"
 					}}
 				>
-					<h3 className="text-xl font-semibold mb-1">{"DSDSD"}</h3>
-					<p className="text-sm text-white/90 mb-2">{"DESC"}</p>
-					<div className="flex space-x-2">
-						<Badge variant="outline" className="glass text-primary-foreground font-semibold border-border py-1 gap-x-1.5">
-							TAG
-						</Badge><Badge variant="outline" className="glass text-primary-foreground font-semibold border-border py-1 gap-x-1.5">
-						TAG
-					</Badge><Badge variant="outline" className="glass text-primary-foreground font-semibold border-border py-1 gap-x-1.5">
-						TAG
-					</Badge>
-					</div>
+					<h3 className="text-xl font-semibold mb-1">{art.title}</h3>
+					<p className="text-sm text-white/90 mb-2">{art.description}</p>
+					{
+						art.tags && art.tags.length > 0 ? (
+							<div className="flex flex-wrap gap-1">
+								{art.tags.map((tag, index) => (
+									<Badge key={index} variant="outline" className="glass text-primary-foreground font-semibold border-border py-1 gap-x-1.5">
+										{tag.name}
+									</Badge>
+								))}
+							</div>
+						) : null
+					}
 				</motion.div>
 			</motion.div>
 		</motion.div>

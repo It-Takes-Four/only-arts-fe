@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
 interface SearchProps extends React.ComponentProps<typeof Input> {
-  onSearch?: (value: string) => void
+  onSearch?: (value: string) => void,
 }
 
 export function SearchInput({ className, onSearch, ...props }: SearchProps) {

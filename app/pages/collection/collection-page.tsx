@@ -52,11 +52,55 @@ export function CollectionPage() {
 				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
 					{/* Placeholder for ArtCard components */}
 					{/* Replace with actual ArtCard components when available */}
-					<ArtCard art={undefined} />
-					<ArtCard art={undefined} />
-					<ArtCard art={undefined} />
-					<ArtCard art={undefined} />
-					
+					<ArtCard art={{
+						id: "2",
+						title: "Artwork 2",
+						description: "description description description description.",
+						artist: {
+							id: "artist2",
+							name: "Artist 2",
+							profilePicture: "https://placehold.co/150x150"
+						},
+						createdAt: new Date(),
+						imageUrl: "https://placehold.co/300x300"
+					}} />
+					<ArtCard art={{
+						id: "2",
+						title: "Artwork 2",
+						description: "description description description description.",
+						artist: {
+							id: "artist2",
+							name: "Artist 2",
+							profilePicture: "https://placehold.co/150x150"
+						},
+						createdAt: new Date(),
+						imageUrl: "https://placehold.co/300x300"
+					}} />
+					<ArtCard art={{
+						id: "2",
+						title: "Artwork 2",
+						description: "description description description description.",
+						artist: {
+							id: "artist2",
+							name: "Artist 2",
+							profilePicture: "https://placehold.co/150x150"
+						},
+						createdAt: new Date(),
+						imageUrl: "https://placehold.co/300x300"
+					}} />
+					<ArtCard art={{
+						id: "2",
+						title: "Artwork 2",
+						description: "description description description description.",
+						artist: {
+							id: "artist2",
+							name: "Artist 2",
+							profilePicture: "https://placehold.co/150x150"
+						},
+						createdAt: new Date(),
+						imageUrl: "https://placehold.co/300x300"
+					}} />
+
 				</div>
 
 		</div>
