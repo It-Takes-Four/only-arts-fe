@@ -97,7 +97,8 @@ export function CollectionCard({
 
 	if (viewMode === "row") {
 		return (
-			<Card className="group overflow-hidden hover:shadow-lg transition-all duration-300" onClick={() => navigate(`/collection/${id}`)}>
+			<Card className="group overflow-hidden hover:shadow-lg transition-all duration-300"
+						onClick={() => navigate(`/collection/${id}`)}>
 				<div className="flex justify-center items-center">
 					<div className="relative w-35 h-35 overflow-hidden bg-muted flex-shrink-0">
 						{previewImage ? (
@@ -127,6 +128,7 @@ export function CollectionCard({
 								<span
 									className="flex px-2 py-1.5 glass rounded-full font-medium border-border text-foreground items-center gap-x-1.5"
 								>
+
 								<img src={"https://placehold.co/50x50"} alt="Artist Avatar" className="h-5 w-5 rounded-full"/>
 									{createdBy}
 							</span>
@@ -162,7 +164,10 @@ export function CollectionCard({
 							<span
 								className="absolute top-3 left-3 flex px-2 py-1.5 glass rounded-full text-sm font-medium border-border text-white items-center gap-x-1.5"
 							>
-								<img src={"https://placehold.co/50x50"} alt="Artist Avatar" className="h-5 rounded-full"/>
+								<Avatar className="h-5 w-5">
+									<AvatarImage src={createdByAvatar || "/placeholder.svg"}/>
+									<AvatarFallback className="text-xs text-foreground">{createdBy.charAt(0).toUpperCase()}</AvatarFallback>
+								</Avatar>
 								{createdBy}
 							</span>
 						</div>

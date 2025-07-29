@@ -117,7 +117,7 @@ export function ProfilePage() {
 				<GlassCard className="py-4 px-8 flex flex-col lg:flex-row justify-between">
 					<div className="flex items-start lg:items-end space-x-4">
 						<img src="https://placehold.co/150x150" alt="Artist Avatar"
-								 className="rounded-full w-2- h-20 shadow-lg"/>
+								 className="rounded-full w-20 h-20 shadow-lg"/>
 						<div className="flex flex-col rounded-lg">
 							<span className="flex items-center text-white">
 								<h1 className="text-2xl font-bold text-white">{user?.username}</h1>
