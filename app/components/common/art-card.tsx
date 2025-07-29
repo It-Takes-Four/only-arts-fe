@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import type { Art } from "../core/_models";
 import { Badge } from "@/components/ui/badge";
 import { ImageIcon } from "lucide-react";
 
 interface ArtCardProps {
-	art: Art;
+	art: {
+		id: string;
+		title: string;
+		artist: {
+			name: string;
+			image: string;
+		};
+		image: string;
+	};
 }
 
 export function ArtCard({ art }: ArtCardProps) {
