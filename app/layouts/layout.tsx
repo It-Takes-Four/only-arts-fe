@@ -14,19 +14,21 @@ import { UserDropdown } from "app/components/common/user-dropdown";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Menu, X } from "lucide-react";
 import { HomeIcon, UserIcon } from "@heroicons/react/24/outline";
-import { Compass } from "lucide-react";
+import { Compass, Paintbrush } from "lucide-react";
 import { BackgroundBeams } from "@/components/blocks/Backgrounds/BackgroundBeams";
 
 interface NavItem {
 	path: string;
 	label: string;
 	icon: ComponentType<{ className?: string }>;
+	artistOnly?: boolean;
 }
 
 const navigationItems: NavItem[] = [
 	{ path: "/", label: "Home", icon: HomeIcon },
 	{ path: "/explore", label: "Explore", icon: Compass },
 	{ path: "/profile", label: "Profile", icon: UserIcon },
+	{ path: "/artist-studio", label: "Artist Studio", icon: Paintbrush, artistOnly: true },
 ];
 
 export default function Layout() {
@@ -91,17 +93,19 @@ export default function Layout() {
 							{/* Sidebar Content */}
 							<div className="flex-1 overflow-y-auto p-3">
 								<nav className="space-y-1">
-									{navigationItems.map((item) => (
-										<NavLinkItem
-											key={item.path}
-											to={item.path}
-											icon={item.icon}
-											variant="sidebar"
-											onClick={closeSidebar}
-										>
-											{item.label}
-										</NavLinkItem>
-									))}
+									{navigationItems
+										.filter((item) => !item.artistOnly || user?.artist)
+										.map((item) => (
+											<NavLinkItem
+												key={item.path}
+												to={item.path}
+												icon={item.icon}
+												variant="sidebar"
+												onClick={closeSidebar}
+											>
+												{item.label}
+											</NavLinkItem>
+										))}
 								</nav>
 							</div>
 						</div>

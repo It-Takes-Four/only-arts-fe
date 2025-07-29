@@ -22,16 +22,25 @@ export function ProtectedRoute({
     // Don't redirect while loading or during logout process
     if (isLoading || isLoggingOut) return;
 
-    if (requireAuth && !isAuthenticated) {
-      console.log('ProtectedRoute: Redirecting unauthenticated user to', redirectTo);
-      // Store the current location to redirect back after login
-      const returnTo = location.pathname + location.search;
-      navigate(redirectTo, { 
-        replace: true,
-        state: { from: returnTo }
-      });
+    // Only handle redirects for protected routes that require auth
+    if (requireAuth) {
+      const publicRoutes = ['/login', '/register'];
+      const isPublicRoute = publicRoutes.includes(location.pathname);
+      
+      // If we're on a public route, don't redirect
+      if (isPublicRoute) return;
+      
+      // If not authenticated and not on a public route, redirect to login
+      if (!isAuthenticated || !user) {
+        console.log('ProtectedRoute: Redirecting unauthenticated user to', redirectTo);
+        const returnTo = location.pathname + location.search;
+        navigate(redirectTo, { 
+          replace: true,
+          state: { from: returnTo }
+        });
+      }
     }
-  }, [isLoading, isAuthenticated, requireAuth, navigate, redirectTo, location, isLoggingOut]);
+  }, [isLoading, isAuthenticated, user, requireAuth, navigate, redirectTo, location, isLoggingOut]);
 
   // Show loading spinner while checking authentication or during logout
   if (isLoading || isLoggingOut) {

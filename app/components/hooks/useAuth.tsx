@@ -12,6 +12,9 @@ export function useAuth() {
     setIsClient(true);
   }, []);
 
+  // Check if we have a token synchronously for immediate auth state
+  const hasToken = isClient ? !!getToken() : false;
+
   // Query to validate current authentication status - only if token exists and we're on client-side
   const { data: user, isLoading, error } = useQuery({
     queryKey: ['auth', 'user'],
@@ -25,7 +28,7 @@ export function useAuth() {
       return failureCount < 2;
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: isClient && !!getToken() && !forceDisableQuery && !isLoggedOut, // Also disable if logged out
+    enabled: isClient && hasToken && !forceDisableQuery && !isLoggedOut,
     refetchOnWindowFocus: false, // Don't refetch when window gains focus
     refetchOnMount: true, // Always refetch on mount to verify current user
     refetchInterval: false, // Don't auto-refresh
@@ -243,8 +246,8 @@ export function useAuth() {
 
   return {
     user: isLoggedOut ? null : user, // Force null if logged out
-    isLoading: isLoggedOut ? false : isLoading, // Don't show loading if logged out
-    isAuthenticated: isLoggedOut ? false : !!user, // Force false if logged out
+    isLoading: isLoggedOut ? false : (isLoading && isClient), // Don't show loading if logged out or not client-side
+    isAuthenticated: isLoggedOut ? false : (hasToken && !!user), // Force false if logged out, true if we have token and user
     error,
     login: loginMutation.mutate,
     loginAsync: loginMutation.mutateAsync,
