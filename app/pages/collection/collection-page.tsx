@@ -24,8 +24,6 @@ export function CollectionPage() {
 							<div className="flex flex-col rounded-lg">
 							<span className="flex items-center text-white">
 								<h1 className="text-2xl font-bold text-white">{"Collection Name"}</h1>
-								<Separator orientation="vertical" className="bg-white/25 h-5 mr-1 ml-4"/>
-								<FollowButton/>
 							</span>
 								<p className="text-sm text-white/75 mt-1">Collection Description</p>
 								<Badge variant="outline"
@@ -51,8 +49,59 @@ export function CollectionPage() {
 				</div>
 
 				{/*	Main Content */}
+				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+					{/* Placeholder for ArtCard components */}
+					{/* Replace with actual ArtCard components when available */}
+					<ArtCard art={{
+						id: "2",
+						title: "Artwork 2",
+						description: "description description description description.",
+						artist: {
+							id: "artist2",
+							name: "Artist 2",
+							profilePicture: "https://placehold.co/150x150"
+						},
+						createdAt: new Date(),
+						imageUrl: "https://placehold.co/300x300"
+					}} />
+					<ArtCard art={{
+						id: "2",
+						title: "Artwork 2",
+						description: "description description description description.",
+						artist: {
+							id: "artist2",
+							name: "Artist 2",
+							profilePicture: "https://placehold.co/150x150"
+						},
+						createdAt: new Date(),
+						imageUrl: "https://placehold.co/300x300"
+					}} />
+					<ArtCard art={{
+						id: "2",
+						title: "Artwork 2",
+						description: "description description description description.",
+						artist: {
+							id: "artist2",
+							name: "Artist 2",
+							profilePicture: "https://placehold.co/150x150"
+						},
+						createdAt: new Date(),
+						imageUrl: "https://placehold.co/300x300"
+					}} />
+					<ArtCard art={{
+						id: "2",
+						title: "Artwork 2",
+						description: "description description description description.",
+						artist: {
+							id: "artist2",
+							name: "Artist 2",
+							profilePicture: "https://placehold.co/150x150"
+						},
+						createdAt: new Date(),
+						imageUrl: "https://placehold.co/300x300"
+					}} />
 
-				<ArtCard art={undefined} />
+				</div>
 
 		</div>
 	);

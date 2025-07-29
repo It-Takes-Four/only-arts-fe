@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, ImageIcon, Images, ShoppingBag } from "lucide-react"
+import { ImageIcon, Images, ShoppingBag } from "lucide-react"
 import { TableCell, TableRow } from "@/components/ui/table"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import React from "react";
+import { useNavigate } from "react-router";
 
 interface CollectionCardProps {
 	id: string
@@ -21,19 +21,22 @@ interface CollectionCardProps {
 }
 
 export function CollectionCard({
-																		name,
-																		description,
-																		artworkCount,
-																		previewImage,
-																		totalSales,
-																		createdBy,
-																		createdByAvatar,
-																		price,
-																		viewMode = "grid",
-																	}: CollectionCardProps) {
+																 id,
+																 name,
+																 description,
+																 artworkCount,
+																 previewImage,
+																 totalSales,
+																 createdBy,
+																 createdByAvatar,
+																 price,
+																 viewMode = "grid",
+															 }: CollectionCardProps) {
+	const navigate = useNavigate();
+
 	if (viewMode === "table") {
 		return (
-			<TableRow className="hover:bg-muted/50">
+			<TableRow className="hover:bg-muted/50" onClick={() => navigate(`/collection/${id}`)}>
 				<TableCell>
 					<div className="flex items-center gap-3">
 						<div className="relative w-12 h-12 overflow-hidden rounded-lg bg-muted flex-shrink-0">
@@ -65,13 +68,15 @@ export function CollectionCard({
 					</div>
 				</TableCell>
 				<TableCell>
-					<Badge variant="secondary" className="text-xs">
+					<Badge variant="secondary"
+								 className="text-foreground text-sm font-semibold border-border gap-x-1.5">
+						<Images/>
 						{artworkCount}
 					</Badge>
 				</TableCell>
 				<TableCell>
 					{totalSales ? (
-						<div className="flex items-center gap-1 text-green-600">
+						<div className="flex items-center gap-1 text-primary">
 							<ShoppingBag className="h-3 w-3"/>
 							<span className="text-sm font-medium">{totalSales}</span>
 						</div>
@@ -92,19 +97,15 @@ export function CollectionCard({
 
 	if (viewMode === "row") {
 		return (
-			<Card className="group overflow-hidden hover:shadow-lg transition-all duration-300">
-				<div className="flex">
-					<div className="relative w-32 h-24 overflow-hidden bg-muted flex-shrink-0">
+			<Card className="group overflow-hidden hover:shadow-lg transition-all duration-300" onClick={() => navigate(`/collection/${id}`)}>
+				<div className="flex justify-center items-center">
+					<div className="relative w-35 h-35 overflow-hidden bg-muted flex-shrink-0">
 						{previewImage ? (
-							<div className="grid grid-cols-2 gap-0.5 h-full p-1">
-								<div key={0} className="relative overflow-hidden rounded-sm">
-									<img
-										src={previewImage || "/placeholder.svg"}
-										alt={`Preview 1`}
-										className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-									/>
-								</div>
-							</div>
+							<img
+								src={previewImage || "/placeholder.svg"}
+								alt={`Preview 1`}
+								className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+							/>
 						) : (
 							<div className="flex items-center justify-center h-full">
 								<ImageIcon className="h-6 w-6 text-muted-foreground"/>
@@ -113,23 +114,30 @@ export function CollectionCard({
 					</div>
 					<CardContent className="flex-1 p-4">
 						<div className="flex items-start justify-between mb-2">
-							<h3 className="font-semibold text-lg line-clamp-1">{name}</h3>
-							<Badge variant="secondary" className="ml-2">
+							<h3 className="font-semibold text-xl line-clamp-1">{name}</h3>
+							<Badge variant="secondary"
+										 className="text-foreground text-sm font-semibold border-border gap-x-1.5">
+								<Images/>
 								{artworkCount} items
 							</Badge>
 						</div>
-						<p className="text-sm text-muted-foreground mb-3 line-clamp-2">{description}</p>
+						<p className="text-sm text-muted-foreground mb-3 line-clamp-2	">{description}</p>
 						<div className="flex items-center justify-between text-sm">
 							<div className="flex items-center gap-4">
-								<span className="text-muted-foreground">by {createdBy}</span>
+								<span
+									className="flex px-2 py-1.5 glass rounded-full font-medium border-border text-foreground items-center gap-x-1.5"
+								>
+								<img src={"https://placehold.co/50x50"} alt="Artist Avatar" className="h-5 w-5 rounded-full"/>
+									{createdBy}
+							</span>
 								{totalSales && (
-									<div className="flex items-center gap-1 text-green-600">
-										<ShoppingBag className="h-3 w-3"/>
-										<span className="font-medium">{totalSales} sales</span>
+									<div className="flex items-center gap-1 text-md text-primary">
+										<ShoppingBag className="h-4 w-4"/>
+										<span className="font-semibold">{totalSales} sales</span>
 									</div>
 								)}
 							</div>
-							{price && <span className="font-semibold text-lg">${price}</span>}
+							{price && <span className="font-semibold text-xl">${price}</span>}
 						</div>
 					</CardContent>
 				</div>
@@ -139,7 +147,9 @@ export function CollectionCard({
 
 	// Original grid view (show only one image)
 	return (
-		<Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer">
+		// On click redirect to collection details page
+		<Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer"
+					onClick={() => navigate(`/collection/${id}`)}>
 			<div className="relative aspect-[4/3] overflow-hidden bg-muted">
 				{previewImage ? (
 					<div className="grid gap-1 h-full">
@@ -184,7 +194,7 @@ export function CollectionCard({
 				{totalSales && (
 					<div className="flex items-center gap-1 text-sm mb-2 text-primary">
 						<ShoppingBag className="h-4 w-4"/>
-						<span className="font-semibold">{totalSales} Sold</span>
+						<span className="font-semibold">{totalSales} sold</span>
 					</div>
 				)}
 				{price && (
