@@ -10,6 +10,6 @@ export default [
 		route("/settings", "routes/settings.tsx"),
 		route("/explore", "routes/explore.tsx"),
 		route("/become-artist", "routes/become-artist.tsx"),
-		route("/collection", "routes/collection.tsx"),
+		route("/collection/:collectionId", "routes/collection.tsx"),
 	]),
 ] satisfies RouteConfig;

@@ -17,7 +17,7 @@ export function ArtCard({ art }: ArtCardProps) {
 			onHoverStart={() => setIsHovered(true)}
 			onHoverEnd={() => setIsHovered(false)}
 		>
-			<div className="aspect-[1/1] overflow-hidden">
+			<div className="aspect-square overflow-hidden">
 				<motion.img
 					src={"/profile-background.jpg"}
 					alt={"Portfolio Item"}
