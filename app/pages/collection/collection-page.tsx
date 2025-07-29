@@ -1,7 +1,6 @@
 import { ArtCard } from "../../components/common/art-card";
 import { GlassCard } from "../../components/common/glass-card";
 import { Separator } from "@/components/ui/separator";
-import { FollowButton } from "../../components/common/follow-button";
 import { Badge } from "@/components/ui/badge";
 
 export function CollectionPage() {

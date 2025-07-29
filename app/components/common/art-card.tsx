@@ -2,20 +2,26 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Badge } from "@/components/ui/badge";
 import { ImageIcon } from "lucide-react";
+import { useNavigate } from "react-router";
 
 interface ArtCardProps {
 	art: {
 		id: string;
 		title: string;
+		description: string;
 		artist: {
+			id: string;
 			name: string;
-			image: string;
+			profilePicture?: string;
 		};
-		image: string;
+		createdAt: Date;
+		tags?: { id: string; name: string }[];
+		imageUrl: string;
 	};
 }
 
 export function ArtCard({ art }: ArtCardProps) {
+	const navigate = useNavigate();
 	const [isHovered, setIsHovered] = useState(false);
 
 	return (
@@ -24,6 +30,7 @@ export function ArtCard({ art }: ArtCardProps) {
 			className="group relative overflow-hidden rounded-lg cursor-pointer"
 			onHoverStart={() => setIsHovered(true)}
 			onHoverEnd={() => setIsHovered(false)}
+			onClick={() => navigate(`/art/${art.id}`)}
 		>
 			<div className="aspect-square overflow-hidden">
 				{art.imageUrl ? (

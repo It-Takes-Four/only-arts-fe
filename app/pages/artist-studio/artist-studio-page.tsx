@@ -16,6 +16,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FollowButton } from "../../components/common/follow-button";
+import { formatDateToMonthYear } from "../../utils/dates/DateFormatter";
 
 export function ArtistStudioPage() {
 	const { user } = useAuthContext();
@@ -301,7 +302,7 @@ export function ArtistStudioPage() {
 						<div className="flex items-center gap-2 mt-2">
 							<Badge variant="outline"
 										 className="font-mono text-primary-foreground text-xs uppercase border-white/25">
-								{`JOINED ${user.createdAt}`}
+								{`JOINED ${formatDateToMonthYear(user.createdAt)}`}
 							</Badge>
 							{user.artist.isVerified && (
 								<Badge variant="default">Verified Artist</Badge>

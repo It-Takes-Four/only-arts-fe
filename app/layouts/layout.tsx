@@ -136,7 +136,7 @@ export default function Layout() {
 								{/* Logo - Icon on mobile, Full logo on desktop */}
 								<Link to="/" className="flex items-center">
 									<IconLogo className="h-6 md:hidden" />
-									<ThemeLogo className="hidden md:block h-8" />
+									<ThemeLogo className="hidden md:block h-10" />
 								</Link>
 							</div>
 
