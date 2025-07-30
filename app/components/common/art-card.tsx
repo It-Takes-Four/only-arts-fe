@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ImageIcon } from "lucide-react";
 import type { ArtCardProps } from './art-card-types';
+import { useNavigate } from "react-router";
 
 export function ArtCard({ art }: ArtCardProps) {
 	const navigate = useNavigate();
