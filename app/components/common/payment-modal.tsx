@@ -2,15 +2,22 @@ import { artCollectionsService } from 'app/services/art-collections-service';
 import { ethers } from 'ethers'
 import { useState } from 'react';
 
-export function PaymentModal() {
+interface PaymentModalProps {
+    collectionId: string;
+    artistWalletAddress: string;
+}
+
+export function PaymentModal({ collectionId, artistWalletAddress }: PaymentModalProps) {
+    const TARGET_CHAIN_ID = import.meta.env.TARGET_CHAIN_ID
     const [paymentStatus, setpaymentStatus] = useState("Buy Collection")
 
-    const TARGET_CHAIN_ID = 4202;
-    const buyerId = "62b7a897-88be-45bb-88f9-f52ca1a712ec"
-    const collectionId = "76dff053-8f38-4caa-97bc-93fed67f9ad3"
+    
+
+    // const buyerId = "62b7a897-88be-45bb-88f9-f52ca1a712ec"
+    // const collectionId = "76dff053-8f38-4caa-97bc-93fed67f9ad3"
     // const artistWalletAddress = "0xe774cd104A03ba1B401403A9Eb7B0778279c043F" // ko KE
-    const artistWalletAddress = "0xe39a19f4339A808B0Cd4e60CB98aC565698467FB" // Cathh
-    const price = "0.0001"
+    // const artistWalletAddress = "0xe39a19f4339A808B0Cd4e60CB98aC565698467FB" // Cathh
+    // const price = "0.0001"
 
     async function ensureCorrectNetwork() {
         if (!window.ethereum) {
