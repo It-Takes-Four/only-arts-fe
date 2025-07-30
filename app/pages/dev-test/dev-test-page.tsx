@@ -9,6 +9,7 @@ import { debugCookies, getCookie } from "app/utils/cookie";
 import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
 import { WalletLinkComponent } from "app/components/common/wallet-link-component";
 import { useNavigate } from "react-router";
+import { PaymentModal } from "app/components/common/payment-modal";
 
 export default function DevTestPage() {
   const { user, isAuthenticated, login, loginAsync, logout, isLoggingIn } = useAuthContext();
@@ -356,7 +357,7 @@ export default function DevTestPage() {
         <h2 className="text-2xl font-semibold">Wallet Testing (Local Mode)</h2>
         
         <div className="p-4 border rounded-lg bg-card">
-          <WalletLinkComponent 
+          {/* <WalletLinkComponent 
             onWalletLinked={(address) => {
               toast.success(`Wallet linked: ${address.slice(0, 6)}...${address.slice(-4)}`);
               console.log('Wallet linked:', address);
@@ -365,7 +366,7 @@ export default function DevTestPage() {
               toast.info(`Wallet unlinked: ${address.slice(0, 6)}...${address.slice(-4)}`);
               console.log('Wallet unlinked:', address);
             }}
-          />
+          /> */}
           
           <div className="mt-4 pt-4 border-t">
             <p className="text-sm font-medium mb-2">Wallet Service Testing:</p>
@@ -494,6 +495,8 @@ export default function DevTestPage() {
             <p className="text-muted-foreground">This card uses bg-background/80 with backdrop-blur-sm</p>
           </div>
         </div>
+
+        <PaymentModal collectionId="" artistWalletAddress=""/>
       </div>
     </div>
   );

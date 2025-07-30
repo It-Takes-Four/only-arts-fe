@@ -15,7 +15,8 @@ export enum PaymentStatus {
 export function usePayment() {
     const { user } = useAuth();
     const buyerId = user?.id
-    const TARGET_CHAIN_ID = import.meta.env.TARGET_CHAIN_ID
+    const TARGET_CHAIN_ID = import.meta.env.VITE_TARGET_CHAIN_ID
+    
     const [paymentStatus, setpaymentStatus] = useState<PaymentStatus>(PaymentStatus.PROCESSING)
 
     async function ensureCorrectNetwork() {
@@ -116,6 +117,8 @@ export function usePayment() {
 
             console.log("buyAccessToCollection result:", result);
         } catch (error: any) {
+            console.log(error);
+            
             toast.error("Purchase failed:", error.message)
         }
     }
