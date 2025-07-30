@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuthContext } from "../../components/core/auth-context";
 import { useMyCollections } from "../../components/hooks/useMyCollections";
+import { useMyArtworks } from "../../components/hooks/useMyArtworks";
 import { collectionService } from "../../services/collection-service";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/common/tabs";
 import { Button } from "../../components/common/button";
@@ -25,28 +26,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 export function ArtistStudioPage() {
 	const { user } = useAuthContext();
 	const { collections, loading: collectionsLoading, addCollection } = useMyCollections();
+	const { artworks, loading: artworksLoading, addArtwork } = useMyArtworks();
 	const [tabValue, setTabValue] = useState("collections");
 	const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false);
 	const [showCreateArtworkModal, setShowCreateArtworkModal] = useState(false);
 
-	// Get all artworks from all collections
-	const allArtworks = collections.flatMap(collection => 
-		collection.arts.map(artItem => ({
-			...artItem.art,
-			collectionName: collection.collectionName,
-			collectionId: collection.id,
-			artItemId: artItem.id // The ID of the art-collection relationship
-		}))
-	);
-
 	// Calculate analytics from real data
 	const analytics = {
 		totalViews: 0, // This would need a separate API call to get view counts
-		totalLikes: 0, // This would need a separate API call to get like counts
+		totalLikes: artworks.reduce((sum, artwork) => sum + artwork.likesCount, 0),
 		totalShares: 0, // This would need a separate API call to get share counts
 		totalSales: 0, // Sales data not available in current API response
 		revenue: 0, // Revenue data not available in current API response
-		totalArtworks: collections.reduce((sum, collection) => sum + collection.arts.length, 0),
+		totalArtworks: artworks.length,
 		publishedCollections: collections.filter(collection => collection.isPublished).length,
 		totalCollections: collections.length
 	};
@@ -61,11 +53,9 @@ export function ArtistStudioPage() {
 	// Handle artwork creation success
 	const handleArtworkCreated = (artwork: any) => {
 		console.log('Artwork created:', artwork);
-		// Here you could refresh the artworks list or add the new artwork to state
-		// For now, we'll just show a success message
+		// Add the new artwork to the list
+		addArtwork(artwork);
 	};
-
-    console.log(collections);
 
 	const tabs = [
 		{
@@ -128,10 +118,6 @@ export function ArtistStudioPage() {
 					<div className="flex justify-between items-center">
 						<h2 className="text-2xl font-bold">My Artworks</h2>
 						<div className="flex gap-2">
-							<Button variant="outline" className="flex items-center gap-2">
-								<PlusIcon className="h-4 w-4" />
-								Add to Collection
-							</Button>
 							<Button 
 								className="flex items-center gap-2"
 								onClick={() => setShowCreateArtworkModal(true)}
@@ -149,21 +135,21 @@ export function ArtistStudioPage() {
 							<PlusIcon className="h-12 w-12 text-muted-foreground/50 mb-2" />
 							<p className="text-sm text-muted-foreground">Upload New Artwork</p>
 						</div>
-                        {collectionsLoading ? (
+                        {artworksLoading ? (
 							Array.from({ length: 4 }).map((_, index) => (
 								<div key={index} className="animate-pulse">
 									<div className="aspect-square bg-muted rounded-lg"></div>
 								</div>
 							))
-						) : allArtworks.length > 0 ? (
-							allArtworks.map((artwork) => (
+						) : artworks.length > 0 ? (
+							artworks.map((artwork) => (
 								<div key={artwork.id} className="relative">
 									<ArtCard 
 										art={{
 											id: artwork.id,
 											title: artwork.title,
 											description: artwork.description,
-											imageUrl: collectionService.getArtworkImageUrl(artwork.id),
+											imageUrl: collectionService.getArtworkImageUrl(artwork.imageFileId),
 											artist: {
 												id: artwork.artist.id,
 												name: artwork.artist.artistName,
@@ -174,10 +160,13 @@ export function ArtistStudioPage() {
 											createdAt: new Date(artwork.datePosted)
 										}} 
 									/>
-									{/* Collection info overlay */}
+									{/* Artwork stats overlay */}
 									<div className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm rounded-lg p-2 text-white text-xs">
 										<div className="flex items-center gap-1">
-											<span>{artwork.collectionName}</span>
+											<span>♥ {artwork.likesCount}</span>
+											{artwork.isInACollection && (
+												<span className="ml-2">📁 In Collection</span>
+											)}
 										</div>
 									</div>
 								</div>

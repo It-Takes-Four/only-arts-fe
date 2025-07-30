@@ -91,6 +91,63 @@ export interface MyCollection {
 
 export type MyCollectionsResponse = MyCollection[];
 
+// Interface for the artist's artwork response
+export interface MyArtwork {
+  id: string;
+  imageFileId: string;
+  title: string;
+  description: string;
+  datePosted: string;
+  updatedAt: string;
+  artistId: string;
+  tokenId?: string;
+  likesCount: number;
+  isInACollection: boolean;
+  tags: Array<{
+    artId: string;
+    tagId: string;
+    tag: {
+      id: string;
+      tagName: string;
+      usageCount: number;
+      createdAt: string;
+      updatedAt: string;
+    };
+  }>;
+  comments: Array<{
+    id: string;
+    content: string;
+    createdAt: string;
+    updatedAt: string;
+    userId: string;
+    artId: string;
+    user: {
+      id: string;
+      email: string;
+      username: string;
+      profilePictureFileId?: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+  }>;
+  artist: {
+    id: string;
+    userId: string;
+    artistName: string;
+    isNsfw: boolean;
+    bio?: string;
+    walletAddress?: string;
+    totalFollowers: number;
+    totalArts: number;
+    totalCollections: number;
+    isVerified: boolean;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+export type MyArtworksResponse = MyArtwork[];
+
 class CollectionService extends BaseService{
 
 	// Helper method to get collection cover image URL
@@ -98,9 +155,9 @@ class CollectionService extends BaseService{
 		return `${import.meta.env.VITE_API_BASE_URL}/upload/collection/${collectionId}`;
 	}
 
-	// Helper method to get artwork image URL
-	getArtworkImageUrl(artworkId: string): string {
-		return `${import.meta.env.VITE_API_BASE_URL}/upload/art/${artworkId}`;
+	// Helper method to get artwork image URL by imageFileId
+	getArtworkImageUrl(imageFileId: string): string {
+		return `${import.meta.env.VITE_API_BASE_URL}/upload/art/${imageFileId}`;
 	}
 
 	async getCollectionById(collectionId: string) {
@@ -118,6 +175,15 @@ class CollectionService extends BaseService{
 			return data;
 		} catch (error: any) {
 			throw new Error(error.response?.data?.message || 'Failed to get my collections');
+		}
+	}
+
+	async getMyArtworks(): Promise<MyArtworksResponse> {
+		try {
+			const { data } = await this._axios.get('/art-collections/my/arts');
+			return data;
+		} catch (error: any) {
+			throw new Error(error.response?.data?.message || 'Failed to get my artworks');
 		}
 	}
 
