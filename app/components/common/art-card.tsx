@@ -1,24 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Badge } from "@/components/ui/badge";
 import { ImageIcon } from "lucide-react";
-import { useNavigate } from "react-router";
-
-interface ArtCardProps {
-	art: {
-		id: string;
-		title: string;
-		description: string;
-		artist: {
-			id: string;
-			name: string;
-			profilePicture?: string;
-		};
-		createdAt: Date;
-		tags?: { id: string; name: string }[];
-		imageUrl: string;
-	};
-}
+import type { ArtCardProps } from './art-card-types';
 
 export function ArtCard({ art }: ArtCardProps) {
 	const navigate = useNavigate();
@@ -57,7 +40,7 @@ export function ArtCard({ art }: ArtCardProps) {
 			>
 				{/* Artist Badge */}
 				<motion.span
-					className="absolute top-3 left-3 flex px-2 py-1.5 glass rounded-full text-sm font-medium border-border text-white items-center gap-x-1.5"
+					className="absolute top-3 left-3 flex px-3 py-2 bg-black/60 backdrop-blur-sm rounded-full text-sm font-medium text-white items-center gap-x-2"
 					initial={{ y: -50, opacity: 0 }}
 					animate={{
 						y: isHovered ? 0 : -50,
@@ -68,11 +51,10 @@ export function ArtCard({ art }: ArtCardProps) {
 						ease: "easeOut"
 					}}
 				>
-					<img src={art.artist.profilePicture || "https://placehold.co/50x50"} alt="Artist Avatar" className="h-5 rounded-full"/>
+					<img src={art.artist.profilePicture || "https://placehold.co/50x50"} alt="Artist Avatar" className="h-5 w-5 rounded-full"/>
 					{art.artist.name}
 				</motion.span>
 
-				{/* Content at bottom */}
 				<motion.div
 					className="absolute bottom-0 left-0 right-0 p-4 text-white"
 					initial={{ y: 24, opacity: 0 }}
@@ -92,9 +74,9 @@ export function ArtCard({ art }: ArtCardProps) {
 						art.tags && art.tags.length > 0 ? (
 							<div className="flex flex-wrap gap-1">
 								{art.tags.map((tag, index) => (
-									<Badge key={index} variant="outline" className="glass text-primary-foreground font-semibold border-border py-1 gap-x-1.5">
+									<span key={index} className="text-xs text-white/80 bg-white/20 px-2 py-1 rounded-full">
 										{tag.name}
-									</Badge>
+									</span>
 								))}
 							</div>
 						) : null

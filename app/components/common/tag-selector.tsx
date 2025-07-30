@@ -17,6 +17,7 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
   const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [isTagsExpanded, setIsTagsExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   // Check for mobile screen size
@@ -75,6 +76,10 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
     }
   };
 
+  const toggleTags = () => {
+    setIsTagsExpanded(!isTagsExpanded);
+  };
+
   
   const selectedTag = popularTags.find(tag => tag.id === selectedTagId);
   const displayTags = popularTags.filter(x => x.id !== selectedTagId || !selectedTagId);
@@ -131,50 +136,66 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
 
             {/* Popular Tags Row */}
             {!isSearchExpanded && (
-              <div className="flex flex-wrap gap-2 items-center">
-                {loading ? (
-                  <div className="flex items-center space-x-2">
-                    <motion.div
-                      className="w-1.5 h-1.5 bg-primary rounded-full"
-                      animate={{ scale: [1, 1.3, 1] }}
-                      transition={{ duration: 1, repeat: Infinity }}
-                    />
-                    <span className="text-xs text-muted-foreground">Loading...</span>
-                  </div>
-                ) : displayTags.length > 0 ? (
-                  displayTags.slice(0, 6).map((tag, index) => (
-                    <motion.div
-                      key={tag.id}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.15, delay: index * 0.03 }}
-                    >
-                      <Badge
-                        variant={selectedTagId === tag.id ? "default" : "secondary"}
-                        className={`cursor-pointer transition-all duration-200 text-xs px-2 py-1 hover:scale-105 ${
-                          selectedTagId === tag.id 
-                            ? 'bg-primary text-primary-foreground shadow-sm' 
-                            : 'hover:bg-primary/10 hover:text-primary bg-background/60'
-                        }`}
-                        onClick={() => handleTagClick(tag)}
-                      >
-                        {tag.tagName}
-                      </Badge>
-                    </motion.div>
-                  ))
-                ) : (
-                  <span className="text-xs text-muted-foreground">No tags</span>
-                )}
+              <div className="space-y-2">
+                <div className="flex flex-wrap gap-2 items-center">
+                  {loading ? (
+                    <div className="flex items-center space-x-2">
+                      <motion.div
+                        className="w-1.5 h-1.5 bg-primary rounded-full"
+                        animate={{ scale: [1, 1.3, 1] }}
+                        transition={{ duration: 1, repeat: Infinity }}
+                      />
+                      <span className="text-xs text-muted-foreground">Loading...</span>
+                    </div>
+                  ) : displayTags.length > 0 ? (
+                    <>
+                      {displayTags.slice(0, isTagsExpanded ? displayTags.length : 6).map((tag, index) => (
+                        <motion.div
+                          key={tag.id}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.15, delay: index * 0.03 }}
+                        >
+                          <Badge
+                            variant={selectedTagId === tag.id ? "default" : "secondary"}
+                            className={`cursor-pointer transition-all duration-200 text-xs px-2 py-1 hover:scale-105 ${
+                              selectedTagId === tag.id 
+                                ? 'bg-primary text-primary-foreground shadow-sm' 
+                                : 'hover:bg-primary/10 hover:text-primary bg-background/60'
+                            }`}
+                            onClick={() => handleTagClick(tag)}
+                          >
+                            {tag.tagName}
+                          </Badge>
+                        </motion.div>
+                      ))}
+                    </>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">No tags</span>
+                  )}
+                </div>
                 
                 {displayTags.length > 6 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={toggleSearch}
-                    className="text-xs text-muted-foreground hover:text-primary px-2 py-1 h-auto"
-                  >
-                    +{displayTags.length - 6} more
-                  </Button>
+                  <div className="flex justify-center">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={toggleTags}
+                      className="text-xs text-muted-foreground hover:text-primary px-3 py-1 h-auto flex items-center gap-1"
+                    >
+                      {isTagsExpanded ? (
+                        <>
+                          Show less
+                          <ChevronUp className="h-3 w-3" />
+                        </>
+                      ) : (
+                        <>
+                          Show {displayTags.length - 6} more tags
+                          <ChevronDown className="h-3 w-3" />
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 )}
               </div>
             )}
@@ -201,28 +222,35 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
                   </div>
 
                   {/* Search Results */}
-                  <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-                    {displayTags.map((tag, index) => (
-                      <motion.div
-                        key={tag.id}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.15, delay: index * 0.02 }}
-                      >
-                        <Badge
-                          variant={selectedTagId === tag.id ? "default" : "secondary"}
-                          className={`cursor-pointer transition-all duration-200 text-xs px-2 py-1 hover:scale-105 ${
-                            selectedTagId === tag.id 
-                              ? 'bg-primary text-primary-foreground shadow-sm' 
-                              : 'hover:bg-primary/10 hover:text-primary bg-background/60'
-                          }`}
-                          onClick={() => handleTagClick(tag)}
+                  <AnimatePresence>
+                    <motion.div 
+                      className="flex flex-wrap gap-2 max-h-40 overflow-y-auto"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {displayTags.map((tag, index) => (
+                        <motion.div
+                          key={tag.id}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.15, delay: index * 0.02 }}
                         >
-                          {tag.tagName}
-                        </Badge>
-                      </motion.div>
-                    ))}
-                  </div>
+                          <Badge
+                            variant={selectedTagId === tag.id ? "default" : "secondary"}
+                            className={`cursor-pointer transition-all duration-200 text-xs px-2 py-1 hover:scale-105 ${
+                              selectedTagId === tag.id 
+                                ? 'bg-primary text-primary-foreground shadow-sm' 
+                                : 'hover:bg-primary/10 hover:text-primary bg-background/60'
+                            }`}
+                            onClick={() => handleTagClick(tag)}
+                          >
+                            {tag.tagName}
+                          </Badge>
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  </AnimatePresence>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -264,48 +292,67 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
             )}
 
             {/* Popular Tags */}
-            <div className="flex-1 flex flex-wrap gap-1.5 items-center overflow-hidden">
-              {loading ? (
-                <div className="flex items-center space-x-2">
-                  <motion.div
-                    className="w-1.5 h-1.5 bg-primary rounded-full"
-                    animate={{ scale: [1, 1.3, 1] }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                  />
-                  <span className="text-xs text-muted-foreground">Loading...</span>
-                </div>
-              ) : displayTags.length > 0 ? (
-                displayTags.slice(0, 8).map((tag, index) => (
-                  <motion.div
-                    key={tag.id}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.15, delay: index * 0.03 }}
-                  >
-                    <Badge
-                      variant={selectedTagId === tag.id ? "default" : "secondary"}
-                      className={`cursor-pointer transition-all duration-200 text-xs px-2 py-1 hover:scale-105 ${
-                        selectedTagId === tag.id 
-                          ? 'bg-primary text-primary-foreground shadow-sm' 
-                          : 'hover:bg-primary/10 hover:text-primary bg-background/60'
-                      }`}
-                      onClick={() => handleTagClick(tag)}
-                    >
-                      {tag.tagName}
-                    </Badge>
-                  </motion.div>
-                ))
-              ) : searchQuery.trim() ? (
-                <span className="text-xs text-muted-foreground">No results</span>
-              ) : (
-                <span className="text-xs text-muted-foreground">No tags</span>
-              )}
-              
-              {displayTags.length > 8 && !searchQuery && (
-                <span className="text-xs text-muted-foreground">
-                  +{displayTags.length - 8} more
-                </span>
-              )}
+            <div className="flex-1 flex flex-col gap-2">
+              <div className="flex flex-wrap gap-1.5 items-center overflow-hidden">
+                {loading ? (
+                  <div className="flex items-center space-x-2">
+                    <motion.div
+                      className="w-1.5 h-1.5 bg-primary rounded-full"
+                      animate={{ scale: [1, 1.3, 1] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                    />
+                    <span className="text-xs text-muted-foreground">Loading...</span>
+                  </div>
+                ) : displayTags.length > 0 ? (
+                  <>
+                    {displayTags.slice(0, isTagsExpanded ? displayTags.length : 8).map((tag, index) => (
+                      <motion.div
+                        key={tag.id}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.15, delay: index * 0.03 }}
+                      >
+                        <Badge
+                          variant={selectedTagId === tag.id ? "default" : "secondary"}
+                          className={`cursor-pointer transition-all duration-200 text-xs px-2 py-1 hover:scale-105 ${
+                            selectedTagId === tag.id 
+                              ? 'bg-primary text-primary-foreground shadow-sm' 
+                              : 'hover:bg-primary/10 hover:text-primary bg-background/60'
+                          }`}
+                          onClick={() => handleTagClick(tag)}
+                        >
+                          {tag.tagName}
+                        </Badge>
+                      </motion.div>
+                    ))}
+                    
+                    {displayTags.length > 8 && !searchQuery && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={toggleTags}
+                        className="text-xs text-muted-foreground hover:text-primary px-2 py-1 h-auto flex items-center gap-1"
+                      >
+                        {isTagsExpanded ? (
+                          <>
+                            Show less
+                            <ChevronUp className="h-3 w-3" />
+                          </>
+                        ) : (
+                          <>
+                            +{displayTags.length - 8} more
+                            <ChevronDown className="h-3 w-3" />
+                          </>
+                        )}
+                      </Button>
+                    )}
+                  </>
+                ) : searchQuery.trim() ? (
+                  <span className="text-xs text-muted-foreground">No results</span>
+                ) : (
+                  <span className="text-xs text-muted-foreground">No tags</span>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -318,7 +365,12 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
             exit={{ opacity: 0, height: 0 }}
             className="mt-3 pt-3 border-t border-border/30"
           >
-            <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto">
+            <motion.div 
+              className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+            >
               {displayTags.map((tag, index) => (
                 <motion.div
                   key={tag.id}
@@ -339,7 +391,7 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
                   </Badge>
                 </motion.div>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </div>
