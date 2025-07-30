@@ -22,7 +22,6 @@ export function ProfilePage() {
 				// <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
 					<div className="">
 
-			<CollectionCard id='1' name="Feet collection" description="Irvin's collection of feet pics >:D" artworkCount={100} previewImage="/profile-background.jpg" createdBy="piipipipi" price={1.99} totalSales={2} viewMode="table"/>
 			</div>,
 		},
 		{

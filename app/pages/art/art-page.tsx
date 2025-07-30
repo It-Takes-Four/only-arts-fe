@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 
 const mockArt = {
 	id: "clx0m0000000000000000000",
-	imageUrl: "/",
+	// imageUrl: "https://www.vets4pets.com/siteassets/species/cat/cat-close-up-of-side-profile.jpg",
+	imageUrl: "https://images.pexels.com/photos/2071882/pexels-photo-2071882.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
 	title: "Whispers of the Cosmos",
 	description:
 		"An ethereal abstract painting capturing the silent dance of celestial bodies and the profound mysteries of the universe. Created with vibrant acrylics and intricate brushwork, it invites contemplation and wonder. This piece explores themes of infinity, solitude, and the interconnectedness of all things, rendered in a palette of deep blues, purples, and shimmering golds.",
@@ -26,14 +27,12 @@ export function ArtPage() {
 		<div className="container mx-auto px-4 py-8">
 			<div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
 				{/* Left Column: Image */}
-				<div className="relative aspect-[3/4] overflow-hidden rounded-lg shadow-lg">
+				<div className="overflow-hidden shadow-lg">
 					<img
 						src={art.imageUrl || "/placeholder.svg"}
 						alt={art.title}
-						fill
-						className="object-cover"
+						className="object-cover rounded-lg w-full h-auto"
 						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-						priority
 					/>
 				</div>
 
