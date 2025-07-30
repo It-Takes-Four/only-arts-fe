@@ -1,0 +1,234 @@
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { motion } from "framer-motion";
+import { X, Upload, Folder, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "../common/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { collectionService, type CreateCollectionRequest } from "../../services/collection-service";
+
+interface CreateCollectionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: (collection: any) => void;
+}
+
+interface FormData {
+  collectionName: string;
+  coverImage?: FileList;
+}
+
+export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateCollectionModalProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({
+    mode: "onTouched",
+    defaultValues: {
+      collectionName: "",
+    },
+  });
+
+  const watchedCoverImage = watch("coverImage");
+
+  // Handle image preview
+  useEffect(() => {
+    if (watchedCoverImage && watchedCoverImage.length > 0) {
+      const file = watchedCoverImage[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreviewImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewImage(null);
+    }
+  }, [watchedCoverImage]);
+
+  const onSubmit = async (data: FormData) => {
+    setIsSubmitting(true);
+    try {
+      const request: CreateCollectionRequest = {
+        collectionName: data.collectionName,
+        file: data.coverImage?.[0],
+      };
+
+      const response = await collectionService.createCollection(request);
+      
+      toast.success("Collection created successfully!");
+      onSuccess(response);
+      reset();
+      setPreviewImage(null);
+      onClose();
+    } catch (error: any) {
+      console.error('Collection creation error:', error);
+      toast.error(error.message || "Failed to create collection");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleClose = () => {
+    reset();
+    setPreviewImage(null);
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Backdrop */}
+      <motion.div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={handleClose}
+      />
+
+      {/* Modal */}
+      <motion.div
+        className="relative z-10 w-full max-w-md mx-4"
+        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <Card className="bg-background/95 backdrop-blur-sm border-border/50">
+          <CardHeader className="pb-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <Folder className="h-5 w-5 text-primary" />
+                </div>
+                <CardTitle>Create New Collection</CardTitle>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleClose}
+                disabled={isSubmitting}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardHeader>
+
+          <CardContent>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {/* Collection Name */}
+              <div className="space-y-2">
+                <Label htmlFor="collectionName">Collection Name *</Label>
+                <Input
+                  id="collectionName"
+                  placeholder="Enter collection name"
+                  {...register("collectionName", {
+                    required: "Collection name is required",
+                    minLength: {
+                      value: 2,
+                      message: "Collection name must be at least 2 characters",
+                    },
+                    maxLength: {
+                      value: 100,
+                      message: "Collection name must be less than 100 characters",
+                    },
+                  })}
+                  className={errors.collectionName ? "border-destructive" : ""}
+                  disabled={isSubmitting}
+                />
+                {errors.collectionName && (
+                  <p className="text-sm text-destructive">{errors.collectionName.message}</p>
+                )}
+              </div>
+
+              {/* Cover Image */}
+              <div className="space-y-2">
+                <Label htmlFor="coverImage">Cover Image (Optional)</Label>
+                <div className="space-y-3">
+                  {previewImage ? (
+                    <div className="relative">
+                      <img
+                        src={previewImage}
+                        alt="Cover preview"
+                        className="w-full h-32 object-cover rounded-lg border border-border"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          reset({ collectionName: watch("collectionName") });
+                          setPreviewImage(null);
+                        }}
+                        className="absolute top-2 right-2 h-6 w-6 p-0 bg-background/80 backdrop-blur-sm"
+                        disabled={isSubmitting}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
+                      <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Click to upload cover image
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        PNG, JPG, GIF up to 10MB
+                      </p>
+                    </div>
+                  )}
+                  <Input
+                    id="coverImage"
+                    type="file"
+                    accept="image/*"
+                    {...register("coverImage")}
+                    className="file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+                    disabled={isSubmitting}
+                  />
+                </div>
+              </div>
+
+              {/* Submit Buttons */}
+              <div className="flex gap-3 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleClose}
+                  disabled={isSubmitting}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting || !watch("collectionName")}
+                  className="flex-1"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    "Create Collection"
+                  )}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </div>
+  );
+}
