@@ -95,12 +95,12 @@ class CollectionService extends BaseService{
 
 	// Helper method to get collection cover image URL
 	getCollectionImageUrl(collectionId: string): string {
-		return `upload/collection/${collectionId}`;
+		return `${import.meta.env.VITE_API_BASE_URL}/upload/collection/${collectionId}`;
 	}
 
 	// Helper method to get artwork image URL
 	getArtworkImageUrl(artworkId: string): string {
-		return `upload/art/${artworkId}`;
+		return `${import.meta.env.VITE_API_BASE_URL}/upload/art/${artworkId}`;
 	}
 
 	async getCollectionById(collectionId: string) {

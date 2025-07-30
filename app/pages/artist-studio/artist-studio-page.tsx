@@ -65,6 +65,8 @@ export function ArtistStudioPage() {
 		// For now, we'll just show a success message
 	};
 
+    console.log(collections);
+
 	const tabs = [
 		{
 			value: "collections",
@@ -107,7 +109,7 @@ export function ArtistStudioPage() {
 									name={collection.collectionName}
 									description={collection.description || "No description"}
 									artworkCount={collection.arts.length}
-									previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.id) : "/placeholder.svg"}
+									previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
 									createdBy={user?.artist?.artistName || "Unknown"}
 									price={collection.price ? parseFloat(collection.price.toString()) : undefined}
 									totalSales={0} // We don't have sales data in this response
