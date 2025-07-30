@@ -15,8 +15,8 @@ export enum PaymentStatus {
 export function usePayment() {
     const { user } = useAuth();
     const buyerId = user?.id
-    const TARGET_CHAIN_ID = import.meta.env.VITE_TARGET_CHAIN_ID
-    
+    const TARGET_CHAIN_ID = Number(import.meta.env.VITE_TARGET_CHAIN_ID)
+
     const [paymentStatus, setpaymentStatus] = useState<PaymentStatus>(PaymentStatus.PROCESSING)
 
     async function ensureCorrectNetwork() {
@@ -78,9 +78,6 @@ export function usePayment() {
             await ensureCorrectNetwork();
             const provider = new ethers.BrowserProvider(window.ethereum);
             const signer = await provider.getSigner();
-            const network = await provider.getNetwork()
-
-            console.log(`Transaction sent to: ${network.name} (chainId: ${network.chainId})`);
 
             setpaymentStatus(PaymentStatus.WAITING)
 
@@ -114,11 +111,8 @@ export function usePayment() {
 
 
             setpaymentStatus(PaymentStatus.COMPLETED)
-
-            console.log("buyAccessToCollection result:", result);
         } catch (error: any) {
             console.log(error);
-            
             toast.error("Purchase failed:", error.message)
         }
     }

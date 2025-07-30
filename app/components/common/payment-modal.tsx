@@ -13,7 +13,7 @@ export function PaymentModal({ collectionId, artistWalletAddress }: PaymentModal
     const { paymentStatus, purchaseCollection } = usePayment()
     const [isPaying, setisPaying] = useState(false)
 
-    const dummyCollectionId = "023e6b5a-75aa-47af-94e1-04385ab3e219"
+    const dummyCollectionId = "9937cc90-67aa-42d3-a9a9-320b37a40883"
     const testingWalletAddress = "0xe39a19f4339A808B0Cd4e60CB98aC565698467FB"
 
     // const artistWalletAddress = "0xe774cd104A03ba1B401403A9Eb7B0778279c043F" // ko KE
