@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router";
-import { type ComponentType, useState } from "react";
+import { type ComponentType, useEffect, useState } from "react";
 import { useAuthContext } from "app/components/core/auth-context";
 import { ProtectedRoute } from "app/components/core/protected-route";
 import { NavLinkItem } from "app/components/common/nav-link-item";
@@ -16,6 +16,7 @@ import { Menu, X } from "lucide-react";
 import { HomeIcon, UserIcon } from "@heroicons/react/24/outline";
 import { Compass, Paintbrush } from "lucide-react";
 import { BackgroundBeams } from "@/components/blocks/Backgrounds/BackgroundBeams";
+import { artService } from "../services/art-service";
 
 interface NavItem {
 	path: string;
@@ -28,21 +29,31 @@ const navigationItems: NavItem[] = [
 	{ path: "/", label: "Home", icon: HomeIcon },
 	{ path: "/explore", label: "Explore", icon: Compass },
 	{ path: "/profile", label: "Profile", icon: UserIcon },
-	{ path: "/artist-studio", label: "Artist Studio", icon: Paintbrush, artistOnly: true },
+	{
+		path: "/artist-studio",
+		label: "Artist Studio",
+		icon: Paintbrush,
+		artistOnly: true,
+	},
 ];
 
 export default function Layout() {
 	const { user, logout } = useAuthContext();
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 	const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+	const [searchArtResults, setSearchArtResults] = useState<any[]>([]);
+	const [searchCollectionResults, setSearchCollectionResults] = useState<
+		any[]
+	>([]);
 
 	const handleLogout = () => {
 		logout();
 	};
 
-	const handleSearch = (value: string) => {
-		// Handle search functionality
-		console.log("Search:", value);
+	const handleSearch = async (value: string) => {
+		const res = await artService.searchArtworks(value);
+		setSearchArtResults(res.arts.data);
+		setSearchCollectionResults(res.collections.data);
 	};
 
 	const toggleSidebar = () => {
@@ -57,26 +68,36 @@ export default function Layout() {
 		setMobileSearchOpen(!mobileSearchOpen);
 	};
 
+	useEffect(() => {
+		artService.searchArtworks("w").then(console.log).catch(console.error);
+	}, []);
+
 	return (
 		<ProtectedRoute>
 			<TooltipProvider>
 				<div className="flex min-h-screen w-full">
 					{/* Sidebar Overlay - Shows on both mobile and desktop */}
 					{sidebarOpen && (
-						<div 
+						<div
 							className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
 							onClick={closeSidebar}
 						/>
 					)}
 
 					{/* Sidebar - Overlay style for both mobile and desktop */}
-					<aside className={`fixed left-0 top-0 z-50 h-screen w-[20rem] border-r bg-sidebar text-sidebar-foreground transition-transform duration-300 ease-in-out ${
-						sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-					}`}>
+					<aside
+						className={`fixed left-0 top-0 z-50 h-screen w-[20rem] border-r bg-sidebar text-sidebar-foreground transition-transform duration-300 ease-in-out ${
+							sidebarOpen ? "translate-x-0" : "-translate-x-full"
+						}`}
+					>
 						<div className="flex h-full flex-col">
 							{/* Sidebar Header */}
 							<div className="flex items-center justify-between p-4 border-b min-h-[4rem]">
-								<Link to="/" className="flex items-center space-x-2" onClick={closeSidebar}>
+								<Link
+									to="/"
+									className="flex items-center space-x-2"
+									onClick={closeSidebar}
+								>
 									<ThemeLogo className="h-8" />
 								</Link>
 								{/* Close button */}
@@ -89,12 +110,15 @@ export default function Layout() {
 									<X className="h-4 w-4" />
 								</Button>
 							</div>
-							
+
 							{/* Sidebar Content */}
 							<div className="flex-1 overflow-y-auto p-3">
 								<nav className="space-y-1">
 									{navigationItems
-										.filter((item) => !item.artistOnly || user?.artist)
+										.filter(
+											(item) =>
+												!item.artistOnly || user?.artist
+										)
 										.map((item) => (
 											<NavLinkItem
 												key={item.path}
@@ -114,7 +138,7 @@ export default function Layout() {
 					{/* Main Content Area - Full width */}
 					<div className="flex-1 flex flex-col w-full">
 						{/* Mobile Search Overlay */}
-						<MobileSearchOverlay 
+						<MobileSearchOverlay
 							isOpen={mobileSearchOpen}
 							onClose={toggleMobileSearch}
 							onSearch={handleSearch}
@@ -124,31 +148,136 @@ export default function Layout() {
 						<header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6">
 							{/* Left side - Hamburger and Logo */}
 							<div className="flex items-center gap-4">
-								<Button 
-									variant="ghost" 
-									size="icon" 
+								<Button
+									variant="ghost"
+									size="icon"
 									className="h-9 w-9"
 									onClick={toggleSidebar}
 								>
 									<Menu className="h-4 w-4" />
 								</Button>
-								
+
 								{/* Logo - Icon on mobile, Full logo on desktop */}
 								<Link to="/" className="flex items-center">
 									<IconLogo className="h-6 md:hidden" />
-									<ThemeLogo className="hidden md:block h-10" />
+									<ThemeLogo className="hidden md:block h-8" />
 								</Link>
 							</div>
 
 							{/* Center: Search Bar */}
 							<HeaderSearch onSearch={handleSearch} />
 
+							{(searchArtResults.length > 0 ||
+								searchCollectionResults.length > 0) && (
+								<div className="absolute top-16 left-1/2 transform -translate-x-1/2 w-full max-w-3xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-md shadow-lg z-50">
+									<div className="max-h-96 overflow-y-auto divide-y divide-gray-200 dark:divide-zinc-700">
+										{/* Artworks Section */}
+										{searchArtResults.length > 0 && (
+											<div className="p-4">
+												<h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+													Artworks
+												</h3>
+												<ul className="space-y-2">
+													{searchArtResults.map(
+														(art) => (
+															<li
+																key={art.id}
+																className="flex items-start gap-4 p-2 rounded hover:bg-gray-50 dark:hover:bg-zinc-800 cursor-pointer transition-colors"
+															>
+																{art.imageFile
+																	?.fileName && (
+																	<img
+																		src={
+																			"https://placehold.co/150x150"
+																		}
+																		alt={
+																			art.title
+																		}
+																		className="w-8 h-8 rounded object-cover"
+																	/>
+																)}
+																<div className="flex flex-col">
+																	<p className="font-semibold text-sm text-gray-900 dark:text-white">
+																		{
+																			art.title
+																		}
+																	</p>
+																	<p className="text-xs text-gray-400">
+																		by{" "}
+																		{art
+																			.artist
+																			?.artistName ||
+																			"Unknown Artist"}
+																	</p>
+																</div>
+															</li>
+														)
+													)}
+												</ul>
+											</div>
+										)}
+
+										{/* Collections Section */}
+										{searchCollectionResults.length > 0 && (
+											<div className="p-4">
+												<h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+													Collections
+												</h3>
+												<ul className="space-y-2">
+													{searchCollectionResults.map(
+														(col) => (
+															<li
+																key={col.id}
+																className="flex items-start gap-4 p-2 rounded hover:bg-gray-50 dark:hover:bg-zinc-800 cursor-pointer transition-colors"
+															>
+																{col
+																	.coverImageFile
+																	?.fileName && (
+																	<img
+																		src={
+																			"https://placehold.co/150x150"
+																		}
+																		alt={
+																			col.collectionName
+																		}
+																		className="w-8 h-8 rounded object-cover"
+																	/>
+																)}
+																<div className="flex flex-col">
+																	<p className="font-semibold text-sm text-gray-900 dark:text-white">
+																		{
+																			col.collectionName
+																		}
+																	</p>
+																	<p className="text-xs text-gray-400">
+																		by{" "}
+																		{col
+																			.artist
+																			?.artistName ||
+																			"Unknown Creator"}
+																	</p>
+																</div>
+															</li>
+														)
+													)}
+												</ul>
+											</div>
+										)}
+									</div>
+								</div>
+							)}
+
 							{/* Right side - Actions and User menu */}
 							<div className="flex items-center gap-2">
-								<HeaderActions onSearchClick={toggleMobileSearch} />
+								<HeaderActions
+									onSearchClick={toggleMobileSearch}
+								/>
 
 								{/* User Profile Dropdown */}
-								<UserDropdown user={user} onLogout={handleLogout} />
+								<UserDropdown
+									user={user}
+									onLogout={handleLogout}
+								/>
 							</div>
 						</header>
 
