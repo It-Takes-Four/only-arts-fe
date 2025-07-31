@@ -99,7 +99,9 @@ class AuthService extends BaseService {
   }
 
   getToken(): string | undefined {
-    return getCookie(this.TOKEN_KEY);
+    const token = getCookie(this.TOKEN_KEY);
+    // Return undefined if token is empty or falsy
+    return token && token.trim() ? token : undefined;
   }
 
   clearToken(): void {
