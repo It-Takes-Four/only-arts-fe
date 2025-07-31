@@ -21,22 +21,22 @@ import { useSearchContext } from "app/context/search-context";
 import type { ExploreArtwork } from "app/pages/explore/core";
 
 interface NavItem {
-  path: string;
-  label: string;
-  icon: ComponentType<{ className?: string }>;
-  artistOnly?: boolean;
+	path: string;
+	label: string;
+	icon: ComponentType<{ className?: string }>;
+	artistOnly?: boolean;
 }
 
 const navigationItems: NavItem[] = [
-  { path: "/", label: "Home", icon: HomeIcon },
-  { path: "/explore", label: "Explore", icon: Compass },
-  { path: "/profile", label: "Profile", icon: UserIcon },
-  {
-    path: "/artist-studio",
-    label: "Artist Studio",
-    icon: Paintbrush,
-    artistOnly: true,
-  },
+	{ path: "/", label: "Home", icon: HomeIcon },
+	{ path: "/explore", label: "Explore", icon: Compass },
+	{ path: "/profile", label: "Profile", icon: UserIcon },
+	{
+		path: "/artist-studio",
+		label: "Artist Studio",
+		icon: Paintbrush,
+		artistOnly: true,
+	},
 ];
 
 export default function Layout() {
@@ -46,9 +46,9 @@ export default function Layout() {
   
   const { setSearchArtResults, setSearchCollectionResults } = useSearchContext();
 
-  const handleLogout = () => {
-    logout();
-  };
+	const handleLogout = () => {
+		logout();
+	};
 
   const handleSearch = async (value: string) => {
     const res = await artService.searchArtworks(value);
@@ -71,13 +71,13 @@ export default function Layout() {
     setSearchCollectionResults(res.collections.data); 
 };
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
-  };
+	const toggleSidebar = () => {
+		setSidebarOpen(!sidebarOpen);
+	};
 
-  const closeSidebar = () => {
-    setSidebarOpen(false);
-  };
+	const closeSidebar = () => {
+		setSidebarOpen(false);
+	};
 
   const toggleMobileSearch = () => {
     setMobileSearchOpen(!mobileSearchOpen);
@@ -95,107 +95,115 @@ export default function Layout() {
             />
           )}
 
-          {/* Sidebar - Overlay style for both mobile and desktop */}
-          <aside
-            className={`fixed left-0 top-0 z-50 h-screen w-[20rem] border-r bg-sidebar text-sidebar-foreground transition-transform duration-300 ease-in-out ${
-              sidebarOpen ? "translate-x-0" : "-translate-x-full"
-            }`}
-          >
-            <div className="flex h-full flex-col">
-              {/* Sidebar Header */}
-              <div className="flex items-center justify-between p-4 border-b min-h-[4rem]">
-                <Link
-                  to="/"
-                  className="flex items-center space-x-2"
-                  onClick={closeSidebar}
-                >
-                  <ThemeLogo className="h-8" />
-                </Link>
-                {/* Close button */}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={closeSidebar}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
+					{/* Sidebar - Overlay style for both mobile and desktop */}
+					<aside
+						className={`fixed left-0 top-0 z-50 h-screen w-[20rem] border-r bg-sidebar text-sidebar-foreground transition-transform duration-300 ease-in-out ${
+							sidebarOpen ? "translate-x-0" : "-translate-x-full"
+						}`}
+					>
+						<div className="flex h-full flex-col">
+							{/* Sidebar Header */}
+							<div className="flex items-center justify-between p-4 border-b min-h-[4rem]">
+								<Link
+									to="/"
+									className="flex items-center space-x-2"
+									onClick={closeSidebar}
+								>
+									<ThemeLogo className="h-8" />
+								</Link>
+								{/* Close button */}
+								<Button
+									variant="ghost"
+									size="icon"
+									className="h-8 w-8"
+									onClick={closeSidebar}
+								>
+									<X className="h-4 w-4" />
+								</Button>
+							</div>
 
-              {/* Sidebar Content */}
-              <div className="flex-1 overflow-y-auto p-3">
-                <nav className="space-y-1">
-                  {navigationItems
-                    .filter((item) => !item.artistOnly || user?.artist)
-                    .map((item) => (
-                      <NavLinkItem
-                        key={item.path}
-                        to={item.path}
-                        icon={item.icon}
-                        variant="sidebar"
-                        onClick={closeSidebar}
-                      >
-                        {item.label}
-                      </NavLinkItem>
-                    ))}
-                </nav>
-              </div>
-            </div>
-          </aside>
+							{/* Sidebar Content */}
+							<div className="flex-1 overflow-y-auto p-3">
+								<nav className="space-y-1">
+									{navigationItems
+										.filter(
+											(item) =>
+												!item.artistOnly || user?.artist
+										)
+										.map((item) => (
+											<NavLinkItem
+												key={item.path}
+												to={item.path}
+												icon={item.icon}
+												variant="sidebar"
+												onClick={closeSidebar}
+											>
+												{item.label}
+											</NavLinkItem>
+										))}
+								</nav>
+							</div>
+						</div>
+					</aside>
 
-          {/* Main Content Area - Full width */}
-          <div className="flex-1 flex flex-col w-full">
-            {/* Mobile Search Overlay */}
-            <MobileSearchOverlay
-              isOpen={mobileSearchOpen}
-              onClose={toggleMobileSearch}
-              onSearch={handleSearch}
-            />
+					{/* Main Content Area - Full width */}
+					<div className="flex-1 flex flex-col w-full">
+						{/* Mobile Search Overlay */}
+						<MobileSearchOverlay
+							isOpen={mobileSearchOpen}
+							onClose={toggleMobileSearch}
+							onSearch={handleSearch}
+						/>
 
-            {/* Top Navigation */}
-            <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6">
-              {/* Left side - Hamburger and Logo */}
-              <div className="flex items-center gap-4">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-9 w-9"
-                  onClick={toggleSidebar}
-                >
-                  <Menu className="h-4 w-4" />
-                </Button>
+						{/* Top Navigation */}
+						<header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-4 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 md:px-6">
+							{/* Left side - Hamburger and Logo */}
+							<div className="flex items-center gap-4">
+								<Button
+									variant="ghost"
+									size="icon"
+									className="h-9 w-9"
+									onClick={toggleSidebar}
+								>
+									<Menu className="h-4 w-4" />
+								</Button>
 
-                {/* Logo - Icon on mobile, Full logo on desktop */}
-                <Link to="/" className="flex items-center">
-                  <IconLogo className="h-6 md:hidden" />
-                  <ThemeLogo className="hidden md:block h-8" />
-                </Link>
-              </div>
+								{/* Logo - Icon on mobile, Full logo on desktop */}
+								<Link to="/" className="flex items-center">
+									<IconLogo className="h-6 md:hidden" />
+									<ThemeLogo className="hidden md:block h-8" />
+								</Link>
+							</div>
 
               {/* Center: Search Bar */}
               <HeaderSearch onSearch={handleSearch} />
 
-              {/* Right side - Actions and User menu */}
-              <div className="flex items-center gap-2">
-                <HeaderActions onSearchClick={toggleMobileSearch} />
+							{/* Right side - Actions and User menu */}
+							<div className="flex items-center gap-2">
+								<HeaderActions
+									onSearchClick={toggleMobileSearch}
+								/>
 
-                {/* User Profile Dropdown */}
-                <UserDropdown user={user} onLogout={handleLogout} />
-              </div>
-            </header>
+								{/* User Profile Dropdown */}
+								<UserDropdown
+									user={user}
+									onLogout={handleLogout}
+								/>
+							</div>
+						</header>
 
-            {/* Main Content */}
-            <main className="flex-1 overflow-hidden">
-              <div className="h-full">
-                <div className="fixed inset-0 z-[-1]">
-                  <BackgroundBeams />
-                </div>
-                <Outlet />
-              </div>
-            </main>
-          </div>
-        </div>
-      </TooltipProvider>
-    </ProtectedRoute>
-  );
+						{/* Main Content */}
+						<main className="flex-1 overflow-hidden">
+							<div className="h-full">
+								<div className="fixed inset-0 z-[-1]">
+									<BackgroundBeams />
+								</div>
+								<Outlet />
+							</div>
+						</main>
+					</div>
+				</div>
+			</TooltipProvider>
+		</ProtectedRoute>
+	);
 }

@@ -1,16 +1,5 @@
 import BaseService from './base-service';
-
-export interface PrepareCollectionPurchaseRequest {
-    collectionId: string;
-    buyerId: string;
-    artistWalletAddress: string;
-}
-
-export interface CompleteCollectionPurchaseRequest {
-    collectionId: string;
-    buyerId: string;
-    txHash: string;
-}
+import type { CompleteCollectionPurchaseRequest, PrepareCollectionPurchaseRequest } from "../types/collection-purchase";
 
 class ArtCollectionsService extends BaseService {
     async prepareCollectionPurchase(request: PrepareCollectionPurchaseRequest): Promise<any> {

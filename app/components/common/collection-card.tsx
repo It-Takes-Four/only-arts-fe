@@ -42,7 +42,7 @@ export function CollectionCard({
 						<div className="relative w-12 h-12 overflow-hidden rounded-lg bg-muted flex-shrink-0">
 							{previewImage ? (
 								<img
-									src={previewImage || "/placeholder.svg"}
+									src={previewImage}
 									alt={name}
 									className="w-full h-full object-cover"
 								/>
@@ -61,7 +61,7 @@ export function CollectionCard({
 				<TableCell>
 					<div className="flex items-center gap-2">
 						<Avatar className="h-6 w-6">
-							<AvatarImage src={createdByAvatar || "/placeholder.svg"}/>
+							<AvatarImage src={createdByAvatar}/>
 							<AvatarFallback className="text-xs">{createdBy.charAt(0).toUpperCase()}</AvatarFallback>
 						</Avatar>
 						<span className="text-sm">{createdBy}</span>
@@ -97,12 +97,13 @@ export function CollectionCard({
 
 	if (viewMode === "row") {
 		return (
-			<Card className="group overflow-hidden hover:shadow-lg transition-all duration-300" onClick={() => navigate(`/collection/${id}`)}>
+			<Card className="group overflow-hidden hover:shadow-lg transition-all duration-300"
+						onClick={() => navigate(`/collection/${id}`)}>
 				<div className="flex justify-center items-center">
 					<div className="relative w-35 h-35 overflow-hidden bg-muted flex-shrink-0">
 						{previewImage ? (
 							<img
-								src={previewImage || "/placeholder.svg"}
+								src={previewImage}
 								alt={`Preview 1`}
 								className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
 							/>
@@ -127,6 +128,7 @@ export function CollectionCard({
 								<span
 									className="flex px-2 py-1.5 glass rounded-full font-medium border-border text-foreground items-center gap-x-1.5"
 								>
+
 								<img src={"https://placehold.co/50x50"} alt="Artist Avatar" className="h-5 w-5 rounded-full"/>
 									{createdBy}
 							</span>
@@ -154,15 +156,24 @@ export function CollectionCard({
 				{previewImage ? (
 					<div className="grid gap-1 h-full">
 						<div key={0} className="relative overflow-hidden">
-							<img
-								src={previewImage || "/placeholder.svg"}
-								alt={`Preview 1`}
-								className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-							/>
+							{previewImage ? (
+								<img
+									src={previewImage}
+									alt={name}
+									className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+								/>
+							) : (
+								<div className="h-full w-full flex items-center justify-center">
+									<ImageIcon className="h-4 w-4 text-muted-foreground"/>
+								</div>
+							)}
 							<span
 								className="absolute top-3 left-3 flex px-2 py-1.5 glass rounded-full text-sm font-medium border-border text-white items-center gap-x-1.5"
 							>
-								<img src={"https://placehold.co/50x50"} alt="Artist Avatar" className="h-5 rounded-full"/>
+								<Avatar className="h-5 w-5">
+									<AvatarImage src={createdByAvatar || "/placeholder.svg"}/>
+									<AvatarFallback className="text-xs text-foreground">{createdBy.charAt(0).toUpperCase()}</AvatarFallback>
+								</Avatar>
 								{createdBy}
 							</span>
 						</div>

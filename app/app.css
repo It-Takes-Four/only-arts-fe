@@ -158,6 +158,32 @@
         font-family: var(--font-sans);
         letter-spacing: var(--tracking-normal);
     }
+
+
+
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: grey;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: darkgrey;
+    }
+
+    /*!* For Firefox *!*/
+    /*html {*/
+    /*    scrollbar-width: thin;*/
+    /*    scrollbar-color: darkgrey transparent;*/
+    /*}*/
 }
 
 @layer components {

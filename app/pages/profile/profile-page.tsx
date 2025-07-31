@@ -22,7 +22,6 @@ export function ProfilePage() {
 				// <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
 					<div className="">
 
-			<CollectionCard id='1' name="Feet collection" description="Irvin's collection of feet pics >:D" artworkCount={100} previewImage="/profile-background.jpg" createdBy="piipipipi" price={1.99} totalSales={2} viewMode="table"/>
 			</div>,
 		},
 		{
@@ -117,7 +116,7 @@ export function ProfilePage() {
 				<GlassCard className="py-4 px-8 flex flex-col lg:flex-row justify-between">
 					<div className="flex items-start lg:items-end space-x-4">
 						<img src="https://placehold.co/150x150" alt="Artist Avatar"
-								 className="rounded-full w-2- h-20 shadow-lg"/>
+								 className="rounded-full w-20 h-20 shadow-lg"/>
 						<div className="flex flex-col rounded-lg">
 							<span className="flex items-center text-white">
 								<h1 className="text-2xl font-bold text-white">{user?.username}</h1>

@@ -18,10 +18,13 @@ import {
 	EyeIcon, 
 	HeartIcon, 
 	ShareIcon,
-	FolderIcon
+	FolderIcon,
 } from "@heroicons/react/24/outline";
+import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { ImageIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { FollowButton } from "../../components/common/follow-button";
+import { formatDateToMonthYear } from "../../utils/dates/DateFormatter";
 
 export function ArtistStudioPage() {
 	const { user } = useAuthContext();
@@ -354,22 +357,29 @@ export function ArtistStudioPage() {
 			</div>
 
 			{/* Artist Info */}
-			<GlassCard className="mb-8 p-6">
+			<GlassCard className="mb-8 py-4 px-8">
 				<div className="flex items-center gap-4">
 					<img 
 						src={user.profilePicture || "https://placehold.co/80x80"} 
 						alt="Artist Avatar"
-						className="rounded-full w-16 h-16 shadow-lg"
+						className="rounded-full w-20 h-20 shadow-lg"
 					/>
 					<div>
-						<h2 className="text-xl font-semibold">{user.artist.artistName}</h2>
-						<p className="text-muted-foreground">{user.artist.bio || "No bio available"}</p>
+						<h2 className="text-2xl font-bold">{user.artist.artistName}</h2>
+						<p className="text-sm text-muted-foreground mt-1">{user.artist.bio || "No bio available"}</p>
 						<div className="flex items-center gap-2 mt-2">
+							<Badge variant="outline"
+										 className="font-mono text-primary-foreground text-xs uppercase border-white/25">
+								{`JOINED ${formatDateToMonthYear(user.createdAt)}`}
+							</Badge>
 							{user.artist.isVerified && (
-								<Badge variant="default">Verified Artist</Badge>
+								<Badge variant="default" className="font-mono uppercase" >
+									<CheckBadgeIcon className="mb-0.25"/>
+									Verified Artist
+								</Badge>
 							)}
 							{user.artist.isNsfw && (
-								<Badge variant="secondary">NSFW Content</Badge>
+								<Badge variant="secondary" className="font-mono uppercase">NSFW</Badge>
 							)}
 						</div>
 					</div>
