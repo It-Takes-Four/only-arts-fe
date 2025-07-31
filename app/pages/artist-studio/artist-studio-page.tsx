@@ -10,6 +10,7 @@ import { CollectionCard } from "../../components/common/collection-card";
 import { ArtCard } from "../../components/common/art-card";
 import { CreateCollectionModal } from "../../components/artist-studio/create-collection-modal";
 import { CreateArtworkModal } from "../../components/artist-studio/create-artwork-modal";
+import { EditArtistProfileModal } from "../../components/artist-studio/edit-artist-profile-modal";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { 
@@ -19,20 +20,21 @@ import {
 	HeartIcon, 
 	ShareIcon,
 	FolderIcon,
+	PencilIcon,
 } from "@heroicons/react/24/outline";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { ImageIcon } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FollowButton } from "../../components/common/follow-button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDateToMonthYear } from "../../utils/dates/DateFormatter";
 
 export function ArtistStudioPage() {
-	const { user } = useAuthContext();
+	const { user, refreshUserWithValidation } = useAuthContext();
 	const { collections, loading: collectionsLoading, addCollection } = useMyCollections();
 	const { artworks, loading: artworksLoading, addArtwork } = useMyArtworks();
 	const [tabValue, setTabValue] = useState("collections");
 	const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false);
 	const [showCreateArtworkModal, setShowCreateArtworkModal] = useState(false);
+	const [showEditProfileModal, setShowEditProfileModal] = useState(false);
 
 	// Calculate analytics from real data
 	const analytics = {
@@ -58,6 +60,19 @@ export function ArtistStudioPage() {
 		console.log('Artwork created:', artwork);
 		// Add the new artwork to the list
 		addArtwork(artwork);
+	};
+
+	// Handle artist profile update success
+	const handleProfileUpdated = async (artist: any) => {
+		console.log('Artist profile updated:', artist);
+		// Force a user data refresh to ensure the UI updates immediately
+		try {
+			console.log('Triggering additional user refresh from artist studio page...');
+			await refreshUserWithValidation();
+			console.log('User data refreshed successfully from artist studio page');
+		} catch (error) {
+			console.error('Failed to refresh user data from artist studio page:', error);
+		}
 	};
 
 	const tabs = [
@@ -160,7 +175,7 @@ export function ArtistStudioPage() {
 											},
 											tags: artwork.tags.map((tag: any) => ({ name: tag.tag.tagName })),
 											type: 'art',
-											createdAt: new Date(artwork.datePosted)
+											createdAt: artwork.datePosted
 										}} 
 									/>
 									{/* Artwork stats overlay */}
@@ -358,31 +373,42 @@ export function ArtistStudioPage() {
 
 			{/* Artist Info */}
 			<GlassCard className="mb-8 py-4 px-8">
-				<div className="flex items-center gap-4">
-					<img 
-						src={user.profilePicture || "https://placehold.co/80x80"} 
-						alt="Artist Avatar"
-						className="rounded-full w-20 h-20 shadow-lg"
-					/>
-					<div>
-						<h2 className="text-2xl font-bold">{user.artist.artistName}</h2>
-						<p className="text-sm text-muted-foreground mt-1">{user.artist.bio || "No bio available"}</p>
-						<div className="flex items-center gap-2 mt-2">
-							<Badge variant="outline"
-										 className="font-mono text-primary-foreground text-xs uppercase border-white/25">
-								{user?.artist?.createdAt ? `JOINED ${formatDateToMonthYear(user.artist.createdAt)}` : 'ARTIST'}
-							</Badge>
-							{user.artist.isVerified && (
-								<Badge variant="default" className="font-mono uppercase" >
-									<CheckBadgeIcon className="mb-0.25"/>
-									Verified Artist
+				<div className="flex items-center justify-between">
+					<div className="flex items-center gap-4">
+						<img 
+							src={user.profilePicture || "https://placehold.co/80x80"} 
+							alt="Artist Avatar"
+							className="rounded-full w-20 h-20 shadow-lg"
+						/>
+						<div>
+							<h2 className="text-2xl font-bold">{user.artist.artistName}</h2>
+							<p className="text-sm text-muted-foreground mt-1">{user.artist.bio || "No bio available"}</p>
+							<div className="flex items-center gap-2 mt-2">
+								<Badge variant="outline"
+											 className="font-mono text-primary-foreground text-xs uppercase border-white/25">
+									{user?.artist?.createdAt ? `JOINED ${formatDateToMonthYear(user.artist.createdAt)}` : 'ARTIST'}
 								</Badge>
-							)}
-							{user.artist.isNsfw && (
-								<Badge variant="secondary" className="font-mono uppercase">NSFW</Badge>
-							)}
+								{user.artist.isVerified && (
+									<Badge variant="default" className="font-mono uppercase" >
+										<CheckBadgeIcon className="mb-0.25"/>
+										Verified Artist
+									</Badge>
+								)}
+								{user.artist.isNsfw && (
+									<Badge variant="secondary" className="font-mono uppercase">NSFW</Badge>
+								)}
+							</div>
 						</div>
 					</div>
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => setShowEditProfileModal(true)}
+						className="flex items-center gap-2"
+					>
+						<PencilIcon className="h-4 w-4" />
+						Edit Profile
+					</Button>
 				</div>
 			</GlassCard>
 
@@ -414,6 +440,12 @@ export function ArtistStudioPage() {
 				isOpen={showCreateArtworkModal}
 				onClose={() => setShowCreateArtworkModal(false)}
 				onSuccess={handleArtworkCreated}
+			/>
+
+			<EditArtistProfileModal
+				isOpen={showEditProfileModal}
+				onClose={() => setShowEditProfileModal(false)}
+				onSuccess={handleProfileUpdated}
 			/>
 		</div>
 	);
