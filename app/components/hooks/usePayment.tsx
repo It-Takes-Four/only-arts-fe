@@ -9,7 +9,7 @@ export enum PaymentStatus {
     PROCESSING = "Processing",
     WAITING = "Waiting",
     VERIFYING = "Verifying",
-    COMPLETED = "Completed"
+    PURCHASED = "Purchased"
 }
 
 export function usePayment() {
@@ -108,7 +108,7 @@ export function usePayment() {
             });
 
 
-            setpaymentStatus(PaymentStatus.COMPLETED)
+            setpaymentStatus(PaymentStatus.PURCHASED)
             toast.success("Purchase Successful!")
         } catch (error: any) {
             console.log(error);
