@@ -1,4 +1,4 @@
-import { CalendarDays, Heart, Tag, User } from "lucide-react";
+import { CalendarDays, Heart, ImageIcon, Tag, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
@@ -28,12 +28,20 @@ export function ArtPage() {
 			<div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
 				{/* Left Column: Image */}
 				<div className="overflow-hidden shadow-lg">
-					<img
-						src={art.imageUrl || "/placeholder.svg"}
-						alt={art.title}
-						className="object-cover rounded-lg w-full h-auto"
-						sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-					/>
+					{
+						art.imageUrl ? (
+							<img
+								src={art.imageUrl}
+								alt={art.title}
+								className="object-cover rounded-lg w-full h-auto"
+								sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+							/>
+						) : (
+							<div className="flex items-center justify-center h-full bg-gray-200/10 rounded-lg">
+								<ImageIcon className="h-6 w-6 text-muted-foreground"/>
+							</div>
+						)
+					}
 				</div>
 
 				{/* Right Column: Details */}
