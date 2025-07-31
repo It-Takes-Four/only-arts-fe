@@ -86,12 +86,12 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
 
   return (
     <motion.div
-      className="sticky top-16 z-20 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm"
+      className="sticky top-14 sm:top-16 z-20 bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="container mx-auto px-4 py-3">
+      <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-3">
         {/* Mobile Layout */}
         {isMobile ? (
           <div className="space-y-3">
@@ -149,7 +149,7 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
                     </div>
                   ) : displayTags.length > 0 ? (
                     <>
-                      {displayTags.slice(0, isTagsExpanded ? displayTags.length : 6).map((tag, index) => (
+                      {displayTags.slice(0, isTagsExpanded ? displayTags.length : (isMobile ? 4 : 6)).map((tag, index) => (
                         <motion.div
                           key={tag.id}
                           initial={{ opacity: 0, scale: 0.8 }}
@@ -175,7 +175,7 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
                   )}
                 </div>
                 
-                {displayTags.length > 6 && (
+                {displayTags.length > (isMobile ? 4 : 6) && (
                   <div className="flex justify-center">
                     <Button
                       variant="ghost"
@@ -190,7 +190,7 @@ export function TagSelector({ selectedTagId, onTagSelect }: TagSelectorProps) {
                         </>
                       ) : (
                         <>
-                          Show {displayTags.length - 6} more tags
+                          Show {displayTags.length - (isMobile ? 4 : 6)} more tags
                           <ChevronDown className="h-3 w-3" />
                         </>
                       )}

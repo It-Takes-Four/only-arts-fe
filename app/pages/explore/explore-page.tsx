@@ -20,7 +20,7 @@ export function ExplorePage() {
       </div>
       
       {/* Content - Positioned above background with proper spacing for header */}
-      <div className="relative z-10 pt-16 min-h-full">
+      <div className="relative z-10 pt-14 sm:pt-16 min-h-full">
         {/* Tag Selector - Sticky */}
         <TagSelector 
           selectedTagId={selectedTagId} 
@@ -28,7 +28,7 @@ export function ExplorePage() {
         />
         
         <motion.div 
-          className="container mx-auto px-4 py-8"
+          className="w-full max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}

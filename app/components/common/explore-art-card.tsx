@@ -76,7 +76,7 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
 
   return (
     <motion.div
-      className={`group relative overflow-hidden rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/20 hover:border-primary/30 ${
+      className={`group relative overflow-hidden rounded-lg sm:rounded-xl bg-card/50 backdrop-blur-sm border border-border/50 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/20 hover:border-primary/30 ${
         isSingleColumn ? 'max-w-md mx-auto' : ''
       }`}
       variants={cardVariants}
@@ -90,12 +90,12 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
       onHoverStart={() => !isMobile && setIsHovered(true)}
       onHoverEnd={() => !isMobile && setIsHovered(false)}
       whileHover={{ 
-        y: -8,
+        y: isMobile ? 0 : -8,
         transition: { duration: 0.2 }
       }}
     >
       {/* Image Container */}
-      <div className="relative aspect-[3/4] overflow-hidden">
+      <div className="relative aspect-[3/4] sm:aspect-[3/4] overflow-hidden">
         <AuthenticatedImage 
           imageFileId={artwork.imageFileId}
           alt={artwork.title}
@@ -104,14 +104,14 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
         
         {/* Collection indicator */}
         {artwork.isInACollection && (
-          <div className="absolute top-3 right-3 z-20">
+          <div className="absolute top-2 sm:top-3 right-2 sm:right-3 z-20">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.3 }}
-              className="p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border/50"
+              className="p-1.5 sm:p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border/50"
             >
-              <Folder className="w-4 h-4 text-primary" />
+              <Folder className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
             </motion.div>
           </div>
         )}
@@ -125,7 +125,7 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
           transition={{ duration: 0.3 }}
         >
           <motion.div 
-            className="flex space-x-4"
+            className="flex space-x-2 sm:space-x-4"
             variants={buttonVariants}
             initial="hidden"
             animate={isHovered ? "visible" : "hidden"}
@@ -135,45 +135,45 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
             }}
           >
             <motion.button
-              className="p-3 rounded-full bg-background/90 backdrop-blur-sm border border-border/50 hover:bg-primary hover:text-primary-foreground transition-colors"
+              className="p-2 sm:p-3 rounded-full bg-background/90 backdrop-blur-sm border border-border/50 hover:bg-primary hover:text-primary-foreground transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Heart className="w-5 h-5" />
+              <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
             </motion.button>
             <motion.button
-              className="p-3 rounded-full bg-background/90 backdrop-blur-sm border border-border/50 hover:bg-primary hover:text-primary-foreground transition-colors"
+              className="p-2 sm:p-3 rounded-full bg-background/90 backdrop-blur-sm border border-border/50 hover:bg-primary hover:text-primary-foreground transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
-              <MessageCircle className="w-5 h-5" />
+              <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
             </motion.button>
             <motion.button
-              className="p-3 rounded-full bg-background/90 backdrop-blur-sm border border-border/50 hover:bg-primary hover:text-primary-foreground transition-colors"
+              className="p-2 sm:p-3 rounded-full bg-background/90 backdrop-blur-sm border border-border/50 hover:bg-primary hover:text-primary-foreground transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Share2 className="w-5 h-5" />
+              <Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
             </motion.button>
           </motion.div>
         </motion.div>
       </div>
 
       {/* Content */}
-      <div className="p-4 space-y-3">
+      <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
         {/* Artist Info */}
-        <div className="flex items-center space-x-3">
-          <Avatar className="w-8 h-8 ring-2 ring-primary/20">
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          <Avatar className="w-7 h-7 sm:w-8 sm:h-8 ring-2 ring-primary/20">
             <AvatarImage 
               src={artwork.artistProfileFileId ? `/api/files/${artwork.artistProfileFileId}` : undefined}
               alt={artwork.artistName}
             />
-            <AvatarFallback className="bg-primary/10 text-primary font-medium">
+            <AvatarFallback className="bg-primary/10 text-primary font-medium text-xs sm:text-sm">
               {getUserInitials(artwork.artistName)}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-foreground truncate">
+            <p className="text-xs sm:text-sm font-medium text-foreground truncate">
               {artwork.artistName}
             </p>
             <p className="text-xs text-muted-foreground">
@@ -183,11 +183,11 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
         </div>
 
         {/* Artwork Info */}
-        <div className="space-y-2">
-          <h3 className="font-semibold text-foreground line-clamp-2">
+        <div className="space-y-1 sm:space-y-2">
+          <h3 className="font-semibold text-sm sm:text-base text-foreground line-clamp-2">
             {artwork.title}
           </h3>
-          <p className="text-sm text-muted-foreground line-clamp-2">
+          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2">
             {artwork.description}
           </p>
         </div>
@@ -195,31 +195,31 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
         {/* Tags */}
         {artwork.tags && artwork.tags.length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {artwork.tags.slice(0, 3).map((tag) => (
+            {artwork.tags.slice(0, isMobile ? 2 : 3).map((tag) => (
               <Badge
                 key={tag.id}
                 variant="secondary"
-                className="text-xs px-2 py-1 bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                className="text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
               >
                 {tag.tagName}
               </Badge>
             ))}
-            {artwork.tags.length > 3 && (
+            {artwork.tags.length > (isMobile ? 2 : 3) && (
               <Badge
                 variant="secondary"
-                className="text-xs px-2 py-1 bg-muted/50 text-muted-foreground"
+                className="text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 bg-muted/50 text-muted-foreground"
               >
-                +{artwork.tags.length - 3}
+                +{artwork.tags.length - (isMobile ? 2 : 3)}
               </Badge>
             )}
           </div>
         )}
 
         {/* Stats */}
-        <div className="flex items-center justify-between pt-2 border-t border-border/50">
+        <div className="flex items-center justify-between pt-1.5 sm:pt-2 border-t border-border/50">
           <div className="flex items-center space-x-1 text-muted-foreground">
-            <Heart className="w-4 h-4" />
-            <span className="text-sm font-medium">{artwork.likesCount}</span>
+            <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="text-xs sm:text-sm font-medium">{artwork.likesCount}</span>
           </div>
           <div className="text-xs text-muted-foreground">
             {artwork.isInACollection && 'In Collection'}
