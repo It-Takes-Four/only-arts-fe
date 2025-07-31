@@ -18,8 +18,9 @@ import {
 	EyeIcon, 
 	HeartIcon, 
 	ShareIcon,
-	FolderIcon
+	FolderIcon,
 } from "@heroicons/react/24/outline";
+import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { ImageIcon } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FollowButton } from "../../components/common/follow-button";
@@ -372,7 +373,10 @@ export function ArtistStudioPage() {
 								{`JOINED ${formatDateToMonthYear(user.createdAt)}`}
 							</Badge>
 							{user.artist.isVerified && (
-								<Badge variant="default">Verified Artist</Badge>
+								<Badge variant="default" className="font-mono uppercase" >
+									<CheckBadgeIcon className="mb-0.25"/>
+									Verified Artist
+								</Badge>
 							)}
 							{user.artist.isNsfw && (
 								<Badge variant="secondary" className="font-mono uppercase">NSFW</Badge>

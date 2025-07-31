@@ -128,7 +128,7 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {/* Collection Name */}
-              <div className="space-y-2">
+              <div className="flex flex-col space-y-2">
                 <Label htmlFor="collectionName">Collection Name *</Label>
                 <Input
                   id="collectionName"
@@ -153,7 +153,7 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
               </div>
 
               {/* Cover Image */}
-              <div className="space-y-2">
+              <div className="flex flex-col space-y-2">
                 <Label htmlFor="coverImage">Cover Image (Optional)</Label>
                 <div className="space-y-3">
                   {previewImage ? (
@@ -161,7 +161,7 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
                       <img
                         src={previewImage}
                         alt="Cover preview"
-                        className="w-full h-32 object-cover rounded-lg border border-border"
+                        className="w-full h-32 object-contain rounded-lg border border-border"
                       />
                       <Button
                         type="button"
