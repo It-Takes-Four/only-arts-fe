@@ -2,9 +2,9 @@ import BaseService from "./base-service";
 import type {
 	CreateCollectionRequest,
 	CreateCollectionResponse,
-	MyArtworksResponse,
 	MyCollectionsResponse
 } from "../types/collection";
+import type { MyArtworksResponse } from "../types/artwork";
 
 class CollectionService extends BaseService{
 

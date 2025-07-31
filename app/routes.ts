@@ -17,6 +17,6 @@ export default [
 		route("/become-artist", "routes/become-artist.tsx"),
 		route("/collection/:collectionId", "routes/collection.tsx"),
 		route("/artist-studio", "routes/artist-studio.tsx"),
-		route("/art/:artId", "routes/art.tsx"),
+		route("/art/:artworkId", "routes/art.tsx"),
 	]),
 ] satisfies RouteConfig;

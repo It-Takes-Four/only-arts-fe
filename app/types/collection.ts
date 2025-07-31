@@ -69,6 +69,9 @@ export interface CollectionArt {
 			isVerified: boolean;
 			createdAt: string;
 			updatedAt: string;
+			user: {
+				profilePictureFileId?: string;
+			}
 		};
 	};
 }
