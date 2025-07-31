@@ -17,9 +17,6 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
   const [isHovered, setIsHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  console.log(artwork);
-
-
   // Check for mobile screen size
   useEffect(() => {
     const checkMobile = () => {

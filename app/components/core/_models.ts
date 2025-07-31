@@ -67,12 +67,12 @@ interface ArtCardProps {
       id?: string;
       name: string;
       image?: string;
-      profilePicture: string | null;
+      profilePicture?: string | null;
     };
     imageUrl: string | null;
     tags?: { name: string; }[];
     type?: 'post' | 'art' | 'collection';
-    createdAt?: Date;
+    createdAt?: string;
   };
 }
 

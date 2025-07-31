@@ -6,6 +6,7 @@ import {
 } from "@react-router/dev/routes";
 
 export default [
+	route("/landing", "routes/landing.tsx"),
 	route("/login", "routes/login.tsx"),
 	route("/register", "routes/register.tsx"),
 	route("/dev-test", "routes/dev-test.tsx"),
@@ -14,9 +15,10 @@ export default [
 		route("/profile", "routes/profile.tsx"),
 		route("/settings", "routes/settings.tsx"),
 		route("/explore", "routes/explore.tsx"),
+		route("/purchased-collections", "routes/purchased-collections.tsx"),
 		route("/become-artist", "routes/become-artist.tsx"),
 		route("/collection/:collectionId", "routes/collection.tsx"),
 		route("/artist-studio", "routes/artist-studio.tsx"),
-		route("/art/:artId", "routes/art.tsx"),
+		route("/art/:artworkId", "routes/art.tsx"),
 	]),
 ] satisfies RouteConfig;

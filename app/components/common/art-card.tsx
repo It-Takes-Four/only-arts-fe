@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ImageIcon } from "lucide-react";
 import type { ArtCardProps } from "../core/_models";
 import { useNavigate } from "react-router";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function ArtCard({ art }: ArtCardProps) {
 	const navigate = useNavigate();
@@ -52,14 +53,10 @@ export function ArtCard({ art }: ArtCardProps) {
 						ease: "easeOut",
 					}}
 				>
-					<img
-						src={
-							art.artist.profilePicture ||
-							"https://placehold.co/50x50"
-						}
-						alt="Artist Avatar"
-						className="h-5 w-5 rounded-full"
-					/>
+					<Avatar className="h-5 w-5">
+						<AvatarImage src={art.artist.profilePicture || ""}/>
+						<AvatarFallback className="text-xs">{art.artist.name.charAt(0).toUpperCase()}</AvatarFallback>
+					</Avatar>
 					{art.artist.name}
 				</motion.span>
 

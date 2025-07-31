@@ -34,12 +34,16 @@ export function useAuth() {
     refetchInterval: false, // Don't auto-refresh
   });
 
+  // Determine if we're still in the initial loading state
+  const isInitialLoading = !isClient || (isClient && hasToken && isLoading && !user && !error);
+
   // Log auth state for debugging
   useEffect(() => {
     if (isClient) {
       console.log('Auth Debug:', {
         user,
         isLoading,
+        isInitialLoading,
         error,
         hasToken: !!getToken(),
         isAuthenticated: !!user,
@@ -48,7 +52,7 @@ export function useAuth() {
         queryEnabled: isClient && !!getToken() && !forceDisableQuery && !isLoggedOut
       });
     }
-  }, [user, isLoading, error, isClient, isLoggedOut, forceDisableQuery]);
+  }, [user, isLoading, isInitialLoading, error, isClient, isLoggedOut, forceDisableQuery]);
 
   // Reset logout state (for when user tries to login again)
   const resetLogoutState = () => {
@@ -246,7 +250,7 @@ export function useAuth() {
 
   return {
     user: isLoggedOut ? null : user, // Force null if logged out
-    isLoading: isLoggedOut ? false : (isLoading && isClient), // Don't show loading if logged out or not client-side
+    isLoading: isLoggedOut ? false : isInitialLoading, // Use the more accurate loading state
     isAuthenticated: isLoggedOut ? false : (hasToken && !!user), // Force false if logged out, true if we have token and user
     error,
     login: loginMutation.mutate,

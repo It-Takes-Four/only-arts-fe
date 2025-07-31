@@ -69,6 +69,9 @@ export interface CollectionArt {
 			isVerified: boolean;
 			createdAt: string;
 			updatedAt: string;
+			user: {
+				profilePictureFileId?: string;
+			}
 		};
 	};
 }
@@ -78,16 +81,35 @@ export interface MyCollection {
 	collectionName: string;
 	description?: string;
 	coverImageFileId?: string;
-	price?: any; // The price structure can be complex
-	tokenId?: string;
+	price?: string | null; // Price as string or null
+	tokenId?: string | null;
 	isPublished: boolean;
 	createdAt: string;
 	updatedAt: string;
 	artistId: string;
-	arts: CollectionArt[];
+	artist: {
+		id: string;
+		artistName: string;
+		isVerified: boolean;
+		user: {
+			username: string;
+			profilePictureFileId?: string | null;
+		};
+	};
+	artsCount: number;
 }
 
-export type MyCollectionsResponse = MyCollection[];
+export interface MyCollectionsResponse {
+	data: MyCollection[];
+	pagination: {
+		currentPage: number;
+		perPage: number;
+		total: number;
+		totalPages: number;
+		hasNextPage: boolean;
+		hasPrevPage: boolean;
+	};
+}
 
 // Interface for the artist's artwork response
 export interface MyArtwork {

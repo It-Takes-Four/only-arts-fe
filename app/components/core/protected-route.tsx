@@ -11,7 +11,7 @@ interface ProtectedRouteProps {
 
 export function ProtectedRoute({ 
   children, 
-  redirectTo = '/login', 
+  redirectTo = '/landing', 
   requireAuth = true 
 }: ProtectedRouteProps) {
   const { isLoading, isAuthenticated, user, isLoggingOut } = useAuthContext();
@@ -24,20 +24,25 @@ export function ProtectedRoute({
 
     // Only handle redirects for protected routes that require auth
     if (requireAuth) {
-      const publicRoutes = ['/login', '/register'];
+      const publicRoutes = ['/login', '/register', '/landing'];
       const isPublicRoute = publicRoutes.includes(location.pathname);
       
       // If we're on a public route, don't redirect
       if (isPublicRoute) return;
       
-      // If not authenticated and not on a public route, redirect to login
+      // If not authenticated and not on a public route, redirect to landing
+      // But add a small delay to ensure authentication state is fully resolved
       if (!isAuthenticated || !user) {
         console.log('ProtectedRoute: Redirecting unauthenticated user to', redirectTo);
         const returnTo = location.pathname + location.search;
-        navigate(redirectTo, { 
-          replace: true,
-          state: { from: returnTo }
-        });
+        
+        // Use setTimeout to avoid redirect during React render cycle
+        setTimeout(() => {
+          navigate(redirectTo, { 
+            replace: true,
+            state: { from: returnTo }
+          });
+        }, 0);
       }
     }
   }, [isLoading, isAuthenticated, user, requireAuth, navigate, redirectTo, location, isLoggingOut]);

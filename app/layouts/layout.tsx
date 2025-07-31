@@ -13,8 +13,8 @@ import { HeaderSearch } from "app/components/common/header-search";
 import { UserDropdown } from "app/components/common/user-dropdown";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Menu, X } from "lucide-react";
-import { HomeIcon, UserIcon } from "@heroicons/react/24/outline";
-import { Compass, Paintbrush } from "lucide-react";
+import { HomeIcon } from "@heroicons/react/24/outline";
+import { Compass, Paintbrush, ShoppingBag } from "lucide-react";
 import { BackgroundBeams } from "@/components/blocks/Backgrounds/BackgroundBeams";
 import { artService } from "../services/art-service";
 import { useSearchContext } from "app/context/search-context";
@@ -30,7 +30,7 @@ interface NavItem {
 const navigationItems: NavItem[] = [
 	{ path: "/", label: "Home", icon: HomeIcon },
 	{ path: "/explore", label: "Explore", icon: Compass },
-	{ path: "/profile", label: "Profile", icon: UserIcon },
+	{ path: "/purchased-collections", label: "My Collections", icon: ShoppingBag },
 	{
 		path: "/artist-studio",
 		label: "Artist Studio",

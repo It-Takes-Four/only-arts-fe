@@ -17,3 +17,4 @@ export interface CreateArtworkResponse {
 	}>;
 	createdAt: string;
 }
+
