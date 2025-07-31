@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ImageIcon } from "lucide-react";
-import type { ArtCardProps } from './art-card-types';
+import type { ArtCardProps } from '../core/_models';
 
 export function ArtCard({ art }: ArtCardProps) {
 	const [isHovered, setIsHovered] = useState(false);

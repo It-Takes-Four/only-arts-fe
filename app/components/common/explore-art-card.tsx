@@ -222,7 +222,7 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
             <span className="text-sm font-medium">{artwork.likesCount}</span>
           </div>
           <div className="text-xs text-muted-foreground">
-            {artwork.isInACollection ? 'In Collection' : 'Standalone'}
+            {artwork.isInACollection && 'In Collection'}
           </div>
         </div>
       </div>
