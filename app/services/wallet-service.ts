@@ -1,23 +1,5 @@
 import BaseService from './base-service';
-
-export interface WalletLinkRequest {
-  walletAddress: string;
-  signature: string;
-  message: string;
-}
-
-export interface WalletLinkResponse {
-  id: string;
-  userId: string;
-  walletAddress: string;
-  isVerified: boolean;
-  linkedAt: string;
-}
-
-export interface UnlinkWalletResponse {
-  success: boolean;
-  message: string;
-}
+import type { UnlinkWalletResponse, WalletLinkRequest, WalletLinkResponse } from "../types/wallet";
 
 // TEMPORARILY DISABLED - Backend endpoints not available yet
 // Wallet connection via wagmi/RainbowKit still works, but no backend persistence

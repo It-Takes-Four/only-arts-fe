@@ -1,18 +1,6 @@
 import BaseService from './base-service';
 import type { User, Artist } from 'app/components/core/_models';
-
-export interface ArtistRegistrationRequest {
-  artistName: string;
-  bio?: string;
-  isNsfw?: boolean;
-}
-
-export interface ArtistRegistrationResponse {
-  success: boolean;
-  message: string;
-  artist: Artist;
-  user: User;
-}
+import type { ArtistRegistrationRequest, ArtistRegistrationResponse } from "../types/artist";
 
 class ArtistService extends BaseService {
   async registerAsArtist(artistData: ArtistRegistrationRequest): Promise<ArtistRegistrationResponse> {
