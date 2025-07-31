@@ -3,14 +3,12 @@ import BaseService from './base-service';
 export interface PrepareCollectionPurchaseRequest {
     collectionId: string;
     buyerId: string;
-    price: string;
     artistWalletAddress: string;
 }
 
 export interface CompleteCollectionPurchaseRequest {
     collectionId: string;
     buyerId: string;
-    price: number;
     txHash: string;
 }
 
