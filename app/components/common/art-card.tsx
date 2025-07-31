@@ -1,9 +1,11 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { ImageIcon } from "lucide-react";
-import type { ArtCardProps } from '../core/_models';
+import type { ArtCardProps } from "../core/_models";
+import { useNavigate } from "react-router";
 
 export function ArtCard({ art }: ArtCardProps) {
+	const navigate = useNavigate();
 	const [isHovered, setIsHovered] = useState(false);
 
 	return (
@@ -12,6 +14,7 @@ export function ArtCard({ art }: ArtCardProps) {
 			className="group relative overflow-hidden rounded-lg cursor-pointer"
 			onHoverStart={() => setIsHovered(true)}
 			onHoverEnd={() => setIsHovered(false)}
+			onClick={() => navigate(`/art/${art.id}`)}
 		>
 			<div className="aspect-square overflow-hidden">
 				{art.imageUrl ? (
@@ -24,7 +27,7 @@ export function ArtCard({ art }: ArtCardProps) {
 					/>
 				) : (
 					<div className="flex items-center justify-center h-full">
-						<ImageIcon className="h-4 w-4 text-muted-foreground"/>
+						<ImageIcon className="h-4 w-4 text-muted-foreground" />
 					</div>
 				)}
 			</div>
@@ -42,14 +45,21 @@ export function ArtCard({ art }: ArtCardProps) {
 					initial={{ y: -50, opacity: 0 }}
 					animate={{
 						y: isHovered ? 0 : -50,
-						opacity: isHovered ? 1 : 0
+						opacity: isHovered ? 1 : 0,
 					}}
 					transition={{
 						duration: 0.3,
-						ease: "easeOut"
+						ease: "easeOut",
 					}}
 				>
-					<img src={art.artist.profilePicture || "https://placehold.co/50x50"} alt="Artist Avatar" className="h-5 w-5 rounded-full"/>
+					<img
+						src={
+							art.artist.profilePicture ||
+							"https://placehold.co/50x50"
+						}
+						alt="Artist Avatar"
+						className="h-5 w-5 rounded-full"
+					/>
 					{art.artist.name}
 				</motion.span>
 
@@ -58,27 +68,30 @@ export function ArtCard({ art }: ArtCardProps) {
 					initial={{ y: 24, opacity: 0 }}
 					animate={{
 						y: isHovered ? 0 : 24,
-						opacity: isHovered ? 1 : 0
+						opacity: isHovered ? 1 : 0,
 					}}
 					transition={{
 						duration: 0.3,
 						delay: isHovered ? 0.1 : 0,
-						ease: "easeOut"
+						ease: "easeOut",
 					}}
 				>
 					<h3 className="text-xl font-semibold mb-1">{art.title}</h3>
-					<p className="text-sm text-white/90 mb-2">{art.description}</p>
-					{
-						art.tags && art.tags.length > 0 ? (
-							<div className="flex flex-wrap gap-1">
-								{art.tags.map((tag, index) => (
-									<span key={index} className="text-xs text-white/80 bg-white/20 px-2 py-1 rounded-full">
-										{tag.name}
-									</span>
-								))}
-							</div>
-						) : null
-					}
+					<p className="text-sm text-white/90 mb-2">
+						{art.description}
+					</p>
+					{art.tags && art.tags.length > 0 ? (
+						<div className="flex flex-wrap gap-1">
+							{art.tags.map((tag, index) => (
+								<span
+									key={index}
+									className="text-xs text-white/80 bg-white/20 px-2 py-1 rounded-full"
+								>
+									{tag.name}
+								</span>
+							))}
+						</div>
+					) : null}
 				</motion.div>
 			</motion.div>
 		</motion.div>

@@ -17,6 +17,9 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
   const [isHovered, setIsHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  console.log(artwork);
+
+
   // Check for mobile screen size
   useEffect(() => {
     const checkMobile = () => {
@@ -37,8 +40,11 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
   };
 
   const getUserInitials = (artistName: string) => {
-    return artistName.charAt(0).toUpperCase();
-  };
+    if (!artistName) return "?";
+    const parts = artistName.trim().split(" ");
+    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
+    return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
+  }
 
   // Staggered animation for grid items
   const cardVariants = {

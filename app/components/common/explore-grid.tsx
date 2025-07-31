@@ -8,16 +8,22 @@ import { useEffect, useState, useRef } from 'react';
 
 interface ExploreGridProps {
   tagId?: string;
+  artworks?: any[];
 }
 
-export function ExploreGrid({ tagId }: ExploreGridProps) {
-  const { artworks, loading, hasMore, error, loadMore, refresh } = useExplore({ tagId });
+export function ExploreGrid({ tagId, artworks: searchArtworks }: ExploreGridProps) {
+  // const { artworks, loading, hasMore, error, loadMore, refresh } = useExplore({ tagId });
   const [columns, setColumns] = useState(1); // Start with 1 column to prevent layout issues
   const [screenWidth, setScreenWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
   const containerRef = useRef<HTMLDivElement>(null);
   
+  const { artworks: loadedArtworks, loading, hasMore, error, loadMore, refresh } = useExplore({ tagId });
+  
+  const artworks = searchArtworks ?? loadedArtworks; // use searchArtworks if provided
+  const showInfiniteScroll = !searchArtworks; // disable infinite scroll during search
+  
   const sentinelRef = useInfiniteScroll({
-    hasMore,
+    hasMore: showInfiniteScroll && hasMore,
     loading,
     onLoadMore: loadMore,
     threshold: 200
@@ -227,11 +233,22 @@ export function ExploreGrid({ tagId }: ExploreGridProps) {
         </motion.div>
       )}
 
+      {showInfiniteScroll && loading && artworks.length > 0 && (
+        <motion.div 
+          className="flex justify-center mt-8 sm:mt-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <FancyLoading message="Loading more artworks..." size="sm" />
+        </motion.div>
+      )}
+
       {/* Infinite scroll sentinel */}
       <div ref={sentinelRef} className="h-4" />
 
       {/* Load more button (fallback) */}
-      {hasMore && !loading && (
+      {showInfiniteScroll && hasMore && !loading && (
         <motion.div 
           className="flex justify-center mt-6 sm:mt-8"
           initial={{ opacity: 0, y: 20 }}
@@ -249,7 +266,7 @@ export function ExploreGrid({ tagId }: ExploreGridProps) {
       )}
 
       {/* End message */}
-      {!hasMore && artworks.length > 0 && (
+      {showInfiniteScroll && !hasMore && artworks.length > 0 && (
         <motion.div 
           className="text-center mt-8 sm:mt-12 pb-6 sm:pb-8"
           initial={{ opacity: 0 }}
