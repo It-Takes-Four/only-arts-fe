@@ -12,7 +12,8 @@ interface ExploreGridProps {
 
 export function ExploreGrid({ tagId }: ExploreGridProps) {
   const { artworks, loading, hasMore, error, loadMore, refresh } = useExplore({ tagId });
-  const [columns, setColumns] = useState(4);
+  const [columns, setColumns] = useState(1); // Start with 1 column to prevent layout issues
+  const [screenWidth, setScreenWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
   const containerRef = useRef<HTMLDivElement>(null);
   
   const sentinelRef = useInfiniteScroll({
@@ -25,20 +26,59 @@ export function ExploreGrid({ tagId }: ExploreGridProps) {
   // Responsive column calculation
   useEffect(() => {
     const updateColumns = () => {
-      if (!containerRef.current) return;
+      const currentScreenWidth = window.innerWidth;
+      const containerWidth = containerRef.current?.offsetWidth || currentScreenWidth;
       
-      const containerWidth = containerRef.current.offsetWidth;
-      const minCardWidth = 280; // Minimum card width
-      const gap = 24; // Gap between cards
+      // Update screen width state
+      setScreenWidth(currentScreenWidth);
       
-      const newColumns = Math.max(1, Math.min(5, Math.floor((containerWidth + gap) / (minCardWidth + gap))));
-      setColumns(newColumns);
+      // Use screen width for initial calculation if container isn't ready
+      const baseWidth = Math.min(containerWidth, currentScreenWidth);
+      
+      // More aggressive responsive breakpoints based on actual screen size
+      let newColumns;
+      if (currentScreenWidth < 400) {
+        // Very narrow mobile: 1 column
+        newColumns = 1;
+      } else if (currentScreenWidth < 640) {
+        // Mobile: 2 columns
+        newColumns = 2;
+      } else if (currentScreenWidth < 768) {
+        // Large mobile: 2-3 columns
+        newColumns = baseWidth < 600 ? 2 : 3;
+      } else if (currentScreenWidth < 1024) {
+        // Tablet: 3-4 columns
+        newColumns = baseWidth < 800 ? 3 : 4;
+      } else if (currentScreenWidth < 1280) {
+        // Small desktop: 4 columns
+        newColumns = 4;
+      } else {
+        // Large desktop: 5 columns
+        newColumns = 5;
+      }
+      
+      if (newColumns !== columns) {
+        setColumns(newColumns);
+      }
     };
 
+    // Run immediately
     updateColumns();
+    
+    // Add resize listener
     window.addEventListener('resize', updateColumns);
-    return () => window.removeEventListener('resize', updateColumns);
-  }, []);
+    
+    // Also run when container ref is available
+    const observer = new ResizeObserver(updateColumns);
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+    
+    return () => {
+      window.removeEventListener('resize', updateColumns);
+      observer.disconnect();
+    };
+  }, [columns]); // Include columns in dependency array
 
   // Container animation variants
   const containerVariants = {
@@ -151,13 +191,16 @@ export function ExploreGrid({ tagId }: ExploreGridProps) {
     >
       {/* Masonry Grid */}
       <div 
-        className="grid gap-6"
+        className="grid gap-3 sm:gap-4 lg:gap-6 w-full"
         style={{ 
-          gridTemplateColumns: `repeat(${columns}, 1fr)`,
+          gridTemplateColumns: 
+            screenWidth < 400 ? '1fr' :
+            screenWidth < 640 ? 'repeat(2, minmax(0, 1fr))' :
+            `repeat(${columns}, minmax(min(180px, 100%/${columns}), 1fr))`,
         }}
       >
         {columnGroups.map((column, columnIndex) => (
-          <div key={columnIndex} className="flex flex-col gap-6">
+          <div key={columnIndex} className="flex flex-col gap-3 sm:gap-4 lg:gap-6 min-w-0">
             {column.map((artwork, artworkIndex) => {
               const globalIndex = columnIndex * Math.ceil(artworks.length / columns) + artworkIndex;
               return (
@@ -175,7 +218,7 @@ export function ExploreGrid({ tagId }: ExploreGridProps) {
       {/* Loading indicator for pagination */}
       {loading && artworks.length > 0 && (
         <motion.div 
-          className="flex justify-center mt-12"
+          className="flex justify-center mt-8 sm:mt-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
@@ -190,7 +233,7 @@ export function ExploreGrid({ tagId }: ExploreGridProps) {
       {/* Load more button (fallback) */}
       {hasMore && !loading && (
         <motion.div 
-          className="flex justify-center mt-8"
+          className="flex justify-center mt-6 sm:mt-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
@@ -198,7 +241,7 @@ export function ExploreGrid({ tagId }: ExploreGridProps) {
           <Button 
             onClick={loadMore}
             variant="outline"
-            className="px-8 py-3"
+            className="px-6 sm:px-8 py-2 sm:py-3 text-sm sm:text-base"
           >
             Load More Artworks
           </Button>
@@ -208,12 +251,12 @@ export function ExploreGrid({ tagId }: ExploreGridProps) {
       {/* End message */}
       {!hasMore && artworks.length > 0 && (
         <motion.div 
-          className="text-center mt-12 pb-8"
+          className="text-center mt-8 sm:mt-12 pb-6 sm:pb-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm sm:text-base">
             🎉 You've seen all the amazing artworks!
           </p>
         </motion.div>
