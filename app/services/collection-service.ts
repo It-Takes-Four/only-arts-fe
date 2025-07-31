@@ -151,13 +151,13 @@ export type MyArtworksResponse = MyArtwork[];
 class CollectionService extends BaseService{
 
 	// Helper method to get collection cover image URL
-	getCollectionImageUrl(collectionId: string): string {
-		return `${import.meta.env.VITE_API_BASE_URL}/upload/collection/${collectionId}`;
+	getCollectionImageUrl(collectionImageFileId: string): string {
+		return `${import.meta.env.VITE_API_BASE_URL}/upload/collection/${collectionImageFileId}`;
 	}
 
 	// Helper method to get artwork image URL by imageFileId
-	getArtworkImageUrl(imageFileId: string): string {
-		return `${import.meta.env.VITE_API_BASE_URL}/upload/art/${imageFileId}`;
+	getArtworkImageUrl(artImageFileId: string): string {
+		return `${import.meta.env.VITE_API_BASE_URL}/upload/art/${artImageFileId}`;
 	}
 
 	async getCollectionById(collectionId: string) {
