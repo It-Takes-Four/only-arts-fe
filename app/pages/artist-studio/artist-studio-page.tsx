@@ -167,7 +167,7 @@ export function ArtistStudioPage() {
 										<div className="flex items-center gap-1">
 											<span>♥ {artwork.likesCount}</span>
 											{artwork.isInACollection && (
-												<span className="ml-2">📁 In Collection</span>
+												<span className="ml-2">In Collection</span>
 											)}
 										</div>
 									</div>
