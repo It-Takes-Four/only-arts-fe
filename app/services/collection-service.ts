@@ -3,6 +3,7 @@ import type {
 	CreateCollectionRequest,
 	CreateCollectionResponse,
 	MyArtworksResponse,
+	MyCollection,
 	MyCollectionsResponse
 } from "../types/collection";
 
@@ -27,10 +28,10 @@ class CollectionService extends BaseService{
 		}
 	}
 
-	async getMyCollections(): Promise<MyCollectionsResponse> {
+	async getMyCollections(): Promise<MyCollection[]> {
 		try {
-			const { data } = await this._axios.get('/art-collections/my/collections');
-			return data;
+			const { data } = await this._axios.get<MyCollectionsResponse>('/art-collections/my/collections');
+			return data.data; // Return just the data array, not the full response
 		} catch (error: any) {
 			throw new Error(error.response?.data?.message || 'Failed to get my collections');
 		}

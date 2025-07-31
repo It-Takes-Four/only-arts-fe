@@ -101,10 +101,10 @@ export function ArtistStudioPage() {
 									id={collection.id}
 									name={collection.collectionName}
 									description={collection.description || "No description"}
-									artworkCount={collection.arts.length}
+									artworkCount={collection.artsCount}
 									previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
-									createdBy={user?.artist?.artistName || "Unknown"}
-									price={collection.price ? parseFloat(collection.price.toString()) : undefined}
+									createdBy={collection.artist.artistName}
+									price={collection.price ? parseFloat(collection.price) : undefined}
 									totalSales={0} // We don't have sales data in this response
 								/>
 							))
@@ -158,7 +158,7 @@ export function ArtistStudioPage() {
 												name: artwork.artist.artistName,
 												profilePicture: null // Not available in this API response
 											},
-											tags: artwork.tags.map(tag => ({ name: tag.tag.tagName })),
+											tags: artwork.tags.map((tag: any) => ({ name: tag.tag.tagName })),
 											type: 'art',
 											createdAt: new Date(artwork.datePosted)
 										}} 
@@ -296,7 +296,7 @@ export function ArtistStudioPage() {
 													{collection.description || "No description"}
 												</p>
 												<div className="flex gap-4 mt-2">
-													<Badge variant="outline">{collection.arts.length} Artworks</Badge>
+													<Badge variant="outline">{collection.artsCount} Artworks</Badge>
 													<Badge variant="outline">
 														{collection.isPublished ? "Published" : "Draft"}
 													</Badge>
@@ -370,7 +370,7 @@ export function ArtistStudioPage() {
 						<div className="flex items-center gap-2 mt-2">
 							<Badge variant="outline"
 										 className="font-mono text-primary-foreground text-xs uppercase border-white/25">
-								{`JOINED ${formatDateToMonthYear(user.createdAt)}`}
+								{user?.artist?.createdAt ? `JOINED ${formatDateToMonthYear(user.artist.createdAt)}` : 'ARTIST'}
 							</Badge>
 							{user.artist.isVerified && (
 								<Badge variant="default" className="font-mono uppercase" >
