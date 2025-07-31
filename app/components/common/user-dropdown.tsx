@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "app/components/common/button";
 import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
-import { LogOut, Settings, Palette, RefreshCw } from "lucide-react";
+import { LogOut, Settings, Palette, User } from "lucide-react";
 import { useState } from "react";
 import { useAuthContext } from "app/components/core/auth-context";
 import { toast } from "sonner";
@@ -23,8 +23,6 @@ interface UserDropdownProps {
 export function UserDropdown({ user, onLogout }: UserDropdownProps) {
   const [imageError, setImageError] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const { refreshUserWithValidation } = useAuthContext();
 
   const handleImageError = () => {
     setImageError(true);
@@ -34,27 +32,6 @@ export function UserDropdown({ user, onLogout }: UserDropdownProps) {
     console.log('UserDropdown logout clicked');
     setIsOpen(false); // Close dropdown immediately
     onLogout();
-  };
-
-  const handleRefreshUser = async () => {
-    setIsRefreshing(true);
-    try {
-      console.log('Refreshing user state from dropdown...');
-      const result = await refreshUserWithValidation();
-      
-      if (result) {
-        toast.success('User state refreshed successfully!');
-        console.log('User state refreshed:', result);
-      } else {
-        toast.info('No authentication found, redirecting to login...');
-      }
-    } catch (error) {
-      console.error('Failed to refresh user state:', error);
-      toast.error('Failed to refresh user state. Redirecting to login...');
-    } finally {
-      setIsRefreshing(false);
-      setIsOpen(false); // Close dropdown after refresh
-    }
   };
 
   return (
@@ -92,6 +69,14 @@ export function UserDropdown({ user, onLogout }: UserDropdownProps) {
         </div>
         <DropdownMenuSeparator />
         
+        {/* Profile Link */}
+        <DropdownMenuItem>
+          <Link to="/profile" className="flex items-center gap-2 w-full">
+            <User className="h-4 w-4" />
+            <span>Profile</span>
+          </Link>
+        </DropdownMenuItem>
+        
         {/* Artist Registration */}
         {!user?.artist && (
           <>
@@ -101,7 +86,6 @@ export function UserDropdown({ user, onLogout }: UserDropdownProps) {
                 <span>Become an Artist</span>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
           </>
         )}
         
@@ -110,17 +94,6 @@ export function UserDropdown({ user, onLogout }: UserDropdownProps) {
             <Settings className="h-4 w-4" />
             <span>Settings</span>
           </Link>
-        </DropdownMenuItem>
-        
-        <DropdownMenuItem>
-          <button
-            onClick={handleRefreshUser}
-            disabled={isRefreshing}
-            className="flex items-center gap-2 w-full cursor-pointer border-none bg-transparent p-0 text-left disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            <span>{isRefreshing ? 'Refreshing...' : 'Refresh User State'}</span>
-          </button>
         </DropdownMenuItem>
         
         <DropdownMenuSeparator />

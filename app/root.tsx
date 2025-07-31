@@ -14,6 +14,7 @@ import { ThemeProvider } from "./components/core/theme-context";
 import { AuthProvider } from "./components/core/auth-context";
 import { ToastProvider } from "./components/common/toast-provider";
 import { WalletProvider } from "./components/core/wallet-context";
+import { SearchProvider } from "./context/search-context";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -51,7 +52,8 @@ export default function App() {
 
   return <>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
+      <SearchProvider>
+        <ThemeProvider>
         <WalletProvider>
           <AuthProvider>
             <Outlet />
@@ -59,6 +61,7 @@ export default function App() {
           </AuthProvider>
         </WalletProvider>
       </ThemeProvider>
+      </SearchProvider>
     </QueryClientProvider>
   </>
 }

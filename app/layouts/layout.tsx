@@ -13,10 +13,12 @@ import { HeaderSearch } from "app/components/common/header-search";
 import { UserDropdown } from "app/components/common/user-dropdown";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Menu, X } from "lucide-react";
-import { HomeIcon, UserIcon } from "@heroicons/react/24/outline";
-import { Compass, Paintbrush } from "lucide-react";
+import { HomeIcon } from "@heroicons/react/24/outline";
+import { Compass, Paintbrush, ShoppingBag } from "lucide-react";
 import { BackgroundBeams } from "@/components/blocks/Backgrounds/BackgroundBeams";
 import { artService } from "../services/art-service";
+import { useSearchContext } from "app/context/search-context";
+import type { ExploreArtwork } from "app/pages/explore/core";
 
 interface NavItem {
 	path: string;
@@ -28,7 +30,7 @@ interface NavItem {
 const navigationItems: NavItem[] = [
 	{ path: "/", label: "Home", icon: HomeIcon },
 	{ path: "/explore", label: "Explore", icon: Compass },
-	{ path: "/profile", label: "Profile", icon: UserIcon },
+	{ path: "/purchased-collections", label: "My Collections", icon: ShoppingBag },
 	{
 		path: "/artist-studio",
 		label: "Artist Studio",
@@ -38,23 +40,36 @@ const navigationItems: NavItem[] = [
 ];
 
 export default function Layout() {
-	const { user, logout } = useAuthContext();
-	const [sidebarOpen, setSidebarOpen] = useState(false);
-	const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-	const [searchArtResults, setSearchArtResults] = useState<any[]>([]);
-	const [searchCollectionResults, setSearchCollectionResults] = useState<
-		any[]
-	>([]);
+  const { user, logout } = useAuthContext();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  
+  const { setSearchArtResults, setSearchCollectionResults } = useSearchContext();
 
 	const handleLogout = () => {
 		logout();
 	};
 
-	const handleSearch = async (value: string) => {
-		const res = await artService.searchArtworks(value);
-		setSearchArtResults(res.arts.data);
-		setSearchCollectionResults(res.collections.data);
-	};
+  const handleSearch = async (value: string) => {
+    const res = await artService.searchArtworks(value);
+
+    const processedResults = res.arts.data.map((art: any): ExploreArtwork => ({
+      id: art.id,
+      title: art.title,
+      description: art.description ?? '',
+      imageFileId: art.imageFile?.id,
+      datePosted: art.datePosted ?? new Date().toISOString(), 
+      likesCount: art.likesCount ?? 0,
+      isInACollection: art.isInACollection ?? false,
+      artistId: art.artist?.id ?? 'unknown',
+      artistName: art.artist?.artistName ?? 'Unknown Artist',
+      artistProfileFileId: art.artist?.profileFileId ?? null,
+      tags: art.tags ?? [],
+    }));
+
+    setSearchArtResults(processedResults);
+    setSearchCollectionResults(res.collections.data); 
+};
 
 	const toggleSidebar = () => {
 		setSidebarOpen(!sidebarOpen);
@@ -64,25 +79,21 @@ export default function Layout() {
 		setSidebarOpen(false);
 	};
 
-	const toggleMobileSearch = () => {
-		setMobileSearchOpen(!mobileSearchOpen);
-	};
-
-	useEffect(() => {
-		artService.searchArtworks("w").then(console.log).catch(console.error);
-	}, []);
-
-	return (
-		<ProtectedRoute>
-			<TooltipProvider>
-				<div className="flex min-h-screen w-full">
-					{/* Sidebar Overlay - Shows on both mobile and desktop */}
-					{sidebarOpen && (
-						<div
-							className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
-							onClick={closeSidebar}
-						/>
-					)}
+  const toggleMobileSearch = () => {
+    setMobileSearchOpen(!mobileSearchOpen);
+  };
+  
+  return (
+    <ProtectedRoute>
+      <TooltipProvider>
+        <div className="flex min-h-screen w-full">
+          {/* Sidebar Overlay - Shows on both mobile and desktop */}
+          {sidebarOpen && (
+            <div
+              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+              onClick={closeSidebar}
+            />
+          )}
 
 					{/* Sidebar - Overlay style for both mobile and desktop */}
 					<aside
@@ -164,108 +175,8 @@ export default function Layout() {
 								</Link>
 							</div>
 
-							{/* Center: Search Bar */}
-							<HeaderSearch onSearch={handleSearch} />
-
-							{(searchArtResults.length > 0 ||
-								searchCollectionResults.length > 0) && (
-								<div className="absolute top-16 left-1/2 transform -translate-x-1/2 w-full max-w-3xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-md shadow-lg z-50">
-									<div className="max-h-96 overflow-y-auto divide-y divide-gray-200 dark:divide-zinc-700">
-										{/* Artworks Section */}
-										{searchArtResults.length > 0 && (
-											<div className="p-4">
-												<h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-													Artworks
-												</h3>
-												<ul className="space-y-2">
-													{searchArtResults.map(
-														(art) => (
-															<li
-																key={art.id}
-																className="flex items-start gap-4 p-2 rounded hover:bg-gray-50 dark:hover:bg-zinc-800 cursor-pointer transition-colors"
-															>
-																{art.imageFile
-																	?.fileName && (
-																	<img
-																		src={
-																			"https://placehold.co/150x150"
-																		}
-																		alt={
-																			art.title
-																		}
-																		className="w-8 h-8 rounded object-cover"
-																	/>
-																)}
-																<div className="flex flex-col">
-																	<p className="font-semibold text-sm text-gray-900 dark:text-white">
-																		{
-																			art.title
-																		}
-																	</p>
-																	<p className="text-xs text-gray-400">
-																		by{" "}
-																		{art
-																			.artist
-																			?.artistName ||
-																			"Unknown Artist"}
-																	</p>
-																</div>
-															</li>
-														)
-													)}
-												</ul>
-											</div>
-										)}
-
-										{/* Collections Section */}
-										{searchCollectionResults.length > 0 && (
-											<div className="p-4">
-												<h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-													Collections
-												</h3>
-												<ul className="space-y-2">
-													{searchCollectionResults.map(
-														(col) => (
-															<li
-																key={col.id}
-																className="flex items-start gap-4 p-2 rounded hover:bg-gray-50 dark:hover:bg-zinc-800 cursor-pointer transition-colors"
-															>
-																{col
-																	.coverImageFile
-																	?.fileName && (
-																	<img
-																		src={
-																			"https://placehold.co/150x150"
-																		}
-																		alt={
-																			col.collectionName
-																		}
-																		className="w-8 h-8 rounded object-cover"
-																	/>
-																)}
-																<div className="flex flex-col">
-																	<p className="font-semibold text-sm text-gray-900 dark:text-white">
-																		{
-																			col.collectionName
-																		}
-																	</p>
-																	<p className="text-xs text-gray-400">
-																		by{" "}
-																		{col
-																			.artist
-																			?.artistName ||
-																			"Unknown Creator"}
-																	</p>
-																</div>
-															</li>
-														)
-													)}
-												</ul>
-											</div>
-										)}
-									</div>
-								</div>
-							)}
+              {/* Center: Search Bar */}
+              <HeaderSearch onSearch={handleSearch} />
 
 							{/* Right side - Actions and User menu */}
 							<div className="flex items-center gap-2">
