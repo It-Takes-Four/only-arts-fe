@@ -99,8 +99,6 @@ export function usePayment() {
 
             const txHash = tx.hash;
 
-            console.log("tx hash:", txHash);
-
             setpaymentStatus(PaymentStatus.VERIFYING)
 
             const result = await artCollectionsService.completeCollectionPurchase({
@@ -111,6 +109,7 @@ export function usePayment() {
 
 
             setpaymentStatus(PaymentStatus.COMPLETED)
+            toast.success("Purchase Successful!")
         } catch (error: any) {
             console.log(error);
             toast.error("Purchase failed:", error.message)
