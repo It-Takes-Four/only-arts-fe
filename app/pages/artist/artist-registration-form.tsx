@@ -8,8 +8,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, User, Palette } from "lucide-react";
 import { toast } from 'sonner';
-import { artistService, type ArtistRegistrationRequest } from "app/services/artist-service";
+import { artistService } from "app/services/artist-service";
 import { useAuthContext } from "app/components/core/auth-context";
+import type { ArtistRegistrationRequest } from "app/types/artist";
 
 interface ArtistRegistrationFormProps {
   onSuccess: (artist: any) => void;
