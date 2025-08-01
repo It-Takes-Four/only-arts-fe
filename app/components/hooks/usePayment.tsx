@@ -1,4 +1,3 @@
-import { walletService, type WalletLinkResponse } from '../../services/wallet-service';
 import { toast } from 'sonner';
 import { useAuth } from './useAuth';
 import { ethers } from 'ethers';

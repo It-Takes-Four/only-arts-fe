@@ -1,7 +1,8 @@
 import { formatDistanceToNow } from 'date-fns';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import type { FeedPost } from '../../services/feed-service';
+import { getUserInitials } from "../../utils/UtilityFunction";
+import type { FeedPost } from "../../types/feed";
 
 interface FeedPostComponentProps {
   post: FeedPost;
@@ -14,10 +15,6 @@ export function FeedPostComponent({ post }: FeedPostComponentProps) {
     } catch {
       return 'Unknown time';
     }
-  };
-
-  const getUserInitials = (username: string) => {
-    return username.charAt(0).toUpperCase();
   };
 
   return (

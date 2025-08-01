@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, Share2 } from "lucide-react";
-import type { FeedPost } from '../../services/feed-service';
+import type { FeedPost } from "../../types/feed";
+import { getUserInitials } from "../../utils/UtilityFunction";
 
 interface FeedArtCardProps {
   post: FeedPost;
@@ -33,10 +33,6 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
     } catch {
       return 'Unknown time';
     }
-  };
-
-  const getUserInitials = (username: string) => {
-    return username.charAt(0).toUpperCase();
   };
 
   // Staggered animation for grid items

@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from 'date-fns';
 import { Calendar, Image, DollarSign } from "lucide-react";
 import type { PurchasedCollection } from "app/types/purchased-collection";
+import { getUserInitials } from "../../utils/UtilityFunction";
 
 interface PurchasedCollectionCardProps {
   collection: PurchasedCollection;
@@ -28,10 +29,6 @@ export function PurchasedCollectionCard({ collection, index }: PurchasedCollecti
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
     }).format(price);
-  };
-
-  const getUserInitials = (name: string) => {
-    return name.charAt(0).toUpperCase();
   };
 
   return (

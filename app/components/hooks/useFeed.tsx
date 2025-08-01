@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { feedService, type FeedPost } from '../../services/feed-service';
+import { feedService } from '../../services/feed-service';
+import type { FeedPost } from "../../types/feed";
 
 interface UseFeedReturn {
   feeds: FeedPost[];

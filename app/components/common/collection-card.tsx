@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useNavigate } from "react-router";
+import { getUserInitials } from "../../utils/UtilityFunction";
 
 interface CollectionCardProps {
 	id: string
@@ -62,7 +63,7 @@ export function CollectionCard({
 					<div className="flex items-center gap-2">
 						<Avatar className="h-6 w-6">
 							<AvatarImage src={createdByAvatar}/>
-							<AvatarFallback className="text-xs">{createdBy.charAt(0).toUpperCase()}</AvatarFallback>
+							<AvatarFallback className="text-xs">{getUserInitials(createdBy)}</AvatarFallback>
 						</Avatar>
 						<span className="text-sm">{createdBy}</span>
 					</div>
@@ -171,8 +172,8 @@ export function CollectionCard({
 								className="absolute top-3 left-3 flex px-2 py-1.5 glass rounded-full text-sm font-medium border-border text-white items-center gap-x-1.5"
 							>
 								<Avatar className="h-5 w-5">
-									<AvatarImage src={createdByAvatar || "/placeholder.svg"}/>
-									<AvatarFallback className="text-xs text-foreground">{createdBy.charAt(0).toUpperCase()}</AvatarFallback>
+									<AvatarImage src={createdByAvatar}/>
+									<AvatarFallback className="text-xs text-foreground">{getUserInitials(createdBy)}</AvatarFallback>
 								</Avatar>
 								{createdBy}
 							</span>

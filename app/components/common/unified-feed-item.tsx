@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion';
 import { Heart, MessageCircle, Share2, Eye, Calendar } from 'lucide-react';
-import type { UnifiedFeedItem } from '../../services/feed-service';
 import { Button } from './button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { AuthenticatedImage } from './authenticated-image';
+import { useNavigate } from "react-router";
+import type { UnifiedFeedItem } from "../../types/feed";
+import { getUserInitials } from "../../utils/UtilityFunction";
 
 interface UnifiedFeedItemProps {
   item: UnifiedFeedItem;
@@ -12,6 +14,8 @@ interface UnifiedFeedItemProps {
 }
 
 export function UnifiedFeedItemComponent({ item, index }: UnifiedFeedItemProps) {
+  const navigate = useNavigate();
+
   const getDisplayData = () => {
     switch (item.type) {
       case 'post':
@@ -27,7 +31,8 @@ export function UnifiedFeedItemComponent({ item, index }: UnifiedFeedItemProps) 
           createdDate: item.post?.createdDate || item.createdDate,
           imageFileId: null,
           tags: [],
-          type: 'post' as const
+          type: 'post' as const,
+          url: `/post/${item.post?.id}`,
         };
       case 'art':
         return {
@@ -39,7 +44,8 @@ export function UnifiedFeedItemComponent({ item, index }: UnifiedFeedItemProps) 
           createdDate: item.art?.createdDate || item.createdDate,
           imageFileId: item.art?.imageFileId || null,
           tags: item.art?.tags || [],
-          type: 'art' as const
+          type: 'art' as const,
+          url: `/art/${item.art?.id}`,
         };
       case 'collection':
         return {
@@ -51,7 +57,8 @@ export function UnifiedFeedItemComponent({ item, index }: UnifiedFeedItemProps) 
           createdDate: item.collection?.createdDate || item.createdDate,
           imageFileId: item.collection?.coverImageFileId || null,
           tags: [],
-          type: 'collection' as const
+          type: 'collection' as const,
+          url: `/collection/${item.collection?.id}`,
         };
       default:
         return {
@@ -121,6 +128,7 @@ export function UnifiedFeedItemComponent({ item, index }: UnifiedFeedItemProps) 
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       whileHover={{ y: -2 }}
+      onClick={() => nav}
     >
       {/* Header */}
       <div className={cn(
@@ -141,19 +149,19 @@ export function UnifiedFeedItemComponent({ item, index }: UnifiedFeedItemProps) 
                   loadingComponent={
                     <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
                       <span className="text-sm font-medium text-primary">
-                        {displayData.artistName.charAt(0).toUpperCase()}
+                        {getUserInitials(displayData.artistName)}
                       </span>
                     </div>
                   }
                   errorComponent={
                     <span className="text-sm font-medium text-primary">
-                      {displayData.artistName.charAt(0).toUpperCase()}
+                       {getUserInitials(displayData.artistName)}
                     </span>
                   }
                 />
               ) : (
                 <span className="text-sm font-medium text-primary">
-                  {displayData.artistName.charAt(0).toUpperCase()}
+                   {getUserInitials(displayData.artistName)}
                 </span>
               )}
             </div>

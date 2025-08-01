@@ -99,6 +99,11 @@ export interface MyCollection {
 	artsCount: number;
 }
 
+// Extended interface for detailed collection view with arts
+export interface DetailedCollection extends MyCollection {
+	arts: CollectionArt[];
+}
+
 export interface MyCollectionsResponse {
 	data: MyCollection[];
 	pagination: {

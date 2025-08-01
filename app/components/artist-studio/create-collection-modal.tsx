@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { collectionService, type CreateCollectionRequest } from "../../services/collection-service";
+import { collectionService } from "../../services/collection-service";
+import type { CreateCollectionRequest } from "../../types/collection";
 
 interface CreateCollectionModalProps {
   isOpen: boolean;
@@ -63,6 +64,8 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
       };
 
       const response = await collectionService.createCollection(request);
+
+      console.log("CREATE COLLECTION", response);
       
       toast.success("Collection created successfully!");
       onSuccess(response);

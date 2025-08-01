@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { tagsService, type Tag } from '../../services/tags-service';
+import { tagsService } from '../../services/tags-service';
+import type { Tag } from "../../types/tag";
 
 export function useTags() {
   const [tags, setTags] = useState<Tag[]>([]);

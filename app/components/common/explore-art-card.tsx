@@ -5,7 +5,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, Share2, Folder } from "lucide-react";
 import { AuthenticatedImage } from './authenticated-image';
-import type { ExploreArtwork } from '../../pages/explore/core/explore-models';
+import type { ExploreArtwork } from '../../pages/explore/core';
+import { getUserInitials } from "../../utils/UtilityFunction";
 
 interface ExploreArtCardProps {
   artwork: ExploreArtwork;
@@ -35,13 +36,6 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
       return 'Unknown time';
     }
   };
-
-  const getUserInitials = (artistName: string) => {
-    if (!artistName) return "?";
-    const parts = artistName.trim().split(" ");
-    if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
-    return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
-  }
 
   // Staggered animation for grid items
   const cardVariants = {

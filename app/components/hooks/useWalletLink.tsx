@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useAccount, useSignMessage } from 'wagmi';
-import { walletService, type WalletLinkResponse } from '../../services/wallet-service';
+import { walletService } from '../../services/wallet-service';
 import { toast } from 'sonner';
+import type { WalletLinkResponse } from "../../types/wallet";
 
 export function useWalletLink() {
   const { address, isConnected } = useAccount();

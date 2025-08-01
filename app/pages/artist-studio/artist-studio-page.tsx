@@ -117,7 +117,7 @@ export function ArtistStudioPage() {
 									name={collection.collectionName}
 									description={collection.description || "No description"}
 									artworkCount={collection.artsCount}
-									previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
+									previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : ""}
 									createdBy={collection.artist.artistName}
 									price={collection.price ? parseFloat(collection.price) : undefined}
 									totalSales={0} // We don't have sales data in this response
