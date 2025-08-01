@@ -29,6 +29,16 @@ class ArtCollectionsService extends BaseService {
             throw new Error(error.response?.data?.message || 'Failed to fetch purchased collections');
         }
     }
+
+    // Helper method to get collection cover image URL
+    getCollectionImageUrl(collectionImageFileId: string): string {
+        return `${import.meta.env.VITE_API_BASE_URL}/upload/collection/${collectionImageFileId}`;
+    }
+
+    // Helper method to get user profile picture URL
+    getUserProfileImageUrl(profilePictureFileId: string): string {
+        return `${import.meta.env.VITE_API_BASE_URL}/upload/user/${profilePictureFileId}`;
+    }
 }
 // Export singleton instance
 export const artCollectionsService = new ArtCollectionsService();

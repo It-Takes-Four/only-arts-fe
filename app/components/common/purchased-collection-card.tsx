@@ -4,7 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from 'date-fns';
-import { Calendar, Image, DollarSign } from "lucide-react";
+import { Calendar, Image, DollarSign, CheckCircle } from "lucide-react";
+import { artCollectionsService } from "app/services/art-collections-service";
 import type { PurchasedCollection } from "app/types/purchased-collection";
 
 interface PurchasedCollectionCardProps {
@@ -21,17 +22,24 @@ export function PurchasedCollectionCard({ collection, index }: PurchasedCollecti
     }
   };
 
-  const formatPrice = (price: number, currency: string) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: currency.toUpperCase(),
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(price);
+  const formatPrice = (price: string) => {
+    const numPrice = parseFloat(price);
+    return `${numPrice} ETH`;
   };
 
   const getUserInitials = (name: string) => {
     return name.charAt(0).toUpperCase();
+  };
+
+  const getImageUrl = () => {
+    return artCollectionsService.getCollectionImageUrl(collection.coverImageFileId);
+  };
+
+  const getProfileImageUrl = () => {
+    if (collection.artist.user.profilePictureFileId) {
+      return artCollectionsService.getUserProfileImageUrl(collection.artist.user.profilePictureFileId);
+    }
+    return null;
   };
 
   return (
@@ -45,18 +53,25 @@ export function PurchasedCollectionCard({ collection, index }: PurchasedCollecti
         <Card className="group overflow-hidden bg-background/80 backdrop-blur-sm border-border/50 hover:bg-background/90 transition-all duration-300 hover:shadow-lg hover:border-primary/20">
           {/* Collection Image */}
           <div className="aspect-[4/3] overflow-hidden bg-muted">
-            {collection.imageUrl ? (
-              <motion.img
-                src={collection.imageUrl}
-                alt={collection.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                loading="lazy"
-              />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-primary/10 via-secondary/5 to-primary/10 flex items-center justify-center">
-                <Image className="w-12 h-12 text-muted-foreground" />
-              </div>
-            )}
+            <motion.img
+              src={getImageUrl()}
+              alt={collection.collectionName}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              loading="lazy"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+                const parent = (e.target as HTMLImageElement).parentElement;
+                if (parent) {
+                  parent.innerHTML = `
+                    <div class="w-full h-full bg-gradient-to-br from-primary/10 via-secondary/5 to-primary/10 flex items-center justify-center">
+                      <svg class="w-12 h-12 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                      </svg>
+                    </div>
+                  `;
+                }
+              }}
+            />
           </div>
 
           <CardContent className="p-6">
@@ -65,13 +80,20 @@ export function PurchasedCollectionCard({ collection, index }: PurchasedCollecti
               <div className="space-y-2">
                 <div className="flex items-start justify-between">
                   <h3 className="text-lg font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors duration-200">
-                    {collection.name}
+                    {collection.collectionName}
                   </h3>
                   <Badge 
-                    variant={collection.isCompleted ? "default" : "secondary"}
+                    variant={collection.isPublished ? "default" : "secondary"}
                     className="ml-2 shrink-0"
                   >
-                    {collection.isCompleted ? "Complete" : "Incomplete"}
+                    {collection.isPublished ? (
+                      <>
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        Published
+                      </>
+                    ) : (
+                      "Draft"
+                    )}
                   </Badge>
                 </div>
                 
@@ -85,14 +107,22 @@ export function PurchasedCollectionCard({ collection, index }: PurchasedCollecti
               {/* Artist Info */}
               <div className="flex items-center space-x-3">
                 <Avatar className="w-8 h-8">
-                  <AvatarImage src={collection.artistProfilePicture || undefined} alt={collection.artistName} />
+                  <AvatarImage src={getProfileImageUrl() || undefined} alt={collection.artist.artistName} />
                   <AvatarFallback className="text-xs">
-                    {getUserInitials(collection.artistName)}
+                    {getUserInitials(collection.artist.artistName)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">
-                    {collection.artistName}
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {collection.artist.artistName}
+                    </p>
+                    {collection.artist.isVerified && (
+                      <CheckCircle className="w-4 h-4 text-blue-500 shrink-0" />
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground truncate">
+                    @{collection.artist.user.username}
                   </p>
                 </div>
               </div>
@@ -102,19 +132,19 @@ export function PurchasedCollectionCard({ collection, index }: PurchasedCollecti
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                   <DollarSign className="w-4 h-4" />
                   <span className="font-medium">
-                    {formatPrice(collection.price, collection.currency)}
+                    {formatPrice(collection.price)}
                   </span>
                 </div>
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                   <Image className="w-4 h-4" />
-                  <span>{collection.artworkCount} artworks</span>
+                  <span>{collection.artsCount} artworks</span>
                 </div>
               </div>
 
               {/* Purchase Date */}
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Calendar className="w-3 h-3" />
-                <span>Purchased {formatDate(collection.purchaseDate)}</span>
+                <span>Created {formatDate(collection.createdAt)}</span>
               </div>
             </div>
           </CardContent>

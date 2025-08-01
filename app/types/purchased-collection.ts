@@ -1,22 +1,36 @@
 export interface PurchasedCollection {
   id: string;
-  name: string;
-  description: string;
-  imageUrl: string | null;
-  price: number;
-  currency: string;
-  purchaseDate: string;
+  collectionName: string;
+  description: string | null;
+  coverImageFileId: string;
+  price: string;
+  tokenId: string | null;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
   artistId: string;
-  artistName: string;
-  artistProfilePicture: string | null;
-  artworkCount: number;
-  isCompleted: boolean;
+  artist: {
+    id: string;
+    artistName: string;
+    isVerified: boolean;
+    user: {
+      username: string;
+      profilePictureFileId: string | null;
+    };
+  };
+  artsCount: number;
+}
+
+export interface PurchasedCollectionsPagination {
+  currentPage: number;
+  perPage: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
 }
 
 export interface PurchasedCollectionsResponse {
   data: PurchasedCollection[];
-  total: number;
-  page: number;
-  limit: number;
-  hasMore: boolean;
+  pagination: PurchasedCollectionsPagination;
 }
