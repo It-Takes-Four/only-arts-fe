@@ -1,3 +1,4 @@
+import { useParams } from "react-router";
 import { ProfilePage } from "../pages/profile";
 
 export function meta() {
@@ -8,7 +9,9 @@ export function meta() {
 }
 
 export default function Profile() {
+	const { artistId } = useParams();
+	
 	return (
-		<ProfilePage />
+		<ProfilePage artistId={artistId} />
 	);
 }

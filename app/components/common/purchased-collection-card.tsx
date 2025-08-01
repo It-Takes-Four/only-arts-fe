@@ -106,17 +106,22 @@ export function PurchasedCollectionCard({ collection, index }: PurchasedCollecti
 
               {/* Artist Info */}
               <div className="flex items-center space-x-3">
-                <Avatar className="w-8 h-8">
-                  <AvatarImage src={getProfileImageUrl() || undefined} alt={collection.artist.artistName} />
-                  <AvatarFallback className="text-xs">
-                    {getUserInitials(collection.artist.artistName)}
-                  </AvatarFallback>
-                </Avatar>
+                <Link to={`/artist/${collection.artist.id}`} className="shrink-0">
+                  <Avatar className="w-8 h-8 hover:ring-2 hover:ring-primary/20 transition-all duration-200">
+                    <AvatarImage src={getProfileImageUrl() || undefined} alt={collection.artist.artistName} />
+                    <AvatarFallback className="text-xs">
+                      {getUserInitials(collection.artist.artistName)}
+                    </AvatarFallback>
+                  </Avatar>
+                </Link>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-foreground truncate">
+                    <Link 
+                      to={`/artist/${collection.artist.id}`} 
+                      className="text-sm font-medium text-foreground truncate hover:text-primary transition-colors duration-200"
+                    >
                       {collection.artist.artistName}
-                    </p>
+                    </Link>
                     {collection.artist.isVerified && (
                       <CheckCircle className="w-4 h-4 text-blue-500 shrink-0" />
                     )}

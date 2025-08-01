@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router';
 import { Heart, MessageCircle, Share2, Eye, Calendar } from 'lucide-react';
 import type { UnifiedFeedItem } from '../../services/feed-service';
 import { Button } from './button';
@@ -132,36 +133,43 @@ export function UnifiedFeedItemComponent({ item, index }: UnifiedFeedItemProps) 
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-3">
             {/* Artist Avatar */}
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-              {displayData.artistProfileFileId ? (
-                <AuthenticatedImage
-                  imageFileId={displayData.artistProfileFileId}
-                  alt={`${displayData.artistName}'s avatar`}
-                  className="w-full h-full object-cover"
-                  loadingComponent={
-                    <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+            <Link to={`/artist/${displayData.artistId}`} className="shrink-0">
+              <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center hover:ring-2 hover:ring-primary/20 transition-all duration-200">
+                {displayData.artistProfileFileId ? (
+                  <AuthenticatedImage
+                    imageFileId={displayData.artistProfileFileId}
+                    alt={`${displayData.artistName}'s avatar`}
+                    className="w-full h-full object-cover"
+                    loadingComponent={
+                      <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                        <span className="text-sm font-medium text-primary">
+                          {displayData.artistName.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    }
+                    errorComponent={
                       <span className="text-sm font-medium text-primary">
                         {displayData.artistName.charAt(0).toUpperCase()}
                       </span>
-                    </div>
-                  }
-                  errorComponent={
-                    <span className="text-sm font-medium text-primary">
-                      {displayData.artistName.charAt(0).toUpperCase()}
-                    </span>
-                  }
-                />
-              ) : (
-                <span className="text-sm font-medium text-primary">
-                  {displayData.artistName.charAt(0).toUpperCase()}
-                </span>
-              )}
-            </div>
+                    }
+                  />
+                ) : (
+                  <span className="text-sm font-medium text-primary">
+                    {displayData.artistName.charAt(0).toUpperCase()}
+                  </span>
+                )}
+              </div>
+            </Link>
             
             {/* Artist Info */}
             <div>
               <div className="flex items-center space-x-2">
-                <h3 className="font-medium text-foreground">{displayData.artistName}</h3>
+                <Link 
+                  to={`/artist/${displayData.artistId}`}
+                  className="font-medium text-foreground hover:text-primary transition-colors duration-200"
+                >
+                  {displayData.artistName}
+                </Link>
               </div>
               <div className="flex items-center space-x-1 text-xs text-muted-foreground">
                 <Calendar className="w-3 h-3" />
