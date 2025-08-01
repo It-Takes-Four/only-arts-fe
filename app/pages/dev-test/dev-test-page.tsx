@@ -7,9 +7,7 @@ import { authService } from "app/services/auth-service";
 import { artistService } from "app/services/artist-service";
 import { debugCookies, getCookie } from "app/utils/cookie";
 import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
-import { WalletLinkComponent } from "app/components/common/wallet-link-component";
 import { useNavigate } from "react-router";
-import { PaymentModal } from "app/components/common/payment-modal";
 import { PaymentButton } from "app/components/common/payment-button";
 
 export default function DevTestPage() {
