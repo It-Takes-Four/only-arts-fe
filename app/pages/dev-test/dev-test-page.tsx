@@ -10,6 +10,7 @@ import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
 import { WalletLinkComponent } from "app/components/common/wallet-link-component";
 import { useNavigate } from "react-router";
 import { PaymentModal } from "app/components/common/payment-modal";
+import { PaymentButton } from "app/components/common/payment-button";
 
 export default function DevTestPage() {
   const { user, isAuthenticated, login, loginAsync, logout, isLoggingIn } = useAuthContext();
@@ -496,7 +497,7 @@ export default function DevTestPage() {
           </div>
         </div>
 
-        <PaymentModal collectionId="" artistWalletAddress=""/>
+        <PaymentButton collectionId="3c94d7cd-8f8f-4973-a331-5f3a10dee4a9" artistWalletAddress="0xe39a19f4339A808B0Cd4e60CB98aC565698467FB"/>
       </div>
     </div>
   );
