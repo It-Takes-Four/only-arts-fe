@@ -8,6 +8,8 @@ interface NotificationDropdownProps {
 }
 
 export function NotificationDropdown({ isOpen }: NotificationDropdownProps) {
+    
+
     const dummyNotificationData = [
         {
             id: "lskdjflasdjfsdf",
