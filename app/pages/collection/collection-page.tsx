@@ -5,8 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar, Heart, Share2, Eye, User, Bookmark } from "lucide-react";
-import { useParams } from "react-router";
+import { useParams, Link } from "react-router";
 import { collectionService } from "../../services/collection-service";
+import { artCollectionsService } from "../../services/art-collections-service";
 import { useEffect } from "react";
 import { useCollection } from "../../components/hooks/useCollection";
 import { formatDateToMonthYear } from "../../utils/dates/DateFormatter";
@@ -16,7 +17,7 @@ import { getUserInitials } from "../../utils/UtilityFunction";
 
 export function CollectionPage() {
 	const { collectionId } = useParams<{ collectionId: string }>();
-	const { collection, coverImageUrl, error } = useCollection(collectionId);
+	const { collection, collectionImageUrl, error } = useCollection(collectionId);
 
 	// Handle error state
 	if (error || !collection) {
@@ -49,10 +50,10 @@ export function CollectionPage() {
 
 	return (
 		<div className="container mx-auto px-4 py-8">
-			{/* Collection Header */}
+			{/* Collection Header with Main Image */}
 			<div
 				className="relative bg-cover bg-center h-[50vh] w-full rounded-lg p-4 flex flex-col justify-end mb-8"
-				style={{ backgroundImage: `url(${coverImageUrl || '/profile-background.jpg'})` }}
+				style={{ backgroundImage: `url(${collectionImageUrl || '/profile-background.jpg'})` }}
 			>
 				{/* Subtle gradient overlay for better text readability */}
 				<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent rounded-lg" />
@@ -61,25 +62,42 @@ export function CollectionPage() {
 				<GlassCard className="relative z-10 py-6 px-8">
 					<div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
 						<div className="flex items-start lg:items-end space-x-4 flex-1">
-							<Avatar className="h-20 w-20 ring-4 ring-white/20">
-								<AvatarImage src={collection.artist.user.profilePictureFileId || ""} />
-								<AvatarFallback className="text-xl font-bold bg-white/20 text-white">
-									{getUserInitials(collection.artist.artistName)}
-								</AvatarFallback>
-							</Avatar>
+							<Link to={`/artist/${collection.artist.id}`}>
+								<Avatar className="h-20 w-20 ring-4 ring-white/20 hover:ring-white/40 transition-all cursor-pointer">
+									<AvatarImage 
+										src={collection.artist.user.profilePictureFileId 
+											? artCollectionsService.getUserProfileImageUrl(collection.artist.user.profilePictureFileId)
+											: ""
+										} 
+									/>
+									<AvatarFallback className="text-xl font-bold bg-white/20 text-white">
+										{getUserInitials(collection.artist.artistName)}
+									</AvatarFallback>
+								</Avatar>
+							</Link>
 							<div className="flex flex-col flex-1">
 								<h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
 									{collection.collectionName}
 								</h1>
 								<div className="flex items-center text-white/80 mb-3">
 									<User className="w-4 h-4 mr-2" />
-									<span className="text-lg">{collection.artist.artistName}</span>
+									<Link 
+										to={`/artist/${collection.artist.id}`}
+										className="text-lg hover:text-white transition-colors cursor-pointer"
+									>
+										{collection.artist.artistName}
+									</Link>
 									{collection.artist.isVerified && (
 										<Badge variant="secondary" className="ml-2 bg-blue-500/20 text-blue-100">
 											Verified
 										</Badge>
 									)}
 								</div>
+								{collection.artist.bio && (
+									<p className="text-sm text-white/60 mb-2 max-w-2xl italic">
+										"{collection.artist.bio}"
+									</p>
+								)}
 								{collection.description && (
 									<p className="text-sm text-white/75 mb-3 max-w-2xl">
 										{collection.description}
@@ -120,41 +138,60 @@ export function CollectionPage() {
 							</div>
 							<div className="flex flex-col items-center lg:items-end">
 								<span className="text-xs text-white/75 font-mono uppercase">
-									Total Likes
+									Artist Stats
 								</span>
 								<span className="text-2xl font-semibold text-white">
-									{collection.arts?.reduce((sum, art) => sum + (art.art.likesCount || 0), 0) || 0}
+									{collection.artist.totalArts}
 								</span>
 							</div>
 						</div>
 					</div>
-
-					{/* Action Buttons */}
-					<Separator className="bg-white/15 my-6" />
-					<div className="flex flex-wrap gap-3">
-						<Button size="lg" className="bg-white/20 hover:bg-white/30 text-white border-white/25">
-							<Heart className="w-5 h-5 mr-2" />
-							Follow Collection
-						</Button>
-						<Button
-							size="lg"
-							variant="outline"
-							className="bg-transparent border-white/25 text-white hover:bg-white/10"
-						>
-							<Share2 className="w-5 h-5 mr-2" />
-							Share
-						</Button>
-						<Button
-							size="lg"
-							variant="outline"
-							className="bg-transparent border-white/25 text-white hover:bg-white/10"
-						>
-							<Bookmark className="w-5 h-5 mr-2" />
-							Save
-						</Button>
-					</div>
 				</GlassCard>
 			</div>
+
+			{/* Artist Information Card */}
+			<GlassCard className="p-6 mb-8">
+				<div className="flex items-center space-x-4 mb-4">
+					<Link to={`/artist/${collection.artist.id}`}>
+						<Avatar className="h-16 w-16 hover:ring-2 hover:ring-primary/20 transition-all cursor-pointer">
+							<AvatarImage 
+								src={collection.artist.user.profilePictureFileId 
+									? artCollectionsService.getUserProfileImageUrl(collection.artist.user.profilePictureFileId)
+									: ""
+								} 
+							/>
+							<AvatarFallback className="text-lg font-bold">
+								{getUserInitials(collection.artist.artistName)}
+							</AvatarFallback>
+						</Avatar>
+					</Link>
+					<div className="flex-1">
+						<div className="flex items-center space-x-2 mb-2">
+							<Link 
+								to={`/artist/${collection.artist.id}`}
+								className="text-xl font-bold hover:text-primary transition-colors cursor-pointer"
+							>
+								{collection.artist.artistName}
+							</Link>
+							{collection.artist.isVerified && (
+								<Badge variant="secondary" className="bg-blue-500/20 text-blue-500">
+									Verified Artist
+								</Badge>
+							)}
+						</div>
+						{collection.artist.bio && (
+							<p className="text-muted-foreground text-sm mb-2">
+								{collection.artist.bio}
+							</p>
+						)}
+						<div className="flex items-center space-x-4 text-sm text-muted-foreground">
+							<span>{collection.artist.totalFollowers} Followers</span>
+							<span>{collection.artist.totalArts} Artworks</span>
+							<span>{collection.artist.totalCollections} Collections</span>
+						</div>
+					</div>
+				</div>
+			</GlassCard>
 
 			{/* Collection Stats Summary */}
 			<GlassCard className="p-6 mb-8">
@@ -165,15 +202,15 @@ export function CollectionPage() {
 					</div>
 					<div className="text-center">
 						<div className="text-2xl font-bold mb-1">
-							{collection.arts?.reduce((sum, art) => sum + (art.art.likesCount || 0), 0) || 0}
+							{collection.artist.totalFollowers}
 						</div>
-						<div className="text-sm text-muted-foreground">Total Likes</div>
+						<div className="text-sm text-muted-foreground">Artist Followers</div>
 					</div>
 					<div className="text-center">
 						<div className="text-2xl font-bold mb-1">
-							{collection.arts?.filter(art => art.art.isInACollection).length || 0}
+							{collection.artist.totalCollections}
 						</div>
-						<div className="text-sm text-muted-foreground">In Collections</div>
+						<div className="text-sm text-muted-foreground">Artist Collections</div>
 					</div>
 					<div className="text-center">
 						<div className="text-2xl font-bold mb-1">
@@ -195,20 +232,24 @@ export function CollectionPage() {
 
 				{collection.arts && collection.arts.length > 0 ? (
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-						{collection.arts.map((art) => (
+						{collection.arts.map((art: any) => (
 							<ArtCard
-								key={art.id}
+								key={art.id || art.artId}
 								art={{
-									id: art.artId,
-									title: art.art.title,
-									description: art.art.description,
+									id: art.artId || art.id,
+									title: art.art?.title || art.title || 'Untitled',
+									description: art.art?.description || art.description || '',
 									artist: {
-										id: art.art.artistId,
-										name: art.art.artist.artistName,
-										profilePicture: art.art.artist.user?.profilePictureFileId || null,
+										id: art.art?.artistId || collection.artist.id,
+										name: art.art?.artist?.artistName || collection.artist.artistName,
+										profilePicture: art.art?.artist?.user?.profilePictureFileId || collection.artist.user.profilePictureFileId,
 									},
-									createdAt: art.addedAt,
-									imageUrl: collectionService.getArtworkImageUrl(art.art.imageFileId),
+									createdAt: art.addedAt || art.createdAt,
+									imageUrl: art.art?.imageFileId 
+										? collectionService.getArtworkImageUrl(art.art.imageFileId)
+										: art.imageFileId 
+											? collectionService.getArtworkImageUrl(art.imageFileId)
+											: '/placeholder.svg',
 								}}
 							/>
 						))}

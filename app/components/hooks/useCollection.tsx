@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import type { DetailedCollection } from "../../types/collection";
 import { collectionService } from "../../services/collection-service";
+import { artCollectionsService } from "../../services/art-collections-service";
 
 export function useCollection(collectionId: string | undefined) {
 	const [collection, setCollection] = useState<DetailedCollection | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
+	const [collectionImageUrl, setCollectionImageUrl] = useState<string | null>(null);
 
 	const fetchCollection = useCallback(async () => {
 		if (!collectionId) {
@@ -19,10 +20,10 @@ export function useCollection(collectionId: string | undefined) {
 			const collectionData: DetailedCollection = await collectionService.getCollectionById(collectionId);
 
 			if (collectionData.coverImageFileId) {
-				const imageUrl = collectionService.getCollectionImageUrl(collectionData.coverImageFileId);
-				setCoverImageUrl(imageUrl);
+				const imageUrl = artCollectionsService.getCollectionImageUrl(collectionData.coverImageFileId);
+				setCollectionImageUrl(imageUrl);
 			} else {
-				setCoverImageUrl(null);
+				setCollectionImageUrl(null);
 			}
 
 			if (!collectionData) {
@@ -41,5 +42,5 @@ export function useCollection(collectionId: string | undefined) {
 		fetchCollection();
 	}, [collectionId]);
 
-	return { collection, coverImageUrl, loading, error };
+	return { collection, collectionImageUrl, loading, error };
 }

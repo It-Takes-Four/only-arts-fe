@@ -116,7 +116,7 @@ export interface CollectionArt {
 export interface MyCollection {
 	id: string;
 	collectionName: string;
-	description?: string;
+	description?: string | null;
 	coverImageFileId?: string;
 	price?: string | null; // Price as string or null
 	tokenId?: string | null;
@@ -126,20 +126,26 @@ export interface MyCollection {
 	artistId: string;
 	artist: {
 		id: string;
+		userId: string;
 		artistName: string;
+		isNsfw: boolean;
+		bio?: string | null;
+		walletAddress?: string;
+		totalFollowers: number;
+		totalArts: number;
+		totalCollections: number;
 		isVerified: boolean;
+		createdAt: string;
+		updatedAt: string;
 		user: {
-			username: string;
 			profilePictureFileId?: string | null;
 		};
 	};
-	artsCount: number;
+	arts: any[]; // Changed from artsCount to arts array
 }
 
-// Extended interface for detailed collection view with arts
-export interface DetailedCollection extends MyCollection {
-	arts: CollectionArt[];
-}
+// DetailedCollection is now the same as MyCollection since arts are included
+export type DetailedCollection = MyCollection;
 
 export interface MyCollectionsResponse {
 	data: MyCollection[];
