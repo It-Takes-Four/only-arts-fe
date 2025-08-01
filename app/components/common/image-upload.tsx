@@ -204,7 +204,7 @@ export function ImageUpload({
           type="file"
           accept={accept}
           onChange={handleFileChange}
-          className="file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+          className="hidden" // Hide the file input since we have drag-and-drop area
           disabled={disabled}
           {...(register ? register(id.replace(/-/g, ''), {
             required: required ? `${label || 'Image'} is required` : false,

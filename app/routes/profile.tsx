@@ -1,17 +1,14 @@
-import { useParams } from "react-router";
 import { ProfilePage } from "../pages/profile";
 
 export function meta() {
 	return [
-		{ title: "OnlyArts - Profile" },
-		{ name: "description", content: "Explore the creative works of an artist on OnlyArts." },
+		{ title: "OnlyArts - My Profile" },
+		{ name: "description", content: "View and manage your OnlyArts profile." },
 	];
 }
 
 export default function Profile() {
-	const { artistId } = useParams();
-	
 	return (
-		<ProfilePage artistId={artistId} />
+		<ProfilePage />
 	);
 }

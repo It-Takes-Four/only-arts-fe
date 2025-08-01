@@ -13,7 +13,7 @@ export default [
 	layout("layouts/layout.tsx", [
 		index("routes/home.tsx"),
 		route("/profile", "routes/profile.tsx"),
-		route("/artist/:artistId", "routes/profile.tsx"),
+		route("/artist/:artistId", "routes/artist.tsx"),
 		route("/settings", "routes/settings.tsx"),
 		route("/explore", "routes/explore.tsx"),
 		route("/purchased-collections", "routes/purchased-collections.tsx"),

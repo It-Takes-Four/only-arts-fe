@@ -35,6 +35,13 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
     }
   };
 
+  const getUserProfileImageUrl = () => {
+    if (post.artist.user.profilePictureFileId) {
+      return `${import.meta.env.VITE_API_BASE_URL}/upload/profile/${post.artist.user.profilePictureFileId}`;
+    }
+    return null;
+  };
+
   const getUserInitials = (username: string) => {
     return username.charAt(0).toUpperCase();
   };
@@ -168,7 +175,7 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
               transition={{ duration: isMobile ? 0 : 0.3, delay: isMobile ? 0 : 0.1 }}
             >
               <Avatar className="h-8 w-8 border-2 border-white/20">
-                <AvatarImage src={post.artist.user.profilePicture} alt={post.artist.user.username} />
+                <AvatarImage src={getUserProfileImageUrl() || undefined} alt={post.artist.user.username} />
                 <AvatarFallback className="text-xs">
                   {getUserInitials(post.artist.user.username)}
                 </AvatarFallback>
@@ -244,7 +251,7 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
             <div className="p-6 bg-background/90">
               <div className="flex items-center space-x-3 mb-4">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={post.artist.user.profilePicture} alt={post.artist.user.username} />
+                  <AvatarImage src={getUserProfileImageUrl() || undefined} alt={post.artist.user.username} />
                   <AvatarFallback className="text-sm">
                     {getUserInitials(post.artist.user.username)}
                   </AvatarFallback>
@@ -274,7 +281,7 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
             <div className="p-6 bg-background/90">
               <div className="flex items-center space-x-3 mb-4">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={post.artist.user.profilePicture} alt={post.artist.user.username} />
+                  <AvatarImage src={getUserProfileImageUrl() || undefined} alt={post.artist.user.username} />
                   <AvatarFallback className="text-sm">
                     {getUserInitials(post.artist.user.username)}
                   </AvatarFallback>

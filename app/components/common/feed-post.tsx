@@ -20,12 +20,19 @@ export function FeedPostComponent({ post }: FeedPostComponentProps) {
     return username.charAt(0).toUpperCase();
   };
 
+  const getUserProfileImageUrl = () => {
+    if (post.artist.user.profilePictureFileId) {
+      return `${import.meta.env.VITE_API_BASE_URL}/upload/profile/${post.artist.user.profilePictureFileId}`;
+    }
+    return null;
+  };
+
   return (
     <Card className="w-full mb-6 bg-background/80 backdrop-blur-sm border-border/50">
       <CardHeader className="pb-3">
         <div className="flex items-center space-x-3">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={post.artist.user.profilePicture} alt={post.artist.user.username} />
+            <AvatarImage src={getUserProfileImageUrl() || undefined} alt={post.artist.user.username} />
             <AvatarFallback>{getUserInitials(post.artist.user.username)}</AvatarFallback>
           </Avatar>
           <div className="flex-1">

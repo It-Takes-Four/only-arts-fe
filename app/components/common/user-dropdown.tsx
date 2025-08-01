@@ -12,6 +12,7 @@ interface User {
   email: string;
   username: string;
   profilePicture: string | null;
+  profilePictureFileId: string | null;
   artist: any | null;
 }
 
@@ -28,6 +29,13 @@ export function UserDropdown({ user, onLogout }: UserDropdownProps) {
     setImageError(true);
   };
 
+  const getProfileImageUrl = () => {
+    if (user?.profilePictureFileId) {
+      return `${import.meta.env.VITE_API_BASE_URL}/upload/profile/${user.profilePictureFileId}`;
+    }
+    return null;
+  };
+
   const handleLogout = () => {
     console.log('UserDropdown logout clicked');
     setIsOpen(false); // Close dropdown immediately
@@ -38,9 +46,9 @@ export function UserDropdown({ user, onLogout }: UserDropdownProps) {
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger>
         <Button variant="ghost" className="cursor-pointer relative h-10 w-10 rounded-full bg-primary border-2 border-border text-primary-foreground overflow-hidden p-0">
-          {user?.profilePicture && !imageError ? (
+          {getProfileImageUrl() && !imageError ? (
             <img
-              src={user.profilePicture}
+              src={getProfileImageUrl()!}
               alt={user?.username}
               className="w-full h-full rounded-full object-cover absolute inset-0"
               onError={handleImageError}
