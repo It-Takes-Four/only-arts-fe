@@ -1,8 +1,8 @@
 import { formatDistanceToNow } from "date-fns";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getUserInitials } from "../../utils/UtilityFunction";
-import type { FeedPost } from "../../types/feed";
+import { getUserInitials } from "../../../utils/UtilityFunction";
+import type { FeedPost } from "../../../types/feed";
 
 interface FeedPostComponentProps {
 	post: FeedPost;

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ImageIcon } from "lucide-react";
-import type { ArtCardProps } from "../core/_models";
+import type { ArtCardProps } from "../../core/_models";
 import { useNavigate } from "react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getUserInitials } from "../../utils/UtilityFunction";
+import { getUserInitials } from "../../../utils/UtilityFunction";
 
 export function ArtCard({ art }: ArtCardProps) {
 	const navigate = useNavigate();

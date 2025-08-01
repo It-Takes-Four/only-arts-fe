@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from '@tanstack/react-query';
-import { Button } from "../common/button";
+import { Button } from "../../common/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, User, Palette, Edit, X } from "lucide-react";
 import { toast } from 'sonner';
-import { artistService } from "app/services/artist-service";
-import { useAuthContext } from "app/components/core/auth-context";
-import type { ArtistRegistrationRequest } from "app/types/artist";
+import { artistService } from "../../../services/artist-service";
+import { useAuthContext } from "../../core/auth-context";
+import type { ArtistRegistrationRequest } from "../../../types/artist";
 
 interface EditArtistProfileModalProps {
   isOpen: boolean;

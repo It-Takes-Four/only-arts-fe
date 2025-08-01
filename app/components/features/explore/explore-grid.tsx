@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
-import { useExplore } from '../hooks/useExplore';
-import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
+import { useExplore } from '../../hooks/useExplore';
+import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { ExploreArtCard } from './explore-art-card';
-import { FancyLoading } from './fancy-loading';
-import { Button } from './button';
+import { FancyLoading } from '../../common/fancy-loading';
+import { Button } from '../../common/button';
 import { useEffect, useState, useRef } from 'react';
 
 interface ExploreGridProps {

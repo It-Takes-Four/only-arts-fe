@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Heart, MessageCircle, Share2 } from "lucide-react";
-import type { FeedPost } from "../../types/feed";
-import { getUserInitials } from "../../utils/UtilityFunction";
+import type { FeedPost } from "../../../types/feed";
+import { getUserInitials } from "../../../utils/UtilityFunction";
 
 interface FeedArtCardProps {
 	post: FeedPost;

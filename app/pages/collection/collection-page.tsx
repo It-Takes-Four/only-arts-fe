@@ -1,4 +1,4 @@
-import { ArtCard } from "../../components/common/art-card";
+import { ArtCard } from "../../components/features/art/art-card";
 import { GlassCard } from "../../components/common/glass-card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";

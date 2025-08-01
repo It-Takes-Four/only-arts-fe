@@ -1,6 +1,6 @@
-import { Button } from "app/components/common/button";
+import { Button } from "../common/button";
 import { Bell, Search } from "lucide-react";
-import { NotificationDropdown } from "./notification-dropdown";
+import { NotificationDropdown } from "../common/notification-dropdown";
 import { useState } from "react";
 
 interface HeaderActionsProps {

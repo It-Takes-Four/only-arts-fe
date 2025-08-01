@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ExploreGrid } from "app/components/common/explore-grid";
+import { ExploreGrid } from "../../components/features/explore/explore-grid";
 import { TagSelector } from "app/components/common/tag-selector";
 import { FloatingActionButton } from "app/components/common/floating-action-button";
 import StaticGradient from "@/components/blocks/Backgrounds/StaticGradient/StaticGradient";

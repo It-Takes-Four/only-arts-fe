@@ -1,8 +1,8 @@
-import { useFeed } from '../hooks/useFeed';
-import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
+import { useFeed } from '../../hooks/useFeed';
+import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { FeedPostComponent } from './feed-post';
-import { Loading } from './loading';
-import { Button } from './button';
+import { Loading } from '../../common/loading';
+import { Button } from '../../common/button';
 
 export function FeedList() {
   const { feeds, loading, hasMore, error, loadMore, refresh } = useFeed();

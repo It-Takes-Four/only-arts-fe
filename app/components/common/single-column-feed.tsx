@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useFeed } from '../hooks/useFeed';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
-import { FeedArtCard } from './feed-art-card';
+import { FeedArtCard } from '../features/feed/feed-art-card';
 import { FancyLoading } from './fancy-loading';
 import { Button } from './button';
 

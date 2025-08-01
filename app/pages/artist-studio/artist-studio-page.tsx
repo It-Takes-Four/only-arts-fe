@@ -7,10 +7,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/commo
 import { Button } from "../../components/common/button";
 import { GlassCard } from "../../components/common/glass-card";
 import { CollectionCard } from "../../components/common/collection-card";
-import { ArtCard } from "../../components/common/art-card";
-import { CreateCollectionModal } from "../../components/artist-studio/create-collection-modal";
-import { CreateArtworkModal } from "../../components/artist-studio/create-artwork-modal";
-import { EditArtistProfileModal } from "../../components/artist-studio/edit-artist-profile-modal";
+import { ArtCard } from "../../components/features/art/art-card";
+import { CreateCollectionModal } from "../../components/features/artist-studio/create-collection-modal";
+import { CreateArtworkModal } from "../../components/features/artist-studio/create-artwork-modal";
+import { EditArtistProfileModal } from "../../components/features/artist-studio/edit-artist-profile-modal";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { 

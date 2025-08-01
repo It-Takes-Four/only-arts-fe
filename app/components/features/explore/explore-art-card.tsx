@@ -5,8 +5,8 @@ import { Link } from "react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, Share2, Folder } from "lucide-react";
-import { AuthenticatedImage } from "./authenticated-image";
-import type { ExploreArtwork } from "../../pages/explore/core/explore-models";
+import { AuthenticatedImage } from "../../common/authenticated-image";
+import type { ExploreArtwork } from "../../../pages/explore/core/explore-models";
 
 interface ExploreArtCardProps {
 	artwork: ExploreArtwork;
