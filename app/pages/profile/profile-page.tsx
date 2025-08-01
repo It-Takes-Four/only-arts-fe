@@ -14,6 +14,8 @@ import { useArtistProfileQuery } from "../../components/hooks/useArtistProfileQu
 import { useUserProfileQuery } from "../../components/hooks/useUserProfileQuery";
 import { useArtistCollectionsQuery } from "../../components/hooks/useArtistCollectionsQuery";
 import { useArtistArtworksQuery } from "../../components/hooks/useArtistArtworksQuery";
+import { useMyCollectionsQuery } from "../../components/hooks/useMyCollectionsQuery";
+import { useMyArtworksQuery } from "../../components/hooks/useMyArtworksQuery";
 import { artistService } from "../../services/artist-service";
 import { collectionService } from "../../services/collection-service";
 import { formatDistanceToNow } from 'date-fns';
@@ -21,6 +23,8 @@ import { FancyLoading } from "../../components/common/fancy-loading";
 import { Button } from "../../components/common/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { ArtistCollection } from "../../types/collection";
+import type { ArtistProfile } from "../../types/artist";
+import type { ArtistArtwork } from "../../types/artwork";
 
 interface ProfilePageProps {
 	artistId?: string;
@@ -35,21 +39,33 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 	const [selectedCollection, setSelectedCollection] = useState<ArtistCollection | null>(null);
 	const [showBuyModal, setShowBuyModal] = useState(false);
 
-	// Only fetch collections if we're viewing another artist's profile and we have an artistId
+	const isOwnProfile = !artistId; // If no artistId, it's the current user's profile
+
+	// Fetch data based on whether it's own profile or another artist's profile
 	const { 
 		data: collectionsData, 
 		isLoading: collectionsLoading,
 		error: collectionsError
 	} = useArtistCollectionsQuery(artistId || '', collectionsPage, 10);
 
-	// Only fetch artworks if we're viewing another artist's profile and we have an artistId
 	const { 
 		data: artworksData, 
 		isLoading: artworksLoading,
 		error: artworksError
 	} = useArtistArtworksQuery(artistId || '');
 
-	const isOwnProfile = !artistId; // If no artistId, it's the current user's profile
+	// Fetch own collections and artworks when viewing own profile
+	const { 
+		collections: myCollectionsData, 
+		isLoading: myCollectionsLoading,
+		error: myCollectionsError 
+	} = useMyCollectionsQuery();
+
+	const { 
+		artworks: myArtworksData, 
+		isLoading: myArtworksLoading,
+		error: myArtworksError 
+	} = useMyArtworksQuery();
 
 	// Use currentUser for joined date if it's own profile, otherwise use artist data
 	const userForJoinedDate = isOwnProfile ? currentUser : artist?.user;
@@ -83,99 +99,249 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 		{
 			value: "explore",
 			label: "Explore",
-			content:
-				// <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-					<div className="">
+			content: (
+				<div className="space-y-8">
+					{/* Collections Preview */}
+					<div>
+						<div className="flex items-center justify-between mb-4">
+							<h3 className="text-xl font-semibold">Collections</h3>
+							{/* Show View All button based on data availability */}
+							{(isOwnProfile ? 
+								(myCollectionsData && myCollectionsData.length > 4) : 
+								(collectionsData?.data && collectionsData.data.length > 4)
+							) && (
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={() => setTabValue("collections")}
+								>
+									View All ({isOwnProfile ? myCollectionsData?.length || 0 : collectionsData?.pagination?.total || 0})
+								</Button>
+							)}
+						</div>
+						{/* Loading state */}
+						{(isOwnProfile ? myCollectionsLoading : collectionsLoading) ? (
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+								{Array.from({ length: 4 }).map((_, index) => (
+									<div key={index} className="animate-pulse">
+										<div className="bg-muted rounded-lg aspect-[4/3] mb-4"></div>
+										<div className="h-4 bg-muted rounded mb-2"></div>
+										<div className="h-3 bg-muted rounded w-3/4"></div>
+									</div>
+								))}
+							</div>
+						) : /* Error state */ (isOwnProfile ? myCollectionsError : collectionsError) ? (
+							<div className="text-center py-4">
+								<p className="text-muted-foreground text-sm">Failed to load collections</p>
+							</div>
+						) : /* Success state with data */ (isOwnProfile ? 
+							(myCollectionsData && myCollectionsData.length > 0) : 
+							(collectionsData?.data && Array.isArray(collectionsData.data) && collectionsData.data.length > 0)
+						) ? (
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+								{(isOwnProfile ? myCollectionsData : collectionsData?.data)?.slice(0, 4).map((collection) => (
+									<div key={collection.id} className="relative">
+										<CollectionCard
+											id={collection.id}
+											name={collection.collectionName}
+											description={collection.description || "No description"}
+											artworkCount={isOwnProfile ? 
+												(collection as any).arts?.length || 0 : 
+												(collection as any).artsCount || 0
+											}
+											previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
+											createdBy={collection.artist.artistName}
+											price={parseFloat(collection.price || '0')}
+										/>
+										{/* Only show buy button for other artists' collections */}
+										{!isOwnProfile && collection.isPublished && parseFloat(collection.price || '0') > 0 && (
+											<div className="absolute top-2 right-2">
+												<Button
+													size="sm"
+													onClick={() => handleBuyCollection(collection as ArtistCollection)}
+													className="bg-primary/90 hover:bg-primary shadow-lg"
+												>
+													Buy ${parseFloat(collection.price || '0').toFixed(2)}
+												</Button>
+											</div>
+										)}
+									</div>
+								))}
+							</div>
+						) : (
+							<div className="text-center py-4">
+								<p className="text-muted-foreground text-sm">No collections found</p>
+							</div>
+						)}
+					</div>
 
-			</div>,
+					{/* Artworks Preview */}
+					<div>
+						<div className="flex items-center justify-between mb-4">
+							<h3 className="text-xl font-semibold">Artworks</h3>
+							{(isOwnProfile ? 
+								(myArtworksData && myArtworksData.length > 8) : 
+								(artworksData && artworksData.length > 8)
+							) && (
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={() => setTabValue("artworks")}
+								>
+									View All ({isOwnProfile ? myArtworksData?.length || 0 : artworksData?.length || 0})
+								</Button>
+							)}
+						</div>
+						{/* Loading state */}
+						{(isOwnProfile ? myArtworksLoading : artworksLoading) ? (
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
+								{Array.from({ length: 8 }).map((_, index) => (
+									<div key={index} className="animate-pulse">
+										<div className="bg-muted rounded-lg aspect-square mb-2"></div>
+										<div className="h-3 bg-muted rounded mb-1"></div>
+										<div className="h-2 bg-muted rounded w-2/3"></div>
+									</div>
+								))}
+							</div>
+						) : /* Error state */ (isOwnProfile ? myArtworksError : artworksError) ? (
+							<div className="text-center py-4">
+								<p className="text-muted-foreground text-sm">Failed to load artworks</p>
+							</div>
+						) : /* Success state with data */ (isOwnProfile ? 
+							(myArtworksData && myArtworksData.length > 0) : 
+							(artworksData && Array.isArray(artworksData) && artworksData.length > 0)
+						) ? (
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
+								{(isOwnProfile ? myArtworksData : artworksData)?.slice(0, 8).map((artwork) => (
+									<div key={artwork.id} className="relative">
+										<ArtCard
+											art={{
+												id: artwork.id,
+												title: artwork.title,
+												description: artwork.description,
+												imageUrl: collectionService.getArtworkImageUrl(artwork.imageFileId),
+												artist: {
+													id: artwork.artistId,
+													name: isOwnProfile ? 
+														(currentUser?.artist?.artistName || "Unknown Artist") : 
+														(artist?.artistName || "Unknown Artist"),
+													profilePicture: isOwnProfile ?
+														(currentUser?.profilePictureFileId ? artistService.getProfilePictureUrl(currentUser.profilePictureFileId) : null) :
+														(artist?.user.profilePictureFileId ? artistService.getProfilePictureUrl(artist.user.profilePictureFileId) : null)
+												},
+												tags: artwork.tags.map(tag => ({ name: tag.tag.tagName })),
+												type: 'art',
+												createdAt: artwork.datePosted
+											}}
+										/>
+										<div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-white text-xs flex items-center gap-2">
+											<span className="flex items-center gap-1">
+												♥ {artwork.likesCount}
+											</span>
+											{artwork.isInACollection && (
+												<span className="flex items-center gap-1">
+													📁
+												</span>
+											)}
+										</div>
+									</div>
+								))}
+							</div>
+						) : (
+							<div className="text-center py-4">
+								<p className="text-muted-foreground text-sm">No artworks found</p>
+							</div>
+						)}
+					</div>
+				</div>
+			),
 		},
 		{
 			value: "collections",
 			label: "Collections",
 			content: (
 				<div className="space-y-6">
-					{!isOwnProfile && artistId ? (
+					{/* Loading state */}
+					{(isOwnProfile ? myCollectionsLoading : collectionsLoading) ? (
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+							{Array.from({ length: 8 }).map((_, index) => (
+								<div key={index} className="animate-pulse">
+									<div className="bg-muted rounded-lg aspect-[4/3] mb-4"></div>
+									<div className="h-4 bg-muted rounded mb-2"></div>
+									<div className="h-3 bg-muted rounded w-3/4"></div>
+								</div>
+							))}
+						</div>
+					) : /* Error state */ (isOwnProfile ? myCollectionsError : collectionsError) ? (
+						<div className="text-center py-8">
+							<p className="text-muted-foreground">Failed to load collections</p>
+						</div>
+					) : /* Success state with data */ (isOwnProfile ? 
+						(myCollectionsData && myCollectionsData.length > 0) : 
+						(collectionsData?.data && Array.isArray(collectionsData.data) && collectionsData.data.length > 0)
+					) ? (
 						<>
-							{collectionsLoading ? (
-								<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-									{Array.from({ length: 4 }).map((_, index) => (
-										<div key={index} className="animate-pulse">
-											<div className="bg-muted rounded-lg aspect-[4/3] mb-4"></div>
-											<div className="h-4 bg-muted rounded mb-2"></div>
-											<div className="h-3 bg-muted rounded w-3/4"></div>
-										</div>
-									))}
-								</div>
-							) : collectionsError ? (
-								<div className="text-center py-8">
-									<p className="text-muted-foreground">Failed to load collections</p>
-								</div>
-							) : collectionsData?.data && Array.isArray(collectionsData.data) && collectionsData.data.length > 0 ? (
-								<>
-									<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-										{collectionsData.data.map((collection) => (
-											<div key={collection.id} className="relative">
-												<CollectionCard
-													id={collection.id}
-													name={collection.collectionName}
-													description={collection.description || "No description"}
-													artworkCount={collection.artsCount}
-													previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
-													createdBy={collection.artist.artistName}
-													price={parseFloat(collection.price)}
-													totalSales={0} // We don't have sales data in this response
-												/>
-												{collection.isPublished && parseFloat(collection.price) > 0 && (
-													<div className="absolute top-2 right-2">
-														<Button
-															size="sm"
-															onClick={() => handleBuyCollection(collection)}
-															className="bg-primary/90 hover:bg-primary shadow-lg"
-														>
-															Buy ${parseFloat(collection.price).toFixed(2)}
-														</Button>
-													</div>
-												)}
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+								{(isOwnProfile ? myCollectionsData : collectionsData?.data)?.map((collection) => (
+									<div key={collection.id} className="relative">
+										<CollectionCard
+											id={collection.id}
+											name={collection.collectionName}
+											description={collection.description || "No description"}
+											artworkCount={isOwnProfile ? 
+												(collection as any).arts?.length || 0 : 
+												(collection as any).artsCount || 0
+											}
+											previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
+											createdBy={collection.artist.artistName}
+											price={parseFloat(collection.price || '0')}
+										/>
+										{/* Only show buy button for other artists' collections */}
+										{!isOwnProfile && collection.isPublished && parseFloat(collection.price || '0') > 0 && (
+											<div className="absolute top-2 right-2">
+												<Button
+													size="sm"
+													onClick={() => handleBuyCollection(collection as ArtistCollection)}
+													className="bg-primary/90 hover:bg-primary shadow-lg"
+												>
+													Buy ${parseFloat(collection.price || '0').toFixed(2)}
+												</Button>
 											</div>
-										))}
+										)}
 									</div>
+								))}
+							</div>
 
-									{/* Pagination */}
-									{collectionsData?.pagination && collectionsData.pagination.totalPages > 1 && (
-										<div className="flex justify-center items-center gap-2">
-											<Button
-												variant="outline"
-												size="sm"
-												onClick={() => setCollectionsPage(p => Math.max(1, p - 1))}
-												disabled={!collectionsData.pagination.hasPrevPage}
-											>
-												<ChevronLeft className="h-4 w-4" />
-												Previous
-											</Button>
-											<span className="text-sm text-muted-foreground px-2">
-												Page {collectionsData.pagination.currentPage} of {collectionsData.pagination.totalPages}
-											</span>
-											<Button
-												variant="outline"
-												size="sm"
-												onClick={() => setCollectionsPage(p => p + 1)}
-												disabled={!collectionsData.pagination.hasNextPage}
-											>
-												Next
-												<ChevronRight className="h-4 w-4" />
-											</Button>
-										</div>
-									)}
-								</>
-							) : (
-								<div className="text-center py-8">
-									<p className="text-muted-foreground">No collections found</p>
+							{/* Pagination - only for other artists' profiles */}
+							{!isOwnProfile && collectionsData?.pagination && collectionsData.pagination.totalPages > 1 && (
+								<div className="flex justify-center items-center gap-2">
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => setCollectionsPage(p => Math.max(1, p - 1))}
+										disabled={!collectionsData.pagination.hasPrevPage}
+									>
+										<ChevronLeft className="h-4 w-4" />
+										Previous
+									</Button>
+									<span className="text-sm text-muted-foreground px-2">
+										Page {collectionsData.pagination.currentPage} of {collectionsData.pagination.totalPages}
+									</span>
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => setCollectionsPage(p => p + 1)}
+										disabled={!collectionsData.pagination.hasNextPage}
+									>
+										Next
+										<ChevronRight className="h-4 w-4" />
+									</Button>
 								</div>
 							)}
 						</>
 					) : (
 						<div className="text-center py-8">
-							<p className="text-muted-foreground">Collections are not available for your own profile</p>
+							<p className="text-muted-foreground">No collections found</p>
 						</div>
 					)}
 				</div>
@@ -186,67 +352,114 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 			label: "Artworks",
 			content: (
 				<div className="space-y-6">
-					{!isOwnProfile && artistId ? (
-						<>
-							{artworksLoading ? (
-								<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-									{Array.from({ length: 8 }).map((_, index) => (
-										<div key={index} className="animate-pulse">
-											<div className="bg-muted rounded-lg aspect-square mb-2"></div>
-											<div className="h-4 bg-muted rounded mb-1"></div>
-											<div className="h-3 bg-muted rounded w-3/4"></div>
-										</div>
-									))}
+					{/* Loading state */}
+					{(isOwnProfile ? myArtworksLoading : artworksLoading) ? (
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+							{Array.from({ length: 8 }).map((_, index) => (
+								<div key={index} className="animate-pulse">
+									<div className="bg-muted rounded-lg aspect-square mb-4"></div>
+									<div className="h-4 bg-muted rounded mb-2"></div>
+									<div className="h-3 bg-muted rounded w-1/2"></div>
 								</div>
-							) : artworksError ? (
-								<div className="text-center py-8">
-									<p className="text-muted-foreground">Failed to load artworks</p>
-								</div>
-							) : artworksData && Array.isArray(artworksData) && artworksData.length > 0 ? (
-								<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-									{artworksData.map((artwork) => (
-										<div key={artwork.id} className="relative">
-											<ArtCard
-												art={{
-													id: artwork.id,
-													title: artwork.title,
-													description: artwork.description,
-													imageUrl: collectionService.getArtworkImageUrl(artwork.imageFileId),
-													artist: {
-														id: artwork.artistId,
-														name: artist?.artistName || "Unknown Artist",
-														profilePicture: artist?.user.profilePictureFileId 
-															? artistService.getProfilePictureUrl(artist.user.profilePictureFileId) 
-															: null
-													},
-													tags: artwork.tags.map(tag => ({ name: tag.tag.tagName })),
-													type: 'art',
-													createdAt: artwork.datePosted
-												}}
+							))}
+						</div>
+					) : /* Error state */ (isOwnProfile ? myArtworksError : artworksError) ? (
+						<div className="text-center py-8">
+							<p className="text-muted-foreground">Failed to load artworks</p>
+						</div>
+					) : /* Success state with data */ (isOwnProfile ? 
+						(myArtworksData && myArtworksData.length > 0) : 
+						(artworksData && Array.isArray(artworksData) && artworksData.length > 0)
+					) ? (
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+							{(isOwnProfile ? myArtworksData : artworksData)?.map((artwork) => (
+								<div key={artwork.id} className="relative group">
+									<div className="bg-card rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+										{/* Artwork Image */}
+										<div className="aspect-square relative">
+											<img
+												src={artwork.imageFileId ? collectionService.getArtworkImageUrl(artwork.imageFileId) : "/placeholder.svg"}
+												alt={artwork.title}
+												className="w-full h-full object-cover"
 											/>
-											{/* Artwork stats overlay */}
-											<div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-white text-xs flex items-center gap-2">
-												<span className="flex items-center gap-1">
-													♥ {artwork.likesCount}
-												</span>
-												{artwork.isInACollection && (
-													<span className="flex items-center gap-1">
-														📁 In Collection
-													</span>
-												)}
+											{/* Overlay with stats */}
+											<div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+												<div className="text-white text-center">
+													<div className="flex items-center gap-4 justify-center">
+														<span className="flex items-center gap-1">
+															♥ {(artwork as any).likesCount || 0}
+														</span>
+														{(artwork as any).isInACollection && (
+															<span className="flex items-center gap-1">
+																📁 Collection
+															</span>
+														)}
+													</div>
+												</div>
 											</div>
 										</div>
-									))}
+
+										{/* Artwork Info */}
+										<div className="p-4">
+											<h3 className="font-semibold text-lg mb-1 truncate">{artwork.title}</h3>
+											<p className="text-sm text-muted-foreground mb-2 line-clamp-2">
+												{artwork.description || "No description"}
+											</p>
+											
+											{/* Tags */}
+											{artwork.tags && artwork.tags.length > 0 && (
+												<div className="flex flex-wrap gap-1 mb-3">
+													{artwork.tags.slice(0, 3).map((tag, index) => (
+														<Badge key={index} variant="secondary" className="text-xs">
+															{(tag as any).tag?.tagName || (tag as any).tagName || 'Tag'}
+														</Badge>
+													))}
+													{artwork.tags.length > 3 && (
+														<Badge variant="outline" className="text-xs">
+															+{artwork.tags.length - 3}
+														</Badge>
+													)}
+												</div>
+											)}
+
+											{/* Artist Info */}
+											<div className="flex items-center gap-2">
+												<img
+													src="/placeholder-avatar.png"
+													alt="Artist"
+													className="w-6 h-6 rounded-full"
+												/>
+												<span className="text-sm text-muted-foreground">
+													{isOwnProfile ? 
+														(artist?.artistName || 'Unknown Artist') : 
+														'Artist'
+													}
+												</span>
+											</div>
+										</div>
+									</div>
+
+									{/* Only show buy button for other artists' artworks */}
+									{!isOwnProfile && (
+										<div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+											<Button
+												size="sm"
+												onClick={() => {
+													// Handle individual artwork purchase
+													console.log('Buy artwork:', artwork.id);
+												}}
+												className="bg-primary/90 hover:bg-primary shadow-lg"
+											>
+												Buy
+											</Button>
+										</div>
+									)}
 								</div>
-							) : (
-								<div className="text-center py-8">
-									<p className="text-muted-foreground">No artworks found</p>
-								</div>
-							)}
-						</>
+							))}
+						</div>
 					) : (
 						<div className="text-center py-8">
-							<p className="text-muted-foreground">Artworks are not available for your own profile</p>
+							<p className="text-muted-foreground">No artworks found</p>
 						</div>
 					)}
 				</div>

@@ -50,10 +50,10 @@ class ArtistService extends BaseService {
     }
   }
 
-  async getArtistCollections(artistId: string, page: number = 1, perPage: number = 10) {
+  async getArtistCollections(artistId: string, page: number = 1, limit: number = 10) {
     try {
-      const { data } = await this._axios.get(`/artists/${artistId}`, {
-        params: { page, perPage }
+      const { data } = await this._axios.get(`/art-collections/artist/${artistId}`, {
+        params: { page, limit }
       });
       return data;
     } catch (error: any) {

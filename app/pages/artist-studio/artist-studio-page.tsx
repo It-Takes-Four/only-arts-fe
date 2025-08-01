@@ -119,7 +119,6 @@ export function ArtistStudioPage() {
 									previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : ""}
 									createdBy={collection.artist.artistName}
 									price={collection.price ? parseFloat(collection.price) : undefined}
-									totalSales={0} // We don't have sales data in this response
 								/>
 							))
 						)}
