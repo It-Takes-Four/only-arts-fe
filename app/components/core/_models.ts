@@ -75,7 +75,14 @@ interface ArtCardProps {
       profilePictureFileId?: string | null;
     };
     imageUrl: string | null;
-    tags?: { name: string; }[];
+    tags?: {
+      artId: string;
+      tagId: string;
+      tag: {
+        id: string;
+        tagName: string;
+      }
+    }[];
     type?: 'post' | 'art' | 'collection';
     createdAt?: string;
   };

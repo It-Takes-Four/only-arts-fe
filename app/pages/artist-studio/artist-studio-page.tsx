@@ -118,7 +118,7 @@ export function ArtistStudioPage() {
 									artworkCount={collection.artsCount}
 									previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : ""}
 									createdBy={collection.artist.artistName}
-									price={collection.price ? parseFloat(collection.price) : undefined}
+									price={collection.price ? parseFloat(collection.price).toString() : null}
 								/>
 							))
 						)}
