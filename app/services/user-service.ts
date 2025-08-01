@@ -26,7 +26,7 @@ class UserService extends BaseService {
       formData.append('profilePicture', file);
       
       this.setMultipartFormDataHeaders();
-      const { data } = await this._axios.post<User>('/users/me/profile-picture', formData);
+      const { data } = await this._axios.patch<User>('/users/me/profile-picture', formData);
       return data;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to upload profile picture');

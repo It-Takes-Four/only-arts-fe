@@ -34,7 +34,7 @@ export function PurchasedCollectionsPage() {
         setCollections(response.data);
       }
       
-      setHasMore(response.hasMore);
+      setHasMore(response.pagination.hasNextPage);
       setPage(pageNum);
     } catch (error: any) {
       const errorMessage = error.message || 'Failed to load purchased collections';

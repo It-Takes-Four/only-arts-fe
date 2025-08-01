@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { formatDistanceToNow } from 'date-fns';
+import { Link } from 'react-router';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, Share2, Folder } from "lucide-react";
@@ -166,19 +167,24 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
       <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
         {/* Artist Info */}
         <div className="flex items-center space-x-2 sm:space-x-3">
-          <Avatar className="w-7 h-7 sm:w-8 sm:h-8 ring-2 ring-primary/20">
-            <AvatarImage 
-              src={artwork.artistProfileFileId ? `/api/files/${artwork.artistProfileFileId}` : undefined}
-              alt={artwork.artistName}
-            />
-            <AvatarFallback className="bg-primary/10 text-primary font-medium text-xs sm:text-sm">
-              {getUserInitials(artwork.artistName)}
-            </AvatarFallback>
-          </Avatar>
+          <Link to={`/artist/${artwork.artistId}`} className="shrink-0">
+            <Avatar className="w-7 h-7 sm:w-8 sm:h-8 ring-2 ring-primary/20 hover:ring-primary/40 transition-all duration-200">
+              <AvatarImage 
+                src={artwork.artistProfileFileId ? `/api/files/${artwork.artistProfileFileId}` : undefined}
+                alt={artwork.artistName}
+              />
+              <AvatarFallback className="bg-primary/10 text-primary font-medium text-xs sm:text-sm">
+                {getUserInitials(artwork.artistName)}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
           <div className="flex-1 min-w-0">
-            <p className="text-xs sm:text-sm font-medium text-foreground truncate">
+            <Link 
+              to={`/artist/${artwork.artistId}`}
+              className="text-xs sm:text-sm font-medium text-foreground truncate hover:text-primary transition-colors duration-200 block"
+            >
               {artwork.artistName}
-            </p>
+            </Link>
             <p className="text-xs text-muted-foreground">
               {formatDate(artwork.datePosted)}
             </p>

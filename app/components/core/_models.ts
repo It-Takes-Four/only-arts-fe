@@ -16,6 +16,7 @@ interface User {
   email: string;
   username: string;
   profilePicture: string | null;
+  profilePictureFileId: string | null;
   artist: Artist | null;
   wallets?: WalletInfo[];
   comments?: any[];
@@ -68,6 +69,7 @@ interface ArtCardProps {
       name: string;
       image?: string;
       profilePicture?: string | null;
+      profilePictureFileId?: string | null;
     };
     imageUrl: string | null;
     tags?: { name: string; }[];
