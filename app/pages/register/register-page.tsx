@@ -109,7 +109,7 @@ export function RegisterPage() {
       {backgroundElement}
 
       <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="w-full max-w-md shadow-lg bg-background/80 backdrop-blur-sm border-border/50">
+        <Card className="w-full max-w-md shadow-lg bg-background/80 backdrop-blur border-border/50">
           <CardHeader className="space-y-4 text-center">
             <div className="flex justify-center">
             <FullLogo className="h-12" />
@@ -125,7 +125,7 @@ export function RegisterPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-2">
+            <div className="flex flex-col space-y-2">
               <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
@@ -150,7 +150,7 @@ export function RegisterPage() {
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="flex flex-col space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
@@ -171,7 +171,7 @@ export function RegisterPage() {
               )}
             </div>
             
-            <div className="space-y-2">
+            <div className="flex flex-col space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
                 <Input
@@ -210,7 +210,7 @@ export function RegisterPage() {
               )}
             </div>
 
-            <div className="space-y-2">
+            <div className="flex flex-col space-y-2">
               <Label htmlFor="confirmPassword">Confirm Password</Label>
               <div className="relative">
                 <Input

@@ -57,6 +57,7 @@ export interface FeedCollectionData {
 }
 
 export interface UnifiedFeedItem {
+	feedItemId: string;
 	post: FeedPostData | null;
 	art: FeedArtData | null;
 	collection: FeedCollectionData | null;

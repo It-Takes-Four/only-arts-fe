@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { UnifiedFeedList } from "app/components/common/unified-feed-list";
-import { FloatingActionButton } from "app/components/common/floating-action-button";
 import StaticGradient from "@/components/blocks/Backgrounds/StaticGradient/StaticGradient";
 
 export function HomePage() {

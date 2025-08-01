@@ -90,7 +90,7 @@ export function LoginPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-2">
+            <div className="flex flex-col space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
@@ -111,7 +111,7 @@ export function LoginPage() {
               )}
             </div>
             
-            <div className="space-y-2">
+            <div className="flex flex-col space-y-2">
               <Label htmlFor="password">Password</Label>
               <div className="relative">
                 <Input

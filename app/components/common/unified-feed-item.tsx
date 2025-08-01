@@ -40,7 +40,7 @@ export function UnifiedFeedItemComponent({
 					imageFileId: null,
 					tags: [],
 					type: "post" as const,
-					url: `/post/${item.post?.id}`,
+					url: `/post/${item.feedItemId}`,
 				};
 			case "art":
 				return {
@@ -53,7 +53,7 @@ export function UnifiedFeedItemComponent({
 					imageFileId: item.art?.imageFileId || null,
 					tags: item.art?.tags || [],
 					type: "art" as const,
-					url: `/art/${item.art?.id}`,
+					url: `/art/${item.feedItemId}`,
 				};
 			case "collection":
 				return {
@@ -70,7 +70,7 @@ export function UnifiedFeedItemComponent({
 					imageFileId: item.collection?.coverImageFileId || null,
 					tags: [],
 					type: "collection" as const,
-					url: `/collection/${item.collection?.id}`,
+					url: `/collection/${item.feedItemId}`,
 				};
 			default:
 				return {
@@ -83,6 +83,7 @@ export function UnifiedFeedItemComponent({
 					imageFileId: null,
 					tags: [],
 					type: "unknown" as const,
+					url: "/",
 				};
 		}
 	};
@@ -143,7 +144,7 @@ export function UnifiedFeedItemComponent({
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.5, delay: index * 0.1 }}
 			whileHover={{ y: -2 }}
-			onClick={() => nav}
+			onClick={() => navigate(displayData.url)}
 		>
 			{/* Header */}
 			<div
@@ -221,7 +222,7 @@ export function UnifiedFeedItemComponent({
 					{/* Content type decorative element */}
 					<div
 						className={cn(
-							"w-8 h-8 rounded-full bg-gradient-to-br flex items-center justify-center opacity-20",
+							"w-8 h-8 rounded-full bg-gradient-to-br flex items-center justify-center opacity-75",
 							displayData.type === "art" &&
 								"from-purple-400 to-pink-400",
 							displayData.type === "collection" &&

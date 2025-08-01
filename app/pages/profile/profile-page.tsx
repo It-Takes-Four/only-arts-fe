@@ -297,7 +297,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 				{/* User Data */}
 
 				<GlassCard className="py-4 px-8 flex flex-col lg:flex-row justify-between">
-					<div className="flex items-start lg:items-end space-x-4">
+					<div className="flex items-start space-x-4">
 						<img 
 							src={getProfilePictureUrl()} 
 							alt="Artist Avatar"
@@ -309,8 +309,12 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 						<div className="flex flex-col rounded-lg">
 							<span className="flex items-center text-white">
 								<h1 className="text-2xl font-bold text-white">{artist.artistName}</h1>
-								<Separator orientation="vertical" className="bg-white/25 h-5 mr-1 ml-4"/>
-								{!isOwnProfile && <FollowButton/>}
+								{!isOwnProfile &&
+									<>
+                    <Separator orientation="vertical" className="bg-white/25 h-5 mr-1 ml-4"/>
+                    <FollowButton/>
+									</>
+								}
 							</span>
 							<p className="text-sm text-white/75 mt-1">@{artist.user.username}</p>
 							{artist.bio && (
