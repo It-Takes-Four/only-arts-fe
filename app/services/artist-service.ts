@@ -23,7 +23,7 @@ class ArtistService extends BaseService {
 
   async updateArtistProfile(artistData: Partial<ArtistRegistrationRequest>): Promise<Artist> {
     try {
-      const { data } = await this._axios.put<Artist>('/artists/me', artistData);
+      const { data } = await this._axios.patch<Artist>('/artists/me', artistData);
       return data;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to update artist profile');
@@ -40,5 +40,4 @@ class ArtistService extends BaseService {
   }
 }
 
-// Export singleton instance
 export const artistService = new ArtistService();

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { collectionService, type MyCollection } from '../../services/collection-service';
+import { collectionService } from '../../services/collection-service';
+import type { MyCollection } from '../../types/collection';
 
 export function useMyCollections() {
   const [collections, setCollections] = useState<MyCollection[]>([]);

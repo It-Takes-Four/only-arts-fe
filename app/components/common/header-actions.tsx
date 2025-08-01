@@ -1,17 +1,25 @@
 import { Button } from "app/components/common/button";
 import { Bell, Search } from "lucide-react";
+import { NotificationDropdown } from "./notification-dropdown";
+import { useState } from "react";
 
 interface HeaderActionsProps {
   onSearchClick?: () => void;
 }
 
 export function HeaderActions({ onSearchClick }: HeaderActionsProps) {
+  const [notificationIsOpen, setNotificationIsOpen] = useState<boolean>(false)
+
+  const toggleNotificationDropdown = () => {
+    setNotificationIsOpen(!notificationIsOpen)
+  }
+
   return (
     <div className="flex items-center gap-2 md:gap-3">
       {/* Mobile Search Icon - positioned before notifications */}
-      <Button 
-        variant="ghost" 
-        size="icon" 
+      <Button
+        variant="ghost"
+        size="icon"
         className="md:hidden h-9 w-9"
         onClick={onSearchClick}
       >
@@ -19,10 +27,11 @@ export function HeaderActions({ onSearchClick }: HeaderActionsProps) {
       </Button>
 
       {/* Notification Bell */}
-      <Button variant="ghost" size="icon" className="h-9 w-9 relative">
-        <Bell className="h-5 w-5" />
+      <Button variant="ghost" size="icon" className="h-9 w-9 relative" onClick={() => { toggleNotificationDropdown() }} >
+        <Bell className="h-5 w-5"/>
         {/* Notification dot */}
         <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+        <NotificationDropdown isOpen={notificationIsOpen} />
       </Button>
     </div>
   );
