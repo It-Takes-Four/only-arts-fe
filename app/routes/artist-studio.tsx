@@ -1,4 +1,5 @@
 import { ArtistStudioPage } from "app/pages/artist-studio/artist-studio-page";
+import { ArtistStudioProvider } from "app/context/artist-studio-context";
 
 export function meta() {
 	return [
@@ -9,6 +10,8 @@ export function meta() {
 
 export default function ArtistStudio() {
 	return (
-		<ArtistStudioPage />
+		<ArtistStudioProvider>
+			<ArtistStudioPage />
+		</ArtistStudioProvider>
 	);
 }

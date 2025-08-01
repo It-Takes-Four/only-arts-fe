@@ -18,8 +18,8 @@ export interface ArtistProfile {
 		email: string;
 		username: string;
 		profilePictureFileId: string | null;
-		createdAt: string;
-		updatedAt: string;
+		createdAt: number; // Unix timestamp
+		updatedAt: number; // Unix timestamp
 	};
 }
 

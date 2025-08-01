@@ -35,7 +35,7 @@ export function ExplorePage() {
         )}
 
         <motion.div 
-          className="w-full max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8"
+          className="w-full max-w-[1600px] xl:max-w-[1800px] 2xl:max-w-[2000px] mx-auto px-2 sm:px-4 lg:px-6 xl:px-8 py-4 sm:py-8"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}

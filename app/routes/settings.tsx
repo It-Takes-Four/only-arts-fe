@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
 import { useAuthContext } from "app/components/core/auth-context";
+import { useUserProfileQuery } from "app/components/hooks/useUserProfileQuery";
 import { userService } from "app/services/user-service";
 import { authService } from "app/services/auth-service";
 import { Camera, Upload, User, Mail, Palette, CheckCircle, Loader2 } from "lucide-react";
@@ -20,7 +21,8 @@ export function meta() {
 }
 
 export default function Settings() {
-  const { user, refreshUser } = useAuthContext();
+  const { user: authUser, refreshUser } = useAuthContext();
+  const { user, refresh: refreshUserProfile, updateCache } = useUserProfileQuery();
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [email, setEmail] = useState(user?.email || "");
@@ -57,7 +59,10 @@ export default function Settings() {
       // Upload to API
       await userService.uploadProfilePicture(file);
       
-      // Refresh user data from /auth/me to get updated profile picture
+      // Refresh user data using React Query
+      await refreshUserProfile();
+      
+      // Also refresh auth context for consistency
       await refreshUser();
       
       // Clear local preview since we now have the real image
@@ -85,8 +90,12 @@ export default function Settings() {
         email: email.trim()
       });
       
-      // Refresh user data from /auth/me to get updated information
+      // Refresh user data using React Query
+      await refreshUserProfile();
+      
+      // Also refresh auth context for consistency
       await refreshUser();
+      
       setHasChanges(false);
       
       toast.success('Email updated successfully!');
