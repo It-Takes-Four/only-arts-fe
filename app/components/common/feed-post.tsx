@@ -1,7 +1,7 @@
 import { formatDistanceToNow } from 'date-fns';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import type { FeedPost } from '../../services/feed-service';
+import type { FeedPost } from '../../types/feed';
 
 interface FeedPostComponentProps {
   post: FeedPost;
@@ -56,7 +56,7 @@ export function FeedPostComponent({ post }: FeedPostComponentProps) {
           </h3>
           
           <div className="prose prose-sm max-w-none text-foreground">
-            {post.content.split('\n').map((paragraph, index) => (
+            {post.content.split('\n').map((paragraph: string, index: number) => (
               <p key={index} className="mb-2 leading-relaxed">
                 {paragraph}
               </p>

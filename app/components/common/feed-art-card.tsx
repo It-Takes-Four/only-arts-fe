@@ -4,7 +4,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, Share2 } from "lucide-react";
-import type { FeedPost } from '../../services/feed-service';
+import type { FeedPost } from '../../types/feed';
 
 interface FeedArtCardProps {
   post: FeedPost;

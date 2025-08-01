@@ -44,6 +44,13 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
     return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
   }
 
+  const getArtistProfileImageUrl = () => {
+    if (artwork.artistProfileFileId) {
+      return `${import.meta.env.VITE_API_BASE_URL}/upload/profile/${artwork.artistProfileFileId}`;
+    }
+    return null;
+  };
+
   // Staggered animation for grid items
   const cardVariants = {
     hidden: { 
@@ -170,7 +177,7 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
           <Link to={`/artist/${artwork.artistId}`} className="shrink-0">
             <Avatar className="w-7 h-7 sm:w-8 sm:h-8 ring-2 ring-primary/20 hover:ring-primary/40 transition-all duration-200">
               <AvatarImage 
-                src={artwork.artistProfileFileId ? `/api/files/${artwork.artistProfileFileId}` : undefined}
+                src={getArtistProfileImageUrl() || undefined}
                 alt={artwork.artistName}
               />
               <AvatarFallback className="bg-primary/10 text-primary font-medium text-xs sm:text-sm">
