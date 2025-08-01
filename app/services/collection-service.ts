@@ -102,6 +102,18 @@ class CollectionService extends BaseService{
 			throw new Error(error.response?.data?.message || 'Failed to delete collection');
 		}
 	}
+
+	async purchaseCollection(collectionId: string, artistWalletAddress: string) {
+		try {
+			const { data } = await this._axios.post('/collections/purchase', {
+				collectionId,
+				artistWalletAddress
+			});
+			return data;
+		} catch (error: any) {
+			throw new Error(error.response?.data?.message || 'Failed to purchase collection');
+		}
+	}
 }
 
 export const collectionService = new CollectionService();

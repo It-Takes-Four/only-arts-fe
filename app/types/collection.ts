@@ -11,6 +11,43 @@ export interface CreateCollectionResponse {
 	createdAt: string;
 }
 
+// Artist Collection Response
+export interface ArtistCollection {
+	id: string;
+	collectionName: string;
+	description: string;
+	coverImageFileId: string;
+	price: string;
+	tokenId: string;
+	isPublished: boolean;
+	createdAt: string;
+	updatedAt: string;
+	artistId: string;
+	artist: {
+		id: string;
+		artistName: string;
+		isVerified: boolean;
+		walletAddress?: string; // Artist's wallet address for payment
+		user: {
+			username: string;
+			profilePictureFileId: string | null;
+		};
+	};
+	artsCount: number;
+}
+
+export interface ArtistCollectionsResponse {
+	data: ArtistCollection[];
+	pagination: {
+		currentPage: number;
+		perPage: number;
+		total: number;
+		totalPages: number;
+		hasNextPage: boolean;
+		hasPrevPage: boolean;
+	};
+}
+
 // Interface for the detailed collection response
 export interface CollectionArt {
 	id: string;

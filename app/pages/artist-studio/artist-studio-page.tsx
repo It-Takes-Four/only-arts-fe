@@ -1,7 +1,7 @@
 import { useState } from "react";
+import { useAccount } from 'wagmi';
 import { useAuthContext } from "../../components/core/auth-context";
-import { useMyCollections } from "../../components/hooks/useMyCollections";
-import { useMyArtworks } from "../../components/hooks/useMyArtworks";
+import { useArtistStudio } from "../../context/artist-studio-context";
 import { collectionService } from "../../services/collection-service";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/common/tabs";
 import { Button } from "../../components/common/button";
@@ -23,30 +23,29 @@ import {
 	PencilIcon,
 } from "@heroicons/react/24/outline";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
-import { ImageIcon } from "lucide-react";
+import { ImageIcon, Wallet } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDateToMonthYear } from "../../utils/dates/DateFormatter";
+import { WalletManagementModal } from "app/components/features/artist-studio/wallet-management-modal";
 
 export function ArtistStudioPage() {
 	const { user, refreshUserWithValidation } = useAuthContext();
-	const { collections, loading: collectionsLoading, addCollection } = useMyCollections();
-	const { artworks, loading: artworksLoading, addArtwork } = useMyArtworks();
+	const { address, isConnected } = useAccount();
+	const {
+		collections,
+		collectionsLoading,
+		addCollection,
+		artworks,
+		artworksLoading,
+		addArtwork,
+		analytics,
+		refreshProfile
+	} = useArtistStudio();
 	const [tabValue, setTabValue] = useState("collections");
 	const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false);
 	const [showCreateArtworkModal, setShowCreateArtworkModal] = useState(false);
 	const [showEditProfileModal, setShowEditProfileModal] = useState(false);
-
-	// Calculate analytics from real data
-	const analytics = {
-		totalViews: 0, // This would need a separate API call to get view counts
-		totalLikes: artworks.reduce((sum, artwork) => sum + artwork.likesCount, 0),
-		totalShares: 0, // This would need a separate API call to get share counts
-		totalSales: 0, // Sales data not available in current API response
-		revenue: 0, // Revenue data not available in current API response
-		totalArtworks: artworks.length,
-		publishedCollections: collections.filter(collection => collection.isPublished).length,
-		totalCollections: collections.length
-	};
+	const [showWalletModal, setShowWalletModal] = useState(false);
 
 	// Handle collection creation success
 	const handleCollectionCreated = (collection: any) => {
@@ -65,13 +64,13 @@ export function ArtistStudioPage() {
 	// Handle artist profile update success
 	const handleProfileUpdated = async (artist: any) => {
 		console.log('Artist profile updated:', artist);
-		// Force a user data refresh to ensure the UI updates immediately
+		// Use the provider's refresh method to update all data
 		try {
-			console.log('Triggering additional user refresh from artist studio page...');
-			await refreshUserWithValidation();
-			console.log('User data refreshed successfully from artist studio page');
+			console.log('Triggering profile refresh from artist studio page...');
+			await refreshProfile();
+			console.log('Profile and related data refreshed successfully from artist studio page');
 		} catch (error) {
-			console.error('Failed to refresh user data from artist studio page:', error);
+			console.error('Failed to refresh profile data from artist studio page:', error);
 		}
 	};
 
@@ -362,7 +361,7 @@ export function ArtistStudioPage() {
 	}
 
 	return (
-		<div className="container mx-auto px-4 py-8">
+		<div className="max-w-[1600px] xl:max-w-[1800px] 2xl:max-w-[2000px] mx-auto px-4 lg:px-6 xl:px-8 py-8">
 			{/* Header */}
 			<div className="mb-8">
 				<h1 className="text-3xl font-bold">Artist Studio</h1>
@@ -376,9 +375,16 @@ export function ArtistStudioPage() {
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-4">
 						<img 
-							src={user.profilePicture || "https://placehold.co/80x80"} 
+							src={user.profilePictureFileId 
+								? `${import.meta.env.VITE_API_BASE_URL}/upload/profile/${user.profilePictureFileId}`
+								: "https://placehold.co/80x80"
+							} 
 							alt="Artist Avatar"
-							className="rounded-full w-20 h-20 shadow-lg"
+							className="rounded-full w-20 h-20 shadow-lg object-cover"
+							onError={(e) => {
+								const target = e.target as HTMLImageElement;
+								target.src = "https://placehold.co/80x80";
+							}}
 						/>
 						<div>
 							<h2 className="text-2xl font-bold">{user.artist.artistName}</h2>
@@ -398,17 +404,49 @@ export function ArtistStudioPage() {
 									<Badge variant="secondary" className="font-mono uppercase">NSFW</Badge>
 								)}
 							</div>
+							{/* Wallet Address Display */}
+							{user.artist.walletAddress && (
+								<div className="mt-3">
+									<p className="text-xs text-muted-foreground mb-1">Wallet Address</p>
+									<div className="flex items-center gap-2">
+										<code className="text-xs bg-muted px-2 py-1 rounded font-mono">
+											{user.artist.walletAddress.slice(0, 6)}...{user.artist.walletAddress.slice(-4)}
+										</code>
+										<Wallet className="h-3 w-3 text-muted-foreground" />
+										{isConnected && address?.toLowerCase() === user.artist.walletAddress.toLowerCase() && (
+											<div className="flex items-center gap-1 text-green-600 dark:text-green-400">
+												<div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+												<span className="text-xs font-medium">Connected</span>
+											</div>
+										)}
+									</div>
+								</div>
+							)}
 						</div>
 					</div>
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={() => setShowEditProfileModal(true)}
-						className="flex items-center gap-2"
-					>
-						<PencilIcon className="h-4 w-4" />
-						Edit Profile
-					</Button>
+					<div className="flex gap-2">
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => setShowWalletModal(true)}
+							className="flex items-center gap-2"
+						>
+							<Wallet className="h-4 w-4" />
+							Wallet
+							{user.artist.walletAddress && isConnected && address?.toLowerCase() === user.artist.walletAddress.toLowerCase() && (
+								<div className="w-2 h-2 bg-green-500 rounded-full animate-pulse ml-1" />
+							)}
+						</Button>
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => setShowEditProfileModal(true)}
+							className="flex items-center gap-2"
+						>
+							<PencilIcon className="h-4 w-4" />
+							Edit Profile
+						</Button>
+					</div>
 				</div>
 			</GlassCard>
 
@@ -446,6 +484,12 @@ export function ArtistStudioPage() {
 				isOpen={showEditProfileModal}
 				onClose={() => setShowEditProfileModal(false)}
 				onSuccess={handleProfileUpdated}
+			/>
+
+			<WalletManagementModal
+				isOpen={showWalletModal}
+				onClose={() => setShowWalletModal(false)}
+				currentWalletAddress={user?.artist?.walletAddress}
 			/>
 		</div>
 	);

@@ -40,14 +40,14 @@ export function MasonryFeedGrid({ tagId }: MasonryFeedGridProps) {
     return () => window.removeEventListener('resize', updateColumns);
   }, []);
 
-  // Container animation variants
+  // Container animation variants - optimized for performance
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2
+        staggerChildren: 0.05,
+        delayChildren: 0.1
       }
     }
   };
@@ -194,19 +194,19 @@ export function MasonryFeedGrid({ tagId }: MasonryFeedGridProps) {
           <motion.div
             key={columnIndex}
             className="flex-1 space-y-4 md:space-y-6"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: columnIndex * 0.1 }}
+            transition={{ duration: 0.3, delay: columnIndex * 0.05 }}
           >
             {columnPosts.map(({ post }, postIndex) => (
               <motion.div
                 key={post.id}
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ 
-                  duration: 0.4, 
-                  delay: (columnIndex * 0.1) + (postIndex * 0.05),
-                  ease: [0.4, 0, 0.2, 1]
+                  duration: 0.25, 
+                  delay: (columnIndex * 0.05) + (postIndex * 0.03),
+                  ease: [0.25, 0.46, 0.45, 0.94]
                 }}
               >
                 <FeedArtCard post={post} index={postIndex} />

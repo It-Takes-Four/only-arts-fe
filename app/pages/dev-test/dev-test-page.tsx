@@ -9,6 +9,8 @@ import { debugCookies, getCookie } from "app/utils/cookie";
 import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
 import { useNavigate } from "react-router";
 import { PaymentButton } from "app/components/common/payment-button";
+import { BuyCollectionModal } from "app/components/common/buy-collection-modal";
+import { useState } from "react";
 
 export default function DevTestPage() {
   const { user, isAuthenticated, login, loginAsync, logout, isLoggingIn } = useAuthContext();
@@ -496,7 +498,102 @@ export default function DevTestPage() {
         </div>
 
         <PaymentButton collectionId="3c94d7cd-8f8f-4973-a331-5f3a10dee4a9" artistWalletAddress="0xe39a19f4339A808B0Cd4e60CB98aC565698467FB"/>
+        
+        {/* Test Buy Collection Button */}
+        <div className="mt-4 p-4 border rounded-lg bg-card">
+          <h4 className="font-medium mb-2">Collection Purchase Test</h4>
+          <p className="text-sm text-muted-foreground mb-4">
+            Test the buy collection modal with sample data
+          </p>
+          <TestBuyCollectionButton />
+        </div>
+
+        {/* Test Artist Artworks Button */}
+        <div className="mt-4 p-4 border rounded-lg bg-card">
+          <h4 className="font-medium mb-2">Artist Artworks Test</h4>
+          <p className="text-sm text-muted-foreground mb-4">
+            Test the artist artworks API endpoint
+          </p>
+          <TestArtistArtworksButton />
+        </div>
       </div>
     </div>
+  );
+}
+
+// Test component for artist artworks functionality
+function TestArtistArtworksButton() {
+  const testArtistId = "19fa5cf6-e344-474a-8eaa-98b5f1d85b1a"; // Sample artist ID
+
+  const testArtistArtworks = async () => {
+    try {
+      toast.loading("Testing artist artworks API...");
+      const { artistService } = await import("app/services/artist-service");
+      const artworks = await artistService.getArtistArtworks(testArtistId);
+      toast.success(`Successfully loaded ${artworks.length} artworks!`);
+      console.log("Artist artworks:", artworks);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to load artist artworks");
+      console.error("Artist artworks error:", error);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <Button onClick={testArtistArtworks} className="w-full">
+        Test Load Artist Artworks
+      </Button>
+      <p className="text-xs text-muted-foreground">
+        Testing with artist ID: {testArtistId}
+      </p>
+    </div>
+  );
+}
+
+// Test component for buy collection functionality
+function TestBuyCollectionButton() {
+  const [showModal, setShowModal] = useState(false);
+  
+  const sampleCollection = {
+    id: "test-collection-id",
+    collectionName: "Test Collection",
+    description: "This is a sample collection for testing the purchase functionality.",
+    coverImageFileId: "sample-image-id",
+    price: "5.99",
+    tokenId: "123456",
+    isPublished: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    artistId: "test-artist-id",
+    artist: {
+      id: "test-artist-id",
+      artistName: "Test Artist",
+      isVerified: true,
+      walletAddress: "0xe39a19f4339A808B0Cd4e60CB98aC565698467FB",
+      user: {
+        username: "testartist",
+        profilePictureFileId: null
+      }
+    },
+    artsCount: 5
+  };
+
+  return (
+    <>
+      <Button onClick={() => setShowModal(true)} className="w-full">
+        Test Buy Collection Modal
+      </Button>
+      
+      {/* Import and use the modal */}
+      <BuyCollectionModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        collection={sampleCollection}
+        onSuccess={() => {
+          console.log('Test purchase successful');
+          toast.success('Test purchase completed!');
+        }}
+      />
+    </>
   );
 }

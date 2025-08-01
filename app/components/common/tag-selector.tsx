@@ -5,7 +5,7 @@ import { useTags } from '../hooks/useTags';
 import { Badge } from '@/components/ui/badge';
 import { Button } from './button';
 import { Input } from '@/components/ui/input';
-import type { Tag } from '../../services/tags-service';
+import type { Tag } from 'app/types/feed';
 
 interface TagSelectorProps {
   selectedTagId?: string;
