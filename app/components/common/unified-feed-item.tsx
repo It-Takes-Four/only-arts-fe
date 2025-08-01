@@ -144,7 +144,6 @@ export function UnifiedFeedItemComponent({
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ duration: 0.5, delay: index * 0.1 }}
 			whileHover={{ y: -2 }}
-			onClick={() => navigate(displayData.url)}
 		>
 			{/* Header */}
 			<div
@@ -286,10 +285,11 @@ export function UnifiedFeedItemComponent({
 			{hasImage && displayData.imageFileId && (
 				<div
 					className={cn(
-						"relative overflow-hidden",
+						"relative overflow-hidden cursor-pointer",
 						displayData.type === "art" && "aspect-[4/3]",
 						displayData.type === "collection" && "aspect-[16/9]"
 					)}
+					onClick={() => navigate(displayData.url)}
 				>
 					<motion.div
 						initial={{ scale: 1.1, opacity: 0 }}

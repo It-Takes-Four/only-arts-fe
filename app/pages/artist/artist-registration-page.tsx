@@ -81,6 +81,7 @@ export function ArtistRegistrationPage() {
   const handleRegistrationSuccess = (artist: any) => {
     setArtistData(artist);
     setCurrentStep('success');
+    handleRefreshUser();
     
     // Redirect to profile after a short delay
     setTimeout(() => {

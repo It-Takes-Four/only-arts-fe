@@ -60,50 +60,18 @@ export function CollectionPage() {
 				
 				{/* Collection Info Glass Card */}
 				<GlassCard className="relative z-10 py-6 px-8">
-					<div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
+					<div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-2">
 						<div className="flex items-start lg:items-end space-x-4 flex-1">
-							<Link to={`/artist/${collection.artist.id}`}>
-								<Avatar className="h-20 w-20 ring-4 ring-white/20 hover:ring-white/40 transition-all cursor-pointer">
-									<AvatarImage 
-										src={collection.artist.user.profilePictureFileId 
-											? artCollectionsService.getUserProfileImageUrl(collection.artist.user.profilePictureFileId)
-											: ""
-										} 
-									/>
-									<AvatarFallback className="text-xl font-bold bg-white/20 text-white">
-										{getUserInitials(collection.artist.artistName)}
-									</AvatarFallback>
-								</Avatar>
-							</Link>
 							<div className="flex flex-col flex-1">
-								<h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
+								<h1 className="text-2xl lg:text-4xl font-bold text-white mb-2">
 									{collection.collectionName}
 								</h1>
-								<div className="flex items-center text-white/80 mb-3">
-									<User className="w-4 h-4 mr-2" />
-									<Link 
-										to={`/artist/${collection.artist.id}`}
-										className="text-lg hover:text-white transition-colors cursor-pointer"
-									>
-										{collection.artist.artistName}
-									</Link>
-									{collection.artist.isVerified && (
-										<Badge variant="secondary" className="ml-2 bg-blue-500/20 text-blue-100">
-											Verified
-										</Badge>
-									)}
-								</div>
-								{collection.artist.bio && (
-									<p className="text-sm text-white/60 mb-2 max-w-2xl italic">
-										"{collection.artist.bio}"
-									</p>
-								)}
 								{collection.description && (
 									<p className="text-sm text-white/75 mb-3 max-w-2xl">
 										{collection.description}
 									</p>
 								)}
-								<div className="flex flex-wrap items-center gap-3">
+								<div className="flex flex-wrap items-center gap-2">
 									<Badge
 										variant="outline"
 										className="font-mono text-xs uppercase border-white/25 text-white"
@@ -111,7 +79,7 @@ export function CollectionPage() {
 										CREATED {formatDateToMonthYear(collection.createdAt)}
 									</Badge>
 									{collection.isPublished && (
-										<Badge variant="secondary" className="bg-green-500/20 text-green-100">
+										<Badge variant="secondary" className="bg-green-500/20 text-green-100 font-mono uppercase">
 											Published
 										</Badge>
 									)}
@@ -138,10 +106,10 @@ export function CollectionPage() {
 							</div>
 							<div className="flex flex-col items-center lg:items-end">
 								<span className="text-xs text-white/75 font-mono uppercase">
-									Artist Stats
+									Price
 								</span>
 								<span className="text-2xl font-semibold text-white">
-									{collection.artist.totalArts}
+									{collection.price ? `${collection.price} ETH` : 'Free'}
 								</span>
 							</div>
 						</div>
@@ -151,9 +119,9 @@ export function CollectionPage() {
 
 			{/* Artist Information Card */}
 			<GlassCard className="p-6 mb-8">
-				<div className="flex items-center space-x-4 mb-4">
+				<div className="flex items-center space-x-4">
 					<Link to={`/artist/${collection.artist.id}`}>
-						<Avatar className="h-16 w-16 hover:ring-2 hover:ring-primary/20 transition-all cursor-pointer">
+						<Avatar className="h-20 w-20 hover:ring-2 hover:ring-primary/20 transition-all cursor-pointer">
 							<AvatarImage 
 								src={collection.artist.user.profilePictureFileId 
 									? artCollectionsService.getUserProfileImageUrl(collection.artist.user.profilePictureFileId)
@@ -184,49 +152,37 @@ export function CollectionPage() {
 								{collection.artist.bio}
 							</p>
 						)}
-						<div className="flex items-center space-x-4 text-sm text-muted-foreground">
-							<span>{collection.artist.totalFollowers} Followers</span>
-							<span>{collection.artist.totalArts} Artworks</span>
-							<span>{collection.artist.totalCollections} Collections</span>
+						<div className="flex items-center justify-start gap-6 text-sm text-foreground">
+
+							<div className="flex items-center space-x-1">
+								<User className="h-4 w-4 text-muted-foreground" />
+								<span className="font-semibold">{collection.artist.totalFollowers}</span>
+								<span className="text-muted-foreground">Followers</span>
+							</div>
+
+							<div className="flex items-center space-x-1">
+								<Heart className="h-4 w-4 text-muted-foreground" />
+								<span className="font-semibold">{collection.artist.totalArts}</span>
+								<span className="text-muted-foreground">Artworks</span>
+							</div>
+
+							<div className="flex items-center space-x-1">
+								<Bookmark className="h-4 w-4 text-muted-foreground" />
+								<span className="font-semibold">{collection.artist.totalCollections}</span>
+								<span className="text-muted-foreground">Collections</span>
+							</div>
 						</div>
+
 					</div>
 				</div>
 			</GlassCard>
-
-			{/* Collection Stats Summary */}
-			<GlassCard className="p-6 mb-8">
-				<div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-					<div className="text-center">
-						<div className="text-2xl font-bold mb-1">{collection.arts?.length || 0}</div>
-						<div className="text-sm text-muted-foreground">Artworks</div>
-					</div>
-					<div className="text-center">
-						<div className="text-2xl font-bold mb-1">
-							{collection.artist.totalFollowers}
-						</div>
-						<div className="text-sm text-muted-foreground">Artist Followers</div>
-					</div>
-					<div className="text-center">
-						<div className="text-2xl font-bold mb-1">
-							{collection.artist.totalCollections}
-						</div>
-						<div className="text-sm text-muted-foreground">Artist Collections</div>
-					</div>
-					<div className="text-center">
-						<div className="text-2xl font-bold mb-1">
-							{collection.price ? `$${collection.price}` : 'Free'}
-						</div>
-						<div className="text-sm text-muted-foreground">Collection Price</div>
-					</div>
-				</div>
-			</GlassCard>
-
 			{/* Artworks Section */}
 			<div className="mb-6">
-				<div className="flex items-center justify-between mb-6">
+				<div className="flex items-center gap-2 mb-6">
 					<h2 className="text-2xl font-bold">Collection Artworks</h2>
-					<Badge variant="outline" className="text-sm">
-						{collection.arts?.length || 0} {collection.arts?.length === 1 ? 'artwork' : 'artworks'}
+					<Badge variant="outline" className="text-md uppercase font-mono px-2.5 rounded-full">
+						{collection.arts?.length || 0}
+						{/*{collection.arts?.length === 1 ? ' Artwork' : ' Artworks'}*/}
 					</Badge>
 				</div>
 
@@ -250,6 +206,7 @@ export function CollectionPage() {
 										: art.imageFileId 
 											? collectionService.getArtworkImageUrl(art.imageFileId)
 											: '/placeholder.svg',
+									tags: art.tags,
 								}}
 							/>
 						))}
