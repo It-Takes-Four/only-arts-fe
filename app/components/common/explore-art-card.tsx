@@ -51,12 +51,12 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
     return null;
   };
 
-  // Staggered animation for grid items
+  // Optimized staggered animation for grid items
   const cardVariants = {
     hidden: { 
       opacity: 0, 
-      y: 50,
-      scale: 0.9
+      y: 20,
+      scale: 0.95
     },
     visible: { 
       opacity: 1, 
@@ -76,7 +76,7 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
 
   const buttonVariants = {
     hidden: { 
-      y: 20, 
+      y: 10, 
       opacity: 0 
     },
     visible: { 
@@ -94,23 +94,25 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
       initial="hidden"
       animate="visible"
       transition={{ 
-        duration: 0.5,
-        delay: index * 0.1,
-        ease: [0.4, 0, 0.2, 1]
+        duration: 0.3,
+        delay: index * 0.05,
+        ease: [0.25, 0.46, 0.45, 0.94]
       }}
       onHoverStart={() => !isMobile && setIsHovered(true)}
       onHoverEnd={() => !isMobile && setIsHovered(false)}
       whileHover={{ 
-        y: isMobile ? 0 : -8,
-        transition: { duration: 0.2 }
+        y: isMobile ? 0 : -4,
+        transition: { duration: 0.15, ease: "easeOut" }
       }}
+      style={{ willChange: 'transform' }}
     >
       {/* Image Container */}
       <div className="relative aspect-[3/4] sm:aspect-[3/4] overflow-hidden">
         <AuthenticatedImage 
           imageFileId={artwork.imageFileId}
           alt={artwork.title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          style={{ willChange: 'transform' }}
         />
         
         {/* Collection indicator */}
@@ -133,7 +135,7 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
           variants={overlayVariants}
           initial="hidden"
           animate={isHovered ? "visible" : "hidden"}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
         >
           <motion.div 
             className="flex space-x-2 sm:space-x-4"
@@ -141,7 +143,7 @@ export function ExploreArtCard({ artwork, index, isSingleColumn = false }: Explo
             initial="hidden"
             animate={isHovered ? "visible" : "hidden"}
             transition={{ 
-              duration: 0.3,
+              duration: 0.2,
               ease: "easeOut"
             }}
           >

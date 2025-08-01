@@ -46,21 +46,21 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
     return username.charAt(0).toUpperCase();
   };
 
-  // Staggered animation for grid items
+  // Optimized staggered animation for grid items
   const cardVariants = {
     hidden: { 
       opacity: 0, 
-      y: 50,
-      scale: 0.9
+      y: 20,
+      scale: 0.95
     },
     visible: { 
       opacity: 1, 
       y: 0,
       scale: 1,
       transition: {
-        duration: 0.5,
-        delay: index * 0.1,
-        ease: [0.4, 0, 0.2, 1] as const
+        duration: 0.3,
+        delay: index * 0.05,
+        ease: [0.25, 0.46, 0.45, 0.94] as const
       }
     }
   };
@@ -101,11 +101,12 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
       onHoverEnd={() => setIsHovered(false)}
       onClick={handleClick}
       whileHover={{ 
-        y: isSingleColumn ? -4 : -8,
-        scale: isSingleColumn ? 1.01 : 1.02,
-        transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] }
+        y: isSingleColumn ? -2 : -4,
+        scale: isSingleColumn ? 1.005 : 1.01,
+        transition: { duration: 0.2, ease: "easeOut" }
       }}
       whileTap={{ scale: 0.98 }}
+      style={{ willChange: 'transform' }}
     >
       {/* Image Section */}
       {post.imageUrl ? (
@@ -114,8 +115,9 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
             src={post.imageUrl}
             alt={post.title}
             className="w-full h-full object-cover"
-            animate={{ scale: isHovered ? 1.1 : 1 }}
-            transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+            animate={{ scale: isHovered ? 1.05 : 1 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            style={{ willChange: 'transform' }}
           />
         </div>
       ) : (
@@ -162,7 +164,7 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
             }`}
             initial={{ opacity: isMobile ? 1 : 0 }}
             animate={{ opacity: showOverlay ? 1 : 0 }}
-            transition={{ duration: isMobile ? 0 : 0.3 }}
+            transition={{ duration: isMobile ? 0 : 0.2 }}
           >
             {/* Artist info at top */}
             <motion.div
@@ -172,7 +174,7 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
                 y: showOverlay ? 0 : -20,
                 opacity: showOverlay ? 1 : 0
               }}
-              transition={{ duration: isMobile ? 0 : 0.3, delay: isMobile ? 0 : 0.1 }}
+              transition={{ duration: isMobile ? 0 : 0.2, delay: isMobile ? 0 : 0.05 }}
             >
               <Avatar className="h-8 w-8 border-2 border-white/20">
                 <AvatarImage src={getUserProfileImageUrl() || undefined} alt={post.artist.user.username} />
@@ -198,7 +200,7 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
                 y: showOverlay ? 0 : 20,
                 opacity: showOverlay ? 1 : 0
               }}
-              transition={{ duration: isMobile ? 0 : 0.3, delay: isMobile ? 0 : 0.2 }}
+              transition={{ duration: isMobile ? 0 : 0.2, delay: isMobile ? 0 : 0.1 }}
             >
               <h3 className={`${isSingleColumn ? 'text-xl' : 'text-lg'} font-semibold mb-2 line-clamp-2`}>
                 {post.title}
@@ -215,8 +217,8 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
                 <div className="flex items-center space-x-4">
                   <motion.button
                     className="flex items-center space-x-1 text-white/80 hover:text-red-400 transition-colors"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={handleLike}
                   >
                     <Heart className="h-4 w-4" />
@@ -225,8 +227,8 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
                   
                   <motion.button
                     className="flex items-center space-x-1 text-white/80 hover:text-blue-400 transition-colors"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={handleComment}
                   >
                     <MessageCircle className="h-4 w-4" />
@@ -235,8 +237,8 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
                   
                   <motion.button
                     className="flex items-center space-x-1 text-white/80 hover:text-green-400 transition-colors"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={handleShare}
                   >
                     <Share2 className="h-4 w-4" />
