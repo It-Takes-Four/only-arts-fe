@@ -41,10 +41,6 @@ export function FeedArtCard({
 		}
 	};
 
-	const getUserInitials = (username: string) => {
-		return username.charAt(0).toUpperCase();
-	};
-
 	// Staggered animation for grid items
 	const cardVariants = {
 		hidden: {

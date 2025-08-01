@@ -17,7 +17,7 @@ interface CollectionCardProps {
 	totalSales?: number
 	createdBy: string
 	createdByAvatar?: string
-	price?: number
+	price?: string | null
 	viewMode?: "grid" | "row" | "table"
 }
 

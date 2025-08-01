@@ -87,6 +87,7 @@ export interface MyCollection {
 	createdAt: string;
 	updatedAt: string;
 	artistId: string;
+	arts: MyArtwork[];
 	artist: {
 		id: string;
 		artistName: string;

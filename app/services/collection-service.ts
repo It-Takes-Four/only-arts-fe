@@ -67,6 +67,15 @@ class CollectionService extends BaseService{
 		}
 	}
 
+	async getCollectionsByArtist(artistId: string): Promise<MyCollection[]> {
+		try {
+			const { data } = await this._axios.get<MyCollectionsResponse>(`/art-collections/artist/${artistId}`);
+			return data.data; // Return just the data array, not the full response
+		} catch (error: any) {
+			throw new Error(error.response?.data?.message || 'Failed to get collections by artist');
+		}
+	}
+
 	// Legacy method - keeping for backward compatibility
 	async createCollectionWithArts(artistId: string, collectionData: any) {
 		try {
