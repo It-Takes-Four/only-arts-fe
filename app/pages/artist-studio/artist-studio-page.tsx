@@ -11,7 +11,6 @@ import { ArtCard } from "../../components/features/art/art-card";
 import { CreateCollectionModal } from "../../components/features/artist-studio/create-collection-modal";
 import { CreateArtworkModal } from "../../components/features/artist-studio/create-artwork-modal";
 import { EditArtistProfileModal } from "../../components/features/artist-studio/edit-artist-profile-modal";
-import { WalletManagementModal } from "../../components/artist-studio/wallet-management-modal";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { 
@@ -27,6 +26,7 @@ import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { ImageIcon, Wallet } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDateToMonthYear } from "../../utils/dates/DateFormatter";
+import { WalletManagementModal } from "app/components/features/artist-studio/wallet-management-modal";
 
 export function ArtistStudioPage() {
 	const { user, refreshUserWithValidation } = useAuthContext();

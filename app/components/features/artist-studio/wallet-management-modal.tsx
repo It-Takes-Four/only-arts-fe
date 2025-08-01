@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAccount, useDisconnect } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { Button } from "../common/button";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -11,6 +11,7 @@ import { Loader2, Wallet, Eye, EyeOff, Copy, Check, X, Link, Unlink, Info } from
 import { toast } from 'sonner';
 import { artistService } from "app/services/artist-service";
 import { useArtistStudio } from "app/context/artist-studio-context";
+import { Button } from "@/components/ui/button";
 
 interface WalletManagementModalProps {
   isOpen: boolean;

@@ -8,13 +8,10 @@ import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, User, Palette, Edit, X } from "lucide-react";
 import { toast } from 'sonner';
-import { artistService } from "app/services/artist-service";
 import { useAuthContext } from "app/components/core/auth-context";
 import { useArtistStudio } from "app/context/artist-studio-context";
 import type { ArtistRegistrationRequest } from "app/types/artist";
-import { artistService } from "../../../services/artist-service";
-import { useAuthContext } from "../../core/auth-context";
-import type { ArtistRegistrationRequest } from "../../../types/artist";
+import { artistService } from "app/services/artist-service";
 
 interface EditArtistProfileModalProps {
   isOpen: boolean;
