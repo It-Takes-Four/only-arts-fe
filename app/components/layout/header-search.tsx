@@ -1,5 +1,5 @@
-import { Button } from "app/components/common/button";
-import { SearchInput } from "app/components/common/search-input";
+import { Button } from "../common/button";
+import { SearchInput } from "../common/search-input";
 
 interface HeaderSearchProps {
   onSearch: (value: string) => void;

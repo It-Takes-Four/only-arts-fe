@@ -28,6 +28,7 @@ export interface FeedPostData {
 	artistId: string;
 	artistName: string;
 	artistProfileFileId: string | null;
+	postId: string;
 	content: string;
 	title: string;
 	createdDate: string;
@@ -39,6 +40,7 @@ export interface FeedArtData {
 	artistProfileFileId: string | null;
 	artDescription: string;
 	imageFileId: string;
+	artId: string;
 	artTitle: string;
 	createdDate: string;
 	tags?: Tag[];

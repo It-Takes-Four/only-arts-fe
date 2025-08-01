@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ImageIcon } from "lucide-react";
-import type { ArtCardProps } from "../core/_models";
+import type { ArtCardProps } from "../../core/_models";
 import { useNavigate } from "react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getUserInitials } from "../../../utils/UtilityFunction";
 
 export function ArtCard({ art }: ArtCardProps) {
 	const navigate = useNavigate();
@@ -11,7 +12,9 @@ export function ArtCard({ art }: ArtCardProps) {
 
 	const getArtistProfileImageUrl = () => {
 		if (art.artist.profilePictureFileId) {
-			return `${import.meta.env.VITE_API_BASE_URL}/upload/profile/${art.artist.profilePictureFileId}`;
+			return `${import.meta.env.VITE_API_BASE_URL}/upload/profile/${
+				art.artist.profilePictureFileId
+			}`;
 		}
 		return null;
 	};
@@ -61,8 +64,10 @@ export function ArtCard({ art }: ArtCardProps) {
 					}}
 				>
 					<Avatar className="h-5 w-5">
-						<AvatarImage src={getArtistProfileImageUrl() || ""}/>
-						<AvatarFallback className="text-xs">{art.artist.name.charAt(0).toUpperCase()}</AvatarFallback>
+						<AvatarImage src={getArtistProfileImageUrl() || ""} />
+						<AvatarFallback className="text-xs">
+							{getUserInitials(art.artist.name)}
+						</AvatarFallback>
 					</Avatar>
 					{art.artist.name}
 				</motion.span>

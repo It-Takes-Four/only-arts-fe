@@ -3,15 +3,15 @@ import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import { X, Image, Loader2, Tag } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "../common/button";
+import { Button } from "../../common/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ImageUpload } from "../common/image-upload";
-import { artService, type CreateArtworkRequest } from "../../services/art-service";
-import { useTags } from "../hooks/useTags";
+import { ImageUpload } from "../../common/image-upload";
+import { artService, type CreateArtworkRequest } from "../../../services/art-service";
+import { useTags } from "../../hooks/useTags";
 
 interface CreateArtworkModalProps {
   isOpen: boolean;

@@ -6,6 +6,7 @@ import { LogOut, Settings, Palette, User } from "lucide-react";
 import { useState } from "react";
 import { useAuthContext } from "app/components/core/auth-context";
 import { toast } from "sonner";
+import { getUserInitials } from "../../utils/UtilityFunction";
 
 interface User {
   id: string;
@@ -56,7 +57,7 @@ export function UserDropdown({ user, onLogout }: UserDropdownProps) {
           ) : (
             <div className="w-full h-full rounded-full flex items-center justify-center">
               <span className="text-sm font-semibold">
-                {user?.username?.charAt(0)?.toUpperCase() || '?'}
+                {getUserInitials(user?.username || '')}
               </span>
             </div>
           )}

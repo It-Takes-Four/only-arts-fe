@@ -1,7 +1,7 @@
 import { ShinyBadge } from "@/components/magicui/shiny-badge";
 import { GlassCard } from "../../components/common/glass-card";
 import { useAuthContext } from "../../components/core/auth-context";
-import { ArtCard } from "../../components/common/art-card";
+import { ArtCard } from "../../components/features/art/art-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/common/tabs";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";

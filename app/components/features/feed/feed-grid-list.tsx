@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion';
-import { useFeed } from '../hooks/useFeed';
-import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
+import { useFeed } from '../../hooks/useFeed';
+import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { FeedArtCard } from './feed-art-card';
-import { GridSkeleton } from './grid-skeleton';
-import { FancyLoading } from './fancy-loading';
-import { Button } from './button';
+import { GridSkeleton } from '../../common/grid-skeleton';
+import { FancyLoading } from '../../common/fancy-loading';
+import { Button } from '../../common/button';
 
 interface FeedGridListProps {
   tagId?: string;

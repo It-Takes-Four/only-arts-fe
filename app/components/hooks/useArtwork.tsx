@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { MyArtwork } from "../../types/collection";
 import { artService } from "../../services/art-service";
 
@@ -7,34 +7,29 @@ export function useArtwork(artworkId: string | undefined) {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
+	const fetchArtwork = useCallback(async () => {
 		if (!artworkId) {
 			setError('Artwork ID is required');
 			setLoading(false);
 			return;
 		}
 
-		const fetchArtwork = async () => {
-			try {
-				setLoading(true);
-				setError(null);
+		try {
+			const artworkData: MyArtwork = await artService.getArtworkById(artworkId);
 
-				const artworkData = await artService.getArtworkById(artworkId);
-
-				console.log("this is artwork data", artworkData);
-
-				if (!artworkData) {
-					setError('Artwork not found');
-				} else {
-					setArtwork(artworkData);
-				}
-			} catch (err) {
-				setError(err instanceof Error ? err.message : 'Failed to fetch artwork');
-			} finally {
-				setLoading(false);
+			if (!artworkData) {
+				setError('Artwork not found');
+			} else {
+				setArtwork(artworkData);
 			}
-		};
+		} catch (err) {
+			setError(err instanceof Error ? err.message : 'Failed to fetch artwork');
+		} finally {
+			setLoading(false);
+		}
+	}, [artworkId]);
 
+	useEffect(() => {
 		fetchArtwork();
 	}, [artworkId]);
 

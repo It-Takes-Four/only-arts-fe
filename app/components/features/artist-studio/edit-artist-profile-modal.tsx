@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from '@tanstack/react-query';
-import { Button } from "../common/button";
+import { Button } from "../../common/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -12,6 +12,9 @@ import { artistService } from "app/services/artist-service";
 import { useAuthContext } from "app/components/core/auth-context";
 import { useArtistStudio } from "app/context/artist-studio-context";
 import type { ArtistRegistrationRequest } from "app/types/artist";
+import { artistService } from "../../../services/artist-service";
+import { useAuthContext } from "../../core/auth-context";
+import type { ArtistRegistrationRequest } from "../../../types/artist";
 
 interface EditArtistProfileModalProps {
   isOpen: boolean;

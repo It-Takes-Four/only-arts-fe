@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { feedService, type UnifiedFeedItem } from '../../services/feed-service';
+import { feedService } from '../../services/feed-service';
+import type { UnifiedFeedItem } from "../../types/feed";
 
 interface UseUnifiedFeedReturn {
   feeds: UnifiedFeedItem[];
