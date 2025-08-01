@@ -164,7 +164,7 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
                       <img
                         src={previewImage}
                         alt="Cover preview"
-                        className="w-full h-32 object-contain rounded-lg border border-border"
+                        className="w-full h-32 object-cover rounded-lg border border-border"
                       />
                       <Button
                         type="button"
@@ -174,14 +174,17 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
                           reset({ collectionName: watch("collectionName") });
                           setPreviewImage(null);
                         }}
-                        className="absolute top-2 right-2 h-6 w-6 p-0 bg-background/80 backdrop-blur-sm"
+                        className="absolute top-2 right-2 h-6 w-6 p-0 bg-background/80 backdrop-blur-sm hover:bg-background/90"
                         disabled={isSubmitting}
                       >
                         <X className="h-3 w-3" />
                       </Button>
                     </div>
                   ) : (
-                    <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
+                    <div 
+                      className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-colors"
+                      onClick={() => document.getElementById('coverImage')?.click()}
+                    >
                       <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
                       <p className="text-sm text-muted-foreground mb-2">
                         Click to upload cover image
@@ -196,7 +199,7 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
                     type="file"
                     accept="image/*"
                     {...register("coverImage")}
-                    className="file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+                    className="hidden"
                     disabled={isSubmitting}
                   />
                 </div>

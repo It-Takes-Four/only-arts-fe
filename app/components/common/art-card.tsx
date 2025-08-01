@@ -10,6 +10,15 @@ export function ArtCard({ art }: ArtCardProps) {
 	const navigate = useNavigate();
 	const [isHovered, setIsHovered] = useState(false);
 
+	const getArtistProfileImageUrl = () => {
+		if (art.artist.profilePictureFileId) {
+			return `${import.meta.env.VITE_API_BASE_URL}/upload/profile/${
+				art.artist.profilePictureFileId
+			}`;
+		}
+		return null;
+	};
+
 	return (
 		<motion.div
 			key={"id"}
@@ -55,8 +64,10 @@ export function ArtCard({ art }: ArtCardProps) {
 					}}
 				>
 					<Avatar className="h-5 w-5">
-						<AvatarImage src={art.artist.profilePicture || ""}/>
-						<AvatarFallback className="text-xs">{getUserInitials(art.artist.name)}</AvatarFallback>
+						<AvatarImage src={getArtistProfileImageUrl() || ""} />
+						<AvatarFallback className="text-xs">
+							{getUserInitials(art.artist.name)}
+						</AvatarFallback>
 					</Avatar>
 					{art.artist.name}
 				</motion.span>

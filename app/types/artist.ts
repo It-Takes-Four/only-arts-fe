@@ -1,5 +1,28 @@
 import type { Artist, User } from "../components/core/_models";
 
+export interface ArtistProfile {
+	createdAt: number;
+	updatedAt: number;
+	id: string;
+	userId: string;
+	artistName: string;
+	isNsfw: boolean;
+	bio: string | null;
+	walletAddress: string | null;
+	totalFollowers: number;
+	totalArts: number;
+	totalCollections: number;
+	isVerified: boolean;
+	user: {
+		id: string;
+		email: string;
+		username: string;
+		profilePictureFileId: string | null;
+		createdAt: string;
+		updatedAt: string;
+	};
+}
+
 export interface ArtistRegistrationRequest {
 	artistName: string;
 	bio?: string;

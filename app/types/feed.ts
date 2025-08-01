@@ -12,6 +12,7 @@ export interface FeedPost {
 		user: {
 			username: string;
 			profilePicture: string;
+			profilePictureFileId: string | null;
 		};
 	};
 }

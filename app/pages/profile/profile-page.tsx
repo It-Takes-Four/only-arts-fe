@@ -9,10 +9,36 @@ import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { Separator } from "@/components/ui/separator";
 import { FollowButton } from "../../components/common/follow-button";
 import { CollectionCard } from "../../components/common/collection-card";
+import { useArtistProfile } from "../../components/hooks/useArtistProfile";
+import { artistService } from "../../services/artist-service";
+import { formatDistanceToNow } from 'date-fns';
+import { FancyLoading } from "../../components/common/fancy-loading";
 
-export function ProfilePage() {
+interface ProfilePageProps {
+	artistId?: string;
+}
+
+export function ProfilePage({ artistId }: ProfilePageProps) {
 	const { user } = useAuthContext();
+	const { artist, loading, error } = useArtistProfile(artistId);
 	const [tabValue, setTabValue] = useState("explore");
+
+	const isOwnProfile = !artistId; // If no artistId, it's the current user's profile
+
+	const formatDate = (timestamp: number) => {
+		try {
+			return formatDistanceToNow(new Date(timestamp * 1000), { addSuffix: true });
+		} catch {
+			return 'Unknown time';
+		}
+	};
+
+	const getProfilePictureUrl = () => {
+		if (artist?.user.profilePictureFileId) {
+			return artistService.getProfilePictureUrl(artist.user.profilePictureFileId);
+		}
+		return "/placeholder-avatar.png";
+	};
 
 	const tabs = [
 		{
@@ -46,7 +72,7 @@ export function ProfilePage() {
 							name: "Artist Name",
 							profilePicture: "https://placehold.co/150x150"
 						},
-						createdAt: new Date(),
+						createdAt: "2025-08-01T00:00:00.000Z",
 						imageUrl: "https://placehold.co/300x300"
 					}
 				}/>
@@ -60,7 +86,7 @@ export function ProfilePage() {
 							name: "Artist Name",
 							profilePicture: "https://placehold.co/150x150"
 						},
-						createdAt: new Date(),
+						createdAt: "2025-08-01T00:00:00.000Z",
 						imageUrl: "https://placehold.co/300x300"
 					}
 				}/>
@@ -74,7 +100,7 @@ export function ProfilePage() {
 							name: "Artist Name",
 							profilePicture: "https://placehold.co/150x150"
 						},
-						createdAt: new Date(),
+						createdAt: "2025-08-01T00:00:00.000Z",
 						imageUrl: "https://placehold.co/300x300"
 					}
 				}/>
@@ -88,13 +114,38 @@ export function ProfilePage() {
 							name: "Artist Name",
 							profilePicture: "https://placehold.co/150x150"
 						},
-						createdAt: new Date(),
+						createdAt: "2025-08-01T00:00:00.000Z",
 						imageUrl: "https://placehold.co/300x300"
 					}
 				}/>
 			</div>,
 		},
 	];
+
+	// Loading state
+	if (loading) {
+		return (
+			<div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[400px]">
+				<FancyLoading />
+			</div>
+		);
+	}
+
+	// Error state
+	if (error || !artist) {
+		return (
+			<div className="container mx-auto px-4 py-8">
+				<div className="text-center">
+					<p className="text-lg font-medium text-destructive mb-2">
+						Failed to load profile
+					</p>
+					<p className="text-sm text-muted-foreground">
+						{error || 'Profile not found'}
+					</p>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="container mx-auto px-4 py-8">
@@ -108,25 +159,34 @@ export function ProfilePage() {
 
 				<ShinyBadge className="self-start">
 					<CheckBadgeIcon className="size-4 mr-1"/>
-					ARTIST
+					{artist.isVerified ? 'VERIFIED ARTIST' : 'ARTIST'}
 				</ShinyBadge>
 
 				{/* User Data */}
 
 				<GlassCard className="py-4 px-8 flex flex-col lg:flex-row justify-between">
 					<div className="flex items-start lg:items-end space-x-4">
-						<img src="https://placehold.co/150x150" alt="Artist Avatar"
-								 className="rounded-full w-20 h-20 shadow-lg"/>
+						<img 
+							src={getProfilePictureUrl()} 
+							alt="Artist Avatar"
+							className="rounded-full w-20 h-20 shadow-lg object-cover"
+							onError={(e) => {
+								(e.target as HTMLImageElement).src = "/placeholder-avatar.png";
+							}}
+						/>
 						<div className="flex flex-col rounded-lg">
 							<span className="flex items-center text-white">
-								<h1 className="text-2xl font-bold text-white">{user?.username}</h1>
+								<h1 className="text-2xl font-bold text-white">{artist.artistName}</h1>
 								<Separator orientation="vertical" className="bg-white/25 h-5 mr-1 ml-4"/>
-								<FollowButton/>
+								{!isOwnProfile && <FollowButton/>}
 							</span>
-							<p className="text-sm text-white/75 mt-1">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+							<p className="text-sm text-white/75 mt-1">@{artist.user.username}</p>
+							{artist.bio && (
+								<p className="text-sm text-white/90 mt-2 max-w-md">{artist.bio}</p>
+							)}
 							<Badge variant="outline"
 										 className="mt-2 font-mono text-primary-foreground text-xs uppercase border-white/25">
-								JOINED JUN 2025</Badge>
+								JOINED {formatDate(artist.createdAt).toUpperCase()}</Badge>
 						</div>
 					</div>
 					<Separator className="bg-white/15 my-4 lg:hidden"/>
@@ -134,19 +194,19 @@ export function ProfilePage() {
 					<div className="rounded-lg flex items-end space-x-6">
 						<div className="flex flex-col items-center lg:items-end flex-1">
 							<span className="text-xs text-white/75 font-mono uppercase">Collections</span>
-							<span className="text-lg font-semibold text-white">XXX</span>
+							<span className="text-lg font-semibold text-white">{artist.totalCollections}</span>
 						</div>
 						<div className="flex flex-col items-center lg:items-end flex-1">
 							<span className="text-xs text-white/75 font-mono uppercase">Artworks</span>
-							<span className="text-lg font-semibold text-white">XXX</span>
+							<span className="text-lg font-semibold text-white">{artist.totalArts}</span>
 						</div>
 						<div className="flex flex-col items-center lg:items-end flex-1">
 							<span className="text-xs text-white/75 font-mono uppercase">Following</span>
-							<span className="text-lg font-semibold text-white">XXX</span>
+							<span className="text-lg font-semibold text-white">-</span>
 						</div>
 						<div className="flex flex-col items-center lg:items-end flex-1">
 							<span className="text-xs text-white/75 font-mono uppercase">Followers</span>
-							<span className="text-lg font-semibold text-white">{user?.followers?.length}</span>
+							<span className="text-lg font-semibold text-white">{artist.totalFollowers}</span>
 						</div>
 					</div>
 
