@@ -7,6 +7,7 @@ interface Artist {
   isNsfw: boolean;
   userId: string;
   isVerified: boolean;
+  walletAddress: string | null;
   createdAt: string;
   updatedAt?: string;
 }
@@ -17,6 +18,8 @@ interface User {
   username: string;
   profilePicture: string | null;
   profilePictureFileId: string | null;
+  createdAt?: number; // Unix timestamp
+  updatedAt?: number; // Unix timestamp
   artist: Artist | null;
   wallets?: WalletInfo[];
   comments?: any[];

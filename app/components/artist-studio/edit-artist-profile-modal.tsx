@@ -10,6 +10,7 @@ import { Loader2, User, Palette, Edit, X } from "lucide-react";
 import { toast } from 'sonner';
 import { artistService } from "app/services/artist-service";
 import { useAuthContext } from "app/components/core/auth-context";
+import { useArtistStudio } from "app/context/artist-studio-context";
 import type { ArtistRegistrationRequest } from "app/types/artist";
 
 interface EditArtistProfileModalProps {
@@ -27,6 +28,7 @@ type FormData = {
 export function EditArtistProfileModal({ isOpen, onClose, onSuccess }: EditArtistProfileModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user, refreshUserWithValidation } = useAuthContext();
+  const { refreshProfile } = useArtistStudio();
   const queryClient = useQueryClient();
 
   const {
@@ -73,33 +75,31 @@ export function EditArtistProfileModal({ isOpen, onClose, onSuccess }: EditArtis
       const updatedArtist = await artistService.updateArtistProfile(updateData);
       console.log('Artist profile updated successfully:', updatedArtist);
       
-      // Manually update the user object in the React Query cache
-      // This ensures immediate UI updates without waiting for auth endpoint sync
-      const currentUser = queryClient.getQueryData(['auth', 'user']);
-      if (currentUser && typeof currentUser === 'object' && 'artist' in currentUser) {
-        const updatedUser = {
-          ...currentUser,
-          artist: {
-            ...(currentUser as any).artist,
-            artistName: updatedArtist.artistName,
-            bio: updatedArtist.bio,
-            isNsfw: updatedArtist.isNsfw,
-            updatedAt: new Date().toISOString()
-          }
-        };
+      // Use the studio context to refresh all data
+      try {
+        await refreshProfile();
+        console.log('All artist studio data refreshed successfully');
+      } catch (refreshError) {
+        console.warn('Background refresh failed:', refreshError);
         
-        // Update the cache immediately
-        queryClient.setQueryData(['auth', 'user'], updatedUser);
-        console.log('Updated user cache with new artist data:', updatedUser);
-        
-        // Force invalidation to trigger re-render
-        queryClient.invalidateQueries({ queryKey: ['auth', 'user'] });
+        // Fallback: manual cache update
+        const currentUser = queryClient.getQueryData(['auth', 'user']);
+        if (currentUser && typeof currentUser === 'object' && 'artist' in currentUser) {
+          const updatedUser = {
+            ...currentUser,
+            artist: {
+              ...(currentUser as any).artist,
+              artistName: updatedArtist.artistName,
+              bio: updatedArtist.bio,
+              isNsfw: updatedArtist.isNsfw,
+              updatedAt: new Date().toISOString()
+            }
+          };
+          
+          queryClient.setQueryData(['auth', 'user'], updatedUser);
+          queryClient.invalidateQueries({ queryKey: ['auth', 'user'] });
+        }
       }
-      
-      // Also refresh user data in the background to ensure consistency
-      refreshUserWithValidation().catch(error => {
-        console.warn('Background user refresh failed:', error);
-      });
       
       toast.success("Artist profile updated successfully!");
       onSuccess(updatedArtist);
