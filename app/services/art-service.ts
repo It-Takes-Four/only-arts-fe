@@ -2,6 +2,8 @@ import BaseService from "./base-service";
 import type {
 	CreateArtworkRequest,
 	CreateArtworkResponse,
+	MyArtwork,
+	MyArtworksResponse,
 } from "../types/artwork";
 
 export class ArtService extends BaseService {
@@ -175,6 +177,17 @@ export class ArtService extends BaseService {
 		} catch (error: any) {
 			throw new Error(
 				error.response?.data?.message || "Failed to unlike artwork"
+			);
+		}
+	}
+
+	async getMyArtworks(page = 1, limit = 10): Promise<any> {
+		try {
+			const response = await this._axios.get<MyArtworksResponse>(`art/my?page=${page}&limit=${limit}`)
+			return response.data
+		} catch (error: any) {
+			throw new Error(
+				error.response?.data?.message || "Failed to fetch current user artworks"
 			);
 		}
 	}
