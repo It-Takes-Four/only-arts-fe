@@ -11,26 +11,28 @@ interface ArtistStudioContextType {
   // Collections
   collections: any[];
   collectionsLoading: boolean;
-  addCollection: (collection: any) => void;
+  addCollection: (collectionData: any) => void;
   updateCollection: (updatedCollection: any) => void;
   refreshCollections: () => void;
+  isCreatingCollection: boolean;
+  isDoneCreatingCollection: boolean;
 
   // Artworks
   artworks: any[];
   artworksLoading: boolean;
   addArtwork: (artwork: MyArtwork) => void;
   refreshArtworks: () => void;
-  
+
   // Artwork mutations
   createArtwork: (artworkData: any) => void;
   createArtworkAsync: (artworkData: any) => Promise<any>;
   isCreatingArtwork: boolean;
   createArtworkError: Error | null;
-  
+
   updateArtwork: (params: { id: string; data: any }) => void;
   updateArtworkAsync: (params: { id: string; data: any }) => Promise<any>;
   isUpdatingArtwork: boolean;
-  
+
   deleteArtwork: (artworkId: string) => void;
   deleteArtworkAsync: (artworkId: string) => Promise<any>;
   isDeletingArtwork: boolean;
@@ -59,11 +61,11 @@ interface ArtistStudioProviderProps {
 
 export function ArtistStudioProvider({ children }: ArtistStudioProviderProps) {
   const { refreshUserWithValidation } = useAuthContext();
-  const { collections, isLoading: collectionsLoading, addCollection, updateCollection, refresh: refreshCollections } = useMyCollectionsQuery();
-  const { 
-    artworks, 
-    isLoading: artworksLoading, 
-    addArtwork, 
+  const { collections, isLoading: collectionsLoading, addCollection, updateCollection, refresh: refreshCollections, addCollectionStatus: { isPending, isSuccess } } = useMyCollectionsQuery();
+  const {
+    artworks,
+    isLoading: artworksLoading,
+    addArtwork,
     refresh: refreshArtworks,
     createArtwork,
     createArtworkAsync,
@@ -120,11 +122,14 @@ export function ArtistStudioProvider({ children }: ArtistStudioProviderProps) {
     addCollection,
     updateCollection,
     refreshCollections,
+    isCreatingCollection: isPending,
+    isDoneCreatingCollection: isSuccess,
+
     artworks,
     artworksLoading,
     addArtwork,
     refreshArtworks,
-    
+
     // Artwork mutations
     createArtwork,
     createArtworkAsync,
@@ -136,7 +141,9 @@ export function ArtistStudioProvider({ children }: ArtistStudioProviderProps) {
     deleteArtwork,
     deleteArtworkAsync,
     isDeletingArtwork,
+
     
+
     refreshProfile,
     analytics
   };

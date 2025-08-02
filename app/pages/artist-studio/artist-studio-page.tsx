@@ -6,14 +6,12 @@ import { collectionService } from "../../services/collection-service";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/common/tabs";
 import { Button } from "../../components/common/button";
 import { GlassCard } from "../../components/common/glass-card";
-import { CollectionCard } from "../../components/common/collection-card";
 import { ArtCard } from "../../components/features/art/art-card";
 import { CreateCollectionModal } from "../../components/features/artist-studio/create-collection-modal";
 import { CreateArtworkModal } from "../../components/features/artist-studio/create-artwork-modal";
 import { EditArtistProfileModal } from "../../components/features/artist-studio/edit-artist-profile-modal";
 import { CollectionsGrid } from "../../components/features/artist-studio/collections-grid";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
 	PlusIcon,
 	ChartBarIcon,
@@ -44,10 +42,9 @@ export function ArtistStudioPage() {
 		artworksLoading,
 		analytics,
 		refreshProfile,
-		// Use the new mutation functions
 		createArtworkAsync,
-		isCreatingArtwork,
-		createArtworkError
+		isCreatingCollection,
+		isDoneCreatingCollection
 	} = useArtistStudio();
 	const [tabValue, setTabValue] = useState("collections");
 	const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false);
@@ -55,8 +52,6 @@ export function ArtistStudioPage() {
 	const [showEditProfileModal, setShowEditProfileModal] = useState(false);
 	const [showWalletModal, setShowWalletModal] = useState(false);
 
-	console.log("artist", user)
-	// Handle collection creation success
 	const handleCollectionCreated = (collection: any) => {
 		console.log('Before adding:', collections.length);
 
@@ -71,29 +66,6 @@ export function ArtistStudioPage() {
 	const handleCollectionUpdated = (updatedCollection: any) => {
 		console.log('Collection updated:', updatedCollection);
 		updateCollection(updatedCollection);
-	};
-
-	// Handle artwork creation success
-	const handleArtworkCreated = async (artworkData: any) => {
-		try {
-			console.log('ArtistStudioPage: Creating artwork with data:', artworkData);
-
-			// Use the async mutation to create artwork
-			const newArtwork = await createArtworkAsync(artworkData);
-
-			console.log('ArtistStudioPage: Artwork created successfully:', newArtwork);
-
-			// Close the modal
-			setShowCreateArtworkModal(false);
-
-			// Optional: Show success message
-			// toast.success('Artwork created successfully!');
-
-		} catch (error) {
-			console.error('ArtistStudioPage: Failed to create artwork:', error);
-			// Error is already handled by the mutation, but you can show additional UI feedback here
-			// toast.error('Failed to create artwork. Please try again.');
-		}
 	};
 
 	// Handle artist profile update success
@@ -465,7 +437,9 @@ export function ArtistStudioPage() {
 			<CreateCollectionModal
 				isOpen={showCreateCollectionModal}
 				onClose={() => setShowCreateCollectionModal(false)}
-				onSuccess={handleCollectionCreated}
+				addCollection={addCollection}
+				isPending={isCreatingCollection}
+				isSuccess={isDoneCreatingCollection}
 			/>
 
 			<CreateArtworkModal

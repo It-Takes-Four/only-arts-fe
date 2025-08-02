@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { collectionService } from '../../services/collection-service';
 import type { MyCollection, PaginatedCollectionsResponse } from '../../types/collection';
 
@@ -25,7 +25,22 @@ export function useMyCollectionsQuery(enabled = true) {
 
   const refreshCollections = async () => {
     await queryClient.invalidateQueries({ queryKey: ['my-collections'] });
+    await query.refetch()
   };
+
+  const addCollectionMutation = useMutation({
+    mutationFn: async (request: any) => {
+      return await collectionService.createCollection(request)
+    },
+    onSuccess: async () => {
+      await refreshCollections()
+    },
+    onError: (error) => {
+      console.error('Failed to create collection:', error);
+      // Optionally invalidate to refetch and get correct state
+      queryClient.invalidateQueries({ queryKey: ['my-collections'] });
+    }
+  })
 
   const addCollection = (newCollection: MyCollection) => {
     queryClient.setQueryData(['my-collections'], (old: PaginatedCollectionsResponse | undefined) => {
@@ -42,7 +57,7 @@ export function useMyCollectionsQuery(enabled = true) {
           }
         };
       }
-      
+
       return {
         ...old,
         data: [newCollection, ...old.data],
@@ -58,10 +73,10 @@ export function useMyCollectionsQuery(enabled = true) {
   const updateCollection = (updatedCollection: MyCollection) => {
     queryClient.setQueryData(['my-collections'], (old: PaginatedCollectionsResponse | undefined) => {
       if (!old) return old;
-      
+
       return {
         ...old,
-        data: old.data.map(collection => 
+        data: old.data.map(collection =>
           collection.id === updatedCollection.id ? updatedCollection : collection
         )
       };
@@ -71,9 +86,9 @@ export function useMyCollectionsQuery(enabled = true) {
   const removeCollection = (collectionId: string) => {
     queryClient.setQueryData(['my-collections'], (old: PaginatedCollectionsResponse | undefined) => {
       if (!old) return old;
-      
+
       const filteredData = old.data.filter(collection => collection.id !== collectionId);
-      
+
       return {
         ...old,
         data: filteredData,
@@ -92,7 +107,13 @@ export function useMyCollectionsQuery(enabled = true) {
     isLoading: query.isLoading,
     error: query.error?.message || null,
     refresh: refreshCollections,
-    addCollection,
+    addCollection: addCollectionMutation.mutate,
+    addCollectionStatus: {
+      isPending: addCollectionMutation.isPending,
+      isSuccess: addCollectionMutation.isSuccess,
+      isError: addCollectionMutation.isError,
+      error: addCollectionMutation.error,
+    },
     updateCollection,
     removeCollection,
   };
