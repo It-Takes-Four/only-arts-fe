@@ -126,19 +126,6 @@ export default function DevTestPage() {
     }
   };
 
-  const testDirectWalletService = async () => {
-    try {
-      toast.loading("Testing direct wallet service call (local mode)...");
-      const { walletService } = await import("app/services/wallet-service");
-      const linkedWallets = await walletService.getLinkedWallets();
-      toast.success("Direct wallet service call successful! (Local mode - no backend)");
-      console.log("Linked wallets from direct service call (local mode):", linkedWallets);
-    } catch (error) {
-      toast.error("Direct wallet service call failed");
-      console.error("Direct wallet service error:", error);
-    }
-  };
-
   // Artist Testing Functions
   const testArtistRegistration = async () => {
     try {
@@ -347,46 +334,6 @@ export default function DevTestPage() {
                 size="sm"
               >
                 Test Get Artist Profile
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Wallet Testing Section */}
-      <div className="space-y-6">
-        <h2 className="text-2xl font-semibold">Wallet Testing (Local Mode)</h2>
-        
-        <div className="p-4 border rounded-lg bg-card">
-          {/* <WalletLinkComponent 
-            onWalletLinked={(address) => {
-              toast.success(`Wallet linked: ${address.slice(0, 6)}...${address.slice(-4)}`);
-              console.log('Wallet linked:', address);
-            }}
-            onWalletUnlinked={(address) => {
-              toast.info(`Wallet unlinked: ${address.slice(0, 6)}...${address.slice(-4)}`);
-              console.log('Wallet unlinked:', address);
-            }}
-          /> */}
-          
-          <div className="mt-4 pt-4 border-t">
-            <p className="text-sm font-medium mb-2">Wallet Service Testing:</p>
-            <div className="flex gap-2 flex-wrap">
-              <Button 
-                onClick={testDirectWalletService} 
-                disabled={!isAuthenticated}
-                variant="secondary"
-                size="sm"
-              >
-                Test Wallet Service Direct
-              </Button>
-              
-              <Button 
-                onClick={debugWalletConnection} 
-                variant="outline"
-                size="sm"
-              >
-                Debug Wallet Connection
               </Button>
             </div>
           </div>

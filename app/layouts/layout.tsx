@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router";
+import { Link, Outlet, useNavigate } from "react-router";
 import { type ComponentType, useEffect, useState } from "react";
 import { useAuthContext } from "app/components/core/auth-context";
 import { ProtectedRoute } from "app/components/core/protected-route";
@@ -16,9 +16,6 @@ import { Menu, X } from "lucide-react";
 import { HomeIcon } from "@heroicons/react/24/outline";
 import { Compass, Paintbrush, ShoppingBag } from "lucide-react";
 import { BackgroundBeams } from "@/components/blocks/Backgrounds/BackgroundBeams";
-import { artService } from "../services/art-service";
-import { useSearchContext } from "app/context/search-context";
-import type { ExploreArtwork } from "app/pages/explore/core";
 
 interface NavItem {
 	path: string;
@@ -41,35 +38,18 @@ const navigationItems: NavItem[] = [
 
 export default function Layout() {
   const { user, logout } = useAuthContext();
+  const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-  
-  const { setSearchArtResults, setSearchCollectionResults } = useSearchContext();
 
 	const handleLogout = () => {
 		logout();
 	};
 
   const handleSearch = async (value: string) => {
-    const res = await artService.searchArtworks(value);
-
-    const processedResults = res.arts.data.map((art: any): ExploreArtwork => ({
-      id: art.id,
-      title: art.title,
-      description: art.description ?? '',
-      imageFileId: art.imageFile?.id,
-      datePosted: art.datePosted ?? new Date().toISOString(), 
-      likesCount: art.likesCount ?? 0,
-      isInACollection: art.isInACollection ?? false,
-      artistId: art.artist?.id ?? 'unknown',
-      artistName: art.artist?.artistName ?? 'Unknown Artist',
-      artistProfileFileId: art.artist?.profileFileId ?? null,
-      tags: art.tags ?? [],
-    }));
-
-    setSearchArtResults(processedResults);
-    setSearchCollectionResults(res.collections.data); 
-};
+    // Redirect to search page with query parameter
+    navigate(`/search?q=${encodeURIComponent(value)}`);
+  };
 
 	const toggleSidebar = () => {
 		setSidebarOpen(!sidebarOpen);

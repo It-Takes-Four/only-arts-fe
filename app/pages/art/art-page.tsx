@@ -169,7 +169,7 @@ export function ArtPage() {
 					{/*	Add to Collection*/}
 					{/*</Button>*/}
 					<Button size="lg" variant="outline">
-						<Share2 className="w-5 h-5	"/>
+						<Share2 className="w-5 h-5"/>
 						Share
 					</Button>
 				</div>

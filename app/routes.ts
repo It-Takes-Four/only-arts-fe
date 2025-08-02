@@ -16,6 +16,7 @@ export default [
 		route("/artist/:artistId", "routes/artist.tsx"),
 		route("/settings", "routes/settings.tsx"),
 		route("/explore", "routes/explore.tsx"),
+		route("/search", "routes/search.tsx"),
 		route("/purchased-collections", "routes/purchased-collections.tsx"),
 		route("/become-artist", "routes/become-artist.tsx"),
 		route("/collection/:collectionId", "routes/collection.tsx"),
