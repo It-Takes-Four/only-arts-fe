@@ -1,4 +1,4 @@
-import { CalendarDays, Heart, ImageIcon, Share2, Tag, } from "lucide-react";
+import { CalendarDays, Heart, ImageIcon, Share2, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "../../components/common/glass-card";
@@ -14,7 +14,8 @@ import { cn } from "@/lib/utils";
 
 export function ArtPage() {
 	const { artworkId } = useParams<{ artworkId: string }>();
-	const { artwork, error, handleLikeToggle, isLiking, isLiked, likesCount } = useArtwork(artworkId);
+	const { artwork, error, handleLikeToggle, isLiking, isLiked, likesCount } =
+		useArtwork(artworkId);
 	const navigate = useNavigate();
 
 	console.log("Artwork Data:", artwork);
@@ -72,7 +73,13 @@ export function ArtPage() {
 				<div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
 					<div className="flex items-start space-x-4 flex-1">
 						<Avatar className="h-16 w-16 ring-4 ring-primary/20">
-							<AvatarImage src={artwork.artist.user.profilePictureFileId ? `/api/files/${artwork.artist.user.profilePictureFileId}` : undefined} />
+							<AvatarImage
+								src={
+									artwork.artist.user.profilePictureFileId
+										? `/api/files/${artwork.artist.user.profilePictureFileId}`
+										: undefined
+								}
+							/>
 							<AvatarFallback className="text-xl font-bold">
 								{getUserInitials(artwork.artist.artistName)}
 							</AvatarFallback>
@@ -82,16 +89,18 @@ export function ArtPage() {
 								{artwork.title}
 							</h1>
 							<div className="flex items-center mb-3">
-								<span className="text-lg text-muted-foreground">by&nbsp;</span>
-								<span className="text-lg text-foreground font-semibold hover:text-primary cursor-pointer animate-in duration-300" onClick={() => navigate(`/artist/${artwork.artist.id}`)}>
+								<span className="text-lg text-muted-foreground">
+									by&nbsp;
+								</span>
+								<span
+									className="text-lg text-foreground font-semibold hover:text-primary cursor-pointer animate-in duration-300"
+									onClick={() =>
+										navigate(`/artist/${artwork.artist.id}`)
+									}
+								>
 									{artwork.artist.artistName}
 								</span>
 							</div>
-							{artwork.description && (
-								<p className="text-sm text-muted-foreground mb-3 max-w-2xl">
-									{artwork.description}
-								</p>
-							)}
 							<div className="flex flex-wrap items-center gap-3">
 								<Badge
 									variant="outline"
@@ -100,13 +109,17 @@ export function ArtPage() {
 									POSTED{" "}
 									{formatDateToMonthYear(artwork.datePosted)}
 								</Badge>
-								{artwork.collections && artwork.collections.length > 0 && (
-									<Badge variant="secondary">
-										In Collection
-									</Badge>
-								)}
+								{artwork.collections &&
+									artwork.collections.length > 0 && (
+										<Badge variant="secondary">
+											In Collection
+										</Badge>
+									)}
 								{artwork.tokenId && (
-									<Badge variant="outline" className="font-mono text-xs uppercase">
+									<Badge
+										variant="outline"
+										className="font-mono text-xs uppercase"
+									>
 										Token #{artwork.tokenId.toString()}
 									</Badge>
 								)}
@@ -130,8 +143,8 @@ export function ArtPage() {
 				</div>
 
 				{/* Action Buttons */}
-				<Separator className="my-6" />
-				<div className="flex flex-wrap gap-3">
+				<Separator className="my-6"/>
+				<div className="flex flex-wrap justify-between gap-3">
 					<Button
 						size="lg"
 						variant={isLiked ? "default" : "outline"}
@@ -144,7 +157,7 @@ export function ArtPage() {
 					>
 						<Heart
 							className={cn(
-								"w-5 h-5 mr-2 transition-all duration-200",
+								"w-5 h-5 transition-all duration-200",
 								isLiked
 									? "fill-white text-white"
 									: "text-current"
@@ -152,20 +165,31 @@ export function ArtPage() {
 						/>
 						{isLiking ? "..." : isLiked ? "Liked" : "Like Art"}
 					</Button>
+					{/*<Button size="lg" variant="outline">*/}
+					{/*	Add to Collection*/}
+					{/*</Button>*/}
 					<Button size="lg" variant="outline">
-						Add to Collection
-					</Button>
-					<Button size="lg" variant="outline">
-						<Share2 className="w-5 h-5 mr-2" />
+						<Share2 className="w-5 h-5	"/>
 						Share
 					</Button>
 				</div>
 			</GlassCard>
 
 			{/* Tags Section */}
+			<GlassCard className="p-6 mb-6">
+				{artwork.description && (
+					<>
+						<h2 className="text-lg font-bold mb-1">Description</h2>
+						<p className="text-md text-muted-foreground mb-4">
+							{artwork.description}
+						</p>
+					</>
+			)}
+
+
 			{artwork.tags.length > 0 && (
-				<GlassCard className="p-6 mb-6">
-					<h3 className="text-lg font-semibold mb-4">Tags</h3>
+				<>
+					<h3 className="text-lg font-semibold mb-2">Tags</h3>
 					<div className="flex flex-wrap gap-2">
 						{artwork.tags.map((tag, index) => (
 							<Badge
@@ -173,64 +197,16 @@ export function ArtPage() {
 								variant="outline"
 								className="text-sm"
 							>
-								<Tag className="w-3 h-3 mr-1" />
+								<Tag className="w-3 h-3 mr-1"/>
 								{tag.tagName}
 							</Badge>
 						))}
 					</div>
-				</GlassCard>
+				</>
 			)}
+		</GlassCard>
 
-			{/* Additional Details */}
-			<GlassCard className="p-6">
-				<h3 className="text-lg font-semibold mb-4">Artwork Details</h3>
-				<div className="grid md:grid-cols-2 gap-6">
-					<div className="space-y-3">
-						<div className="flex items-center gap-3 text-muted-foreground">
-							<CalendarDays className="w-5 h-5" />
-							<span>
-								Posted on{" "}
-								{new Date(
-									artwork.datePosted
-								).toLocaleDateString("en-US", {
-									year: "numeric",
-									month: "long",
-									day: "numeric",
-								})}
-							</span>
-						</div>
-						{artwork.tokenId && (
-							<div className="flex items-center gap-3 text-muted-foreground">
-								<Tag className="w-5 h-5" />
-								<span>
-									Token ID: {artwork.tokenId.toString()}
-								</span>
-							</div>
-						)}
-						<div className="flex items-center gap-3 text-muted-foreground">
-							<ImageIcon className="w-5 h-5" />
-							<span>
-								Status:{" "}
-								{artwork.collections && artwork.collections.length > 0
-									? "In Collection"
-									: "Available"}
-							</span>
-						</div>
-					</div>
-					<div className="space-y-3">
-						<div className="flex items-center gap-3 text-muted-foreground">
-							<Heart className="w-5 h-5" />
-							<span>{likesCount} Likes</span>
-						</div>
-						{/*{artwork.isInACollection && (*/}
-						{/*	<div className="flex items-center gap-3 text-muted-foreground">*/}
-						{/*		<ImageIcon className="w-5 h-5" />*/}
-						{/*		<span>Part of a Collection</span>*/}
-						{/*	</div>*/}
-						{/*)}*/}
-					</div>
-				</div>
-			</GlassCard>
-		</div>
-	);
+</div>
+)
+	;
 }
