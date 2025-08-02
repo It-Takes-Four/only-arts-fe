@@ -161,30 +161,9 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
                 )}
               </div>
 
-              {/* Description */}
-              <div className="flex flex-col space-y-2">
-                <Label htmlFor="description">Description (Optional)</Label>
-                <textarea
-                  id="description"
-                  placeholder="Enter collection description"
-                  {...register("description", {
-                    maxLength: {
-                      value: 500,
-                      message: "Description must be less than 500 characters",
-                    },
-                  })}
-                  className={`flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none ${errors.description ? "border-destructive" : ""}`}
-                  disabled={isSubmitting}
-                  rows={3}
-                />
-                {errors.description && (
-                  <p className="text-sm text-destructive">{errors.description.message}</p>
-                )}
-              </div>
-
               {/* Price */}
               <div className="flex flex-col space-y-2">
-                <Label htmlFor="price">Price (Optional)</Label>
+                <Label htmlFor="price">Price ({import.meta.env.VITE_DEFAULT_CURRENCY}) *</Label>
                 <Input
                   id="price"
                   type="number"
@@ -208,6 +187,27 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
                 />
                 {errors.price && (
                   <p className="text-sm text-destructive">{errors.price.message}</p>
+                )}
+              </div>
+
+              {/* Description */}
+              <div className="flex flex-col space-y-2">
+                <Label htmlFor="description">Description (Optional)</Label>
+                <textarea
+                  id="description"
+                  placeholder="Enter collection description"
+                  {...register("description", {
+                    maxLength: {
+                      value: 500,
+                      message: "Description must be less than 500 characters",
+                    },
+                  })}
+                  className={`flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none ${errors.description ? "border-destructive" : ""}`}
+                  disabled={isSubmitting}
+                  rows={3}
+                />
+                {errors.description && (
+                  <p className="text-sm text-destructive">{errors.description.message}</p>
                 )}
               </div>
 

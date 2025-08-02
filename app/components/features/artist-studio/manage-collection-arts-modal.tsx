@@ -6,24 +6,17 @@ import { Button } from "../../common/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { collectionService } from "../../../services/collection-service";
+import { artCollectionsService } from "../../../services/art-collections-service";
 import { AddArtToCollectionModal } from "./add-art-to-collection-modal";
 import { DeleteArtFromCollectionModal } from "./delete-art-from-collection-modal";
 import type { MyCollection } from "../../../types/collection";
+import type { CollectionArt } from "../../../types/artwork";
 
 interface ManageCollectionArtsModalProps {
   isOpen: boolean;
   onClose: () => void;
   collection: MyCollection;
   onCollectionUpdated: (updatedCollection: MyCollection) => void;
-}
-
-interface CollectionArt {
-  id: string;
-  title: string;
-  description: string;
-  imageFileId: string;
-  tags: Array<{ tagId: string; tagName: string }>;
-  datePosted: string;
 }
 
 export function ManageCollectionArtsModal({ 
@@ -43,8 +36,8 @@ export function ManageCollectionArtsModal({
     
     setLoading(true);
     try {
-      const collectionData = await collectionService.getCollectionById(collection.id);
-      setArts(collectionData.arts || []);
+      const artsData = await artCollectionsService.getCollectionArts(collection.id);
+      setArts(artsData || []);
     } catch (error: any) {
       console.error('Failed to load collection arts:', error);
       toast.error("Failed to load collection arts");
@@ -205,7 +198,7 @@ export function ManageCollectionArtsModal({
                         {/* Art Image */}
                         <div className="aspect-square overflow-hidden">
                           <img
-                            src={collectionService.getArtworkImageUrl(art.imageFileId)}
+                            src={artCollectionsService.getArtworkImageUrl(art.imageFileId)}
                             alt={art.title}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                           />
@@ -293,7 +286,7 @@ export function ManageCollectionArtsModal({
           art={{
             id: deleteArt.id,
             title: deleteArt.title,
-            imageUrl: collectionService.getArtworkImageUrl(deleteArt.imageFileId),
+            imageUrl: artCollectionsService.getArtworkImageUrl(deleteArt.imageFileId),
           }}
           onSuccess={handleArtDeleted}
         />
