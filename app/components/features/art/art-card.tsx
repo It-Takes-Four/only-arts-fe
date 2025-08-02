@@ -19,6 +19,8 @@ export function ArtCard({ art }: ArtCardProps) {
 		return null;
 	};
 
+	console.log("art tags", art.tags)
+
 	return (
 		<motion.div
 			key={"id"}
@@ -96,7 +98,7 @@ export function ArtCard({ art }: ArtCardProps) {
 									key={index}
 									className="text-xs text-white/80 bg-white/20 px-2 py-1 rounded-full"
 								>
-									{tag.name}
+									{tag.name || tag.tag.tagName }
 								</span>
 							))}
 						</div>

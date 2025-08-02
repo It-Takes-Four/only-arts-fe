@@ -10,8 +10,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ImageUpload } from "../../common/image-upload";
-import { artService, type CreateArtworkRequest } from "../../../services/art-service";
+import { artService } from "../../../services/art-service";
 import { useTags } from "../../hooks/useTags";
+import type { CreateArtworkRequest } from "../../../types/artwork";
 
 interface CreateArtworkModalProps {
   isOpen: boolean;

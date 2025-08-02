@@ -145,7 +145,7 @@ export function ImageUpload({
   };
 
   return (
-    <div className={`space-y-2 ${className}`}>
+    <div className={`flex flex-col space-y-2 ${className}`}>
       {label && (
         <Label htmlFor={id}>
           {label} {required && "*"}
@@ -210,7 +210,7 @@ export function ImageUpload({
             required: required ? `${label || 'Image'} is required` : false,
           }) : {})}
         />
-        
+
         {error && (
           <p className="text-sm text-destructive">{error}</p>
         )}
