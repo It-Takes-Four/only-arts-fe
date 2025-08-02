@@ -123,16 +123,6 @@ export function ArtPage() {
 								{artwork.likesCount ?? "0"}
 							</span>
 						</div>
-						<div className="flex flex-col items-center lg:items-end">
-							<span className="text-xs text-muted-foreground font-mono uppercase">
-								Status
-							</span>
-							<span className="text-2xl font-semibold">
-								{artwork.collections && artwork.collections.length > 0
-									? "Collected"
-									: "Available"}
-							</span>
-						</div>
 					</div>
 				</div>
 
