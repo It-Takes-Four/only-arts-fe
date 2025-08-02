@@ -28,10 +28,10 @@ interface FormData {
 
 export function CreateArtworkModal({ isOpen, onClose, onSuccess }: CreateArtworkModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [tagSearch, setTagSearch] = useState("");
-  
+
   const { popularTags, searchTags, tags } = useTags();
 
   const {
@@ -48,6 +48,21 @@ export function CreateArtworkModal({ isOpen, onClose, onSuccess }: CreateArtwork
       description: "",
     },
   });
+  
+  const watchedImage = watch("image");
+
+    useEffect(() => {
+    if (watchedImage && watchedImage.length > 0) {
+      const file = watchedImage[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreviewImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewImage(null);
+    }
+  }, [watchedImage]);
 
   // Handle tag search
   useEffect(() => {
@@ -75,23 +90,23 @@ export function CreateArtworkModal({ isOpen, onClose, onSuccess }: CreateArtwork
   const filteredTags = availableTags.filter(tag => !selectedTags.includes(tag.id));
 
   const onSubmit = async (data: FormData) => {
-    if (!selectedFile) return;
+    if (!watchedImage || watchedImage.length === 0) return;
 
     setIsSubmitting(true);
     try {
       const request: CreateArtworkRequest = {
         title: data.title,
         description: data.description,
-        file: selectedFile,
+        file: data.image[0], // direct from form
         tagIds: selectedTags.length > 0 ? selectedTags : undefined,
       };
 
       const response = await artService.createArtwork(request);
-      
+
       toast.success("Artwork uploaded successfully!");
       onSuccess(response);
       reset();
-      setSelectedFile(null);
+      setPreviewImage(null);
       setSelectedTags([]);
       setTagSearch("");
       onClose();
@@ -105,7 +120,7 @@ export function CreateArtworkModal({ isOpen, onClose, onSuccess }: CreateArtwork
 
   const handleClose = () => {
     reset();
-    setSelectedFile(null);
+    setPreviewImage(null);
     setSelectedTags([]);
     setTagSearch("");
     onClose();
@@ -156,24 +171,62 @@ export function CreateArtworkModal({ isOpen, onClose, onSuccess }: CreateArtwork
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Image Upload */}
-              <ImageUpload
-                id="image"
-                label="Artwork Image"
-                required={true}
-                accept="image/*"
-                maxSize={10}
-                disabled={isSubmitting}
-                error={errors.image?.message}
-                placeholder={{
-                  title: "Click to upload your artwork",
-                  subtitle: "PNG, JPG, GIF up to 10MB"
-                }}
-                onFileSelect={setSelectedFile}
-                onFileChange={(files) => {
-                  setValue("image", files as FileList);
-                }}
-                register={register}
-              />
+              {/* Image Upload Preview & Picker */}
+              <div className="flex flex-col space-y-2">
+                <Label htmlFor="image">Artwork Image *</Label>
+                <div className="space-y-3">
+                  {previewImage ? (
+                    <div className="relative">
+                      <img
+                        src={previewImage}
+                        alt="Artwork preview"
+                        className="w-full h-64 object-cover rounded-lg border border-border"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          reset({ ...watch(), image: undefined });
+                          setPreviewImage(null);
+                        }}
+                        className="absolute top-2 right-2 h-6 w-6 p-0 bg-background/80 backdrop-blur-sm hover:bg-background/90"
+                        disabled={isSubmitting}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div
+                      className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-colors"
+                      onClick={() => document.getElementById("image")?.click()}
+                    >
+                      <Image className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Click to upload artwork image
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        PNG, JPG, GIF up to 10MB
+                      </p>
+                    </div>
+                  )}
+                  <Input
+                    id="image"
+                    type="file"
+                    accept="image/*"
+                    {...register("image", {
+                      required: "Artwork image is required",
+                    })}
+                    className="hidden"
+                    disabled={isSubmitting}
+                  />
+                  {errors.image && (
+                    <p className="text-sm text-destructive">{errors.image.message}</p>
+                  )}
+                </div>
+              </div>
+
+
 
               {/* Title */}
               <div className="space-y-2">
@@ -229,7 +282,7 @@ export function CreateArtworkModal({ isOpen, onClose, onSuccess }: CreateArtwork
               {/* Tags */}
               <div className="space-y-3">
                 <Label>Tags (Optional)</Label>
-                
+
                 {/* Selected Tags */}
                 {selectedTags.length > 0 && (
                   <div className="flex flex-wrap gap-2">
@@ -262,7 +315,7 @@ export function CreateArtworkModal({ isOpen, onClose, onSuccess }: CreateArtwork
                     disabled={isSubmitting}
                     className="w-full"
                   />
-                  
+
                   {/* Available Tags */}
                   {filteredTags.length > 0 && (
                     <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2 border border-border rounded-lg">
@@ -295,7 +348,13 @@ export function CreateArtworkModal({ isOpen, onClose, onSuccess }: CreateArtwork
                 </Button>
                 <Button
                   type="submit"
-                  disabled={isSubmitting || !watch("title") || !watch("description") || !selectedFile}
+                  disabled={
+                    isSubmitting ||
+                    !watch("title") ||
+                    !watch("description") ||
+                    !watchedImage ||
+                    watchedImage.length === 0
+                  }
                   className="flex-1"
                 >
                   {isSubmitting ? (
