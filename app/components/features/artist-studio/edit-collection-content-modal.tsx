@@ -14,12 +14,13 @@ interface EditCollectionContentModalProps {
   isOpen: boolean;
   onClose: () => void;
   collection: MyCollection;
-  onSuccess: (updatedData: { collectionName: string; description: string }) => void;
+  onSuccess: (updatedData: { collectionName: string; description: string; price?: number }) => void;
 }
 
 interface FormData {
   collectionName: string;
   description: string;
+  price?: number;
 }
 
 export function EditCollectionContentModal({ 
@@ -41,6 +42,7 @@ export function EditCollectionContentModal({
     defaultValues: {
       collectionName: collection.collectionName || "",
       description: collection.description || "",
+      price: collection.price ? parseFloat(collection.price) : undefined,
     },
   });
 
@@ -50,6 +52,7 @@ export function EditCollectionContentModal({
       await collectionService.updateCollectionContent(collection.id, {
         collectionName: data.collectionName,
         description: data.description,
+        price: data.price,
       });
 
       toast.success("Collection details updated successfully!");
@@ -156,6 +159,43 @@ export function EditCollectionContentModal({
                 {errors.description && (
                   <p className="text-sm text-destructive">{errors.description.message}</p>
                 )}
+              </div>
+
+              {/* Price */}
+              <div className="flex flex-col space-y-2">
+                <Label htmlFor="price">Price (ETH)</Label>
+                <div className="relative">
+                  <Input
+                    id="price"
+                    type="number"
+                    step="0.001"
+                    min="0"
+                    placeholder="0.000"
+                    {...register("price", {
+                      min: {
+                        value: 0,
+                        message: "Price must be a positive number",
+                      },
+                      validate: (value) => {
+                        if (value !== undefined && value !== null && value < 0) {
+                          return "Price must be a positive number";
+                        }
+                        return true;
+                      },
+                    })}
+                    className={`pl-8 ${errors.price ? "border-destructive" : ""}`}
+                    disabled={isSubmitting}
+                  />
+                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                    <span className="text-sm text-muted-foreground">Ξ</span>
+                  </div>
+                </div>
+                {errors.price && (
+                  <p className="text-sm text-destructive">{errors.price.message}</p>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Set the price for your entire collection (optional)
+                </p>
               </div>
 
               {/* Submit Buttons */}
