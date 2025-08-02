@@ -40,9 +40,12 @@ export function ArtistStudioPage() {
 		addCollection,
 		artworks,
 		artworksLoading,
-		addArtwork,
 		analytics,
-		refreshProfile
+		refreshProfile,
+		// Use the new mutation functions
+		createArtworkAsync,
+		isCreatingArtwork,
+		createArtworkError
 	} = useArtistStudio();
 	const [tabValue, setTabValue] = useState("collections");
 	const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false);
@@ -54,8 +57,8 @@ export function ArtistStudioPage() {
 	// Handle collection creation success
 	const handleCollectionCreated = (collection: any) => {
 		console.log('Before adding:', collections.length);
-		
-		
+
+
 		console.log('Collection created:', collection);
 		// Add the new collection to the list
 		addCollection(collection);
@@ -63,10 +66,26 @@ export function ArtistStudioPage() {
 	};
 
 	// Handle artwork creation success
-	const handleArtworkCreated = (artwork: any) => {
-		console.log('Artwork created:', artwork);
-		// Add the new artwork to the list
-		addArtwork(artwork);
+	const handleArtworkCreated = async (artworkData: any) => {
+		try {
+			console.log('ArtistStudioPage: Creating artwork with data:', artworkData);
+
+			// Use the async mutation to create artwork
+			const newArtwork = await createArtworkAsync(artworkData);
+
+			console.log('ArtistStudioPage: Artwork created successfully:', newArtwork);
+
+			// Close the modal
+			setShowCreateArtworkModal(false);
+
+			// Optional: Show success message
+			// toast.success('Artwork created successfully!');
+
+		} catch (error) {
+			console.error('ArtistStudioPage: Failed to create artwork:', error);
+			// Error is already handled by the mutation, but you can show additional UI feedback here
+			// toast.error('Failed to create artwork. Please try again.');
+		}
 	};
 
 	// Handle artist profile update success
@@ -482,7 +501,7 @@ export function ArtistStudioPage() {
 			<CreateArtworkModal
 				isOpen={showCreateArtworkModal}
 				onClose={() => setShowCreateArtworkModal(false)}
-				onSuccess={handleArtworkCreated}
+				createArtworkAsync={createArtworkAsync}
 			/>
 
 			<EditArtistProfileModal

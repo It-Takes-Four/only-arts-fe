@@ -73,3 +73,52 @@ export interface ArtistArtworksResponse {
 	};
 }
 
+export interface MyArtwork {
+	id: string;
+	tokenId: string;
+	title: string;
+	isLiked: boolean;
+	likesCount?: number;
+	description: string;
+	imageFileId: string;
+	datePosted: string;
+	updatedAt: string;
+	artistId: string;
+	artist: {
+		id: string;
+		artistName: string;
+		isVerified: boolean;
+		user: {
+			profilePictureFileId: string | null;
+		};
+	};
+	tags: Array<{
+		tagId: string;
+		tagName: string;
+	}>;
+	collections: Array<{
+		id: string;
+		collectionId: string;
+		artId: string;
+	}>;
+	comments: Array<{
+		id: string;
+		content: string;
+		createdAt: string;
+		updatedAt: string;
+		userId: string;
+		artId: string;
+	}>;
+}
+
+export interface MyArtworksResponse {
+	data: MyArtwork[];
+	pagination: {
+		currentPage: number;
+		perPage: number;
+		total: number;
+		totalPages: number;
+		hasNextPage: boolean;
+		hasPrevPage: boolean;
+	};
+}

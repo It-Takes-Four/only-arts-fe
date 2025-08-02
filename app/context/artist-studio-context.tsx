@@ -5,6 +5,7 @@ import { useMyCollectionsQuery } from '../components/hooks/useMyCollectionsQuery
 import { useMyArtworksQuery } from '../components/hooks/useMyArtworksQuery';
 import { useArtistProfileQuery } from '../components/hooks/useArtistProfileQuery';
 import { useUserProfileQuery } from '../components/hooks/useUserProfileQuery';
+import type { MyArtwork } from 'app/types/collection';
 
 interface ArtistStudioContextType {
   // Collections
@@ -16,8 +17,22 @@ interface ArtistStudioContextType {
   // Artworks
   artworks: any[];
   artworksLoading: boolean;
-  addArtwork: (artwork: any) => void;
+  addArtwork: (artwork: MyArtwork) => void;
   refreshArtworks: () => void;
+  
+  // Artwork mutations
+  createArtwork: (artworkData: any) => void;
+  createArtworkAsync: (artworkData: any) => Promise<any>;
+  isCreatingArtwork: boolean;
+  createArtworkError: Error | null;
+  
+  updateArtwork: (params: { id: string; data: any }) => void;
+  updateArtworkAsync: (params: { id: string; data: any }) => Promise<any>;
+  isUpdatingArtwork: boolean;
+  
+  deleteArtwork: (artworkId: string) => void;
+  deleteArtworkAsync: (artworkId: string) => Promise<any>;
+  isDeletingArtwork: boolean;
 
   // Profile updates
   refreshProfile: () => Promise<void>;
@@ -44,7 +59,22 @@ interface ArtistStudioProviderProps {
 export function ArtistStudioProvider({ children }: ArtistStudioProviderProps) {
   const { refreshUserWithValidation } = useAuthContext();
   const { collections, isLoading: collectionsLoading, addCollection, refresh: refreshCollections } = useMyCollectionsQuery();
-  const { artworks, isLoading: artworksLoading, addArtwork, refresh: refreshArtworks } = useMyArtworksQuery();
+  const { 
+    artworks, 
+    isLoading: artworksLoading, 
+    addArtwork, 
+    refresh: refreshArtworks,
+    createArtwork,
+    createArtworkAsync,
+    isCreatingArtwork,
+    createArtworkError,
+    updateArtwork,
+    updateArtworkAsync,
+    isUpdatingArtwork,
+    deleteArtwork,
+    deleteArtworkAsync,
+    isDeletingArtwork
+  } = useMyArtworksQuery();
   const { refresh: refreshArtistProfile } = useArtistProfileQuery();
   const { refresh: refreshUserProfile } = useUserProfileQuery();
   const queryClient = useQueryClient();
@@ -92,6 +122,19 @@ export function ArtistStudioProvider({ children }: ArtistStudioProviderProps) {
     artworksLoading,
     addArtwork,
     refreshArtworks,
+    
+    // Artwork mutations
+    createArtwork,
+    createArtworkAsync,
+    isCreatingArtwork,
+    createArtworkError,
+    updateArtwork,
+    updateArtworkAsync,
+    isUpdatingArtwork,
+    deleteArtwork,
+    deleteArtworkAsync,
+    isDeletingArtwork,
+    
     refreshProfile,
     analytics
   };

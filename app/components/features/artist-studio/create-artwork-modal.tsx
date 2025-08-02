@@ -17,7 +17,7 @@ import type { CreateArtworkRequest } from "../../../types/artwork";
 interface CreateArtworkModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: (artwork: any) => void;
+  createArtworkAsync: (artwork: any) => void
 }
 
 interface FormData {
@@ -26,7 +26,7 @@ interface FormData {
   image: FileList;
 }
 
-export function CreateArtworkModal({ isOpen, onClose, onSuccess }: CreateArtworkModalProps) {
+export function CreateArtworkModal({ isOpen, onClose, createArtworkAsync }: CreateArtworkModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -48,10 +48,10 @@ export function CreateArtworkModal({ isOpen, onClose, onSuccess }: CreateArtwork
       description: "",
     },
   });
-  
+
   const watchedImage = watch("image");
 
-    useEffect(() => {
+  useEffect(() => {
     if (watchedImage && watchedImage.length > 0) {
       const file = watchedImage[0];
       const reader = new FileReader();
@@ -101,10 +101,12 @@ export function CreateArtworkModal({ isOpen, onClose, onSuccess }: CreateArtwork
         tagIds: selectedTags.length > 0 ? selectedTags : undefined,
       };
 
-      const response = await artService.createArtwork(request);
+      const response = await createArtworkAsync(request);
+
+      console.log("CreateArtWorkModal createArtworkAsync response:", response);
+
 
       toast.success("Artwork uploaded successfully!");
-      onSuccess(response);
       reset();
       setPreviewImage(null);
       setSelectedTags([]);
