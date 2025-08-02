@@ -455,8 +455,8 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 							{artist.bio && (
 								<p className="text-sm text-white/90 mt-2 max-w-md">{artist.bio}</p>
 							)}
-							<Badge variant="outline"
-								className="mt-2 font-mono text-primary-foreground text-xs uppercase border-white/25">
+							<Badge variant="default"
+								className="mt-2 font-mono text-primary text-xs uppercase border-primary/25">
 								JOINED {userForJoinedDate?.createdAt ? formatDate(userForJoinedDate.createdAt).toUpperCase() : 'UNKNOWN TIME'}
 							</Badge>
 						</div>

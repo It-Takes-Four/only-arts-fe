@@ -385,7 +385,7 @@ export function ArtistStudioPage() {
 							<p className="text-sm text-muted-foreground mt-1">{user.artist.bio || "No bio available"}</p>
 							<div className="flex items-center gap-2 mt-2">
 								<Badge variant="outline"
-									className="font-mono text-primary-foreground text-xs uppercase border-white/25">
+									className="font-mono text-primary text-xs uppercase border-primary/25">
 									{user?.createdAt ? `JOINED ${formatTimestampToMonthYear(user?.createdAt)}` : 'ARTIST'}
 								</Badge>
 								{user.artist.isVerified && (
