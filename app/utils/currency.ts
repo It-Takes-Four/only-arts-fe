@@ -42,10 +42,10 @@ export function formatPriceDisplay(price: string | number): string {
   const numericPrice = typeof price === 'string' ? parseFloat(price) : price;
   
   if (isNaN(numericPrice)) {
-    return `${config.symbol} 0`;
+    return `0 ${config.symbol}`;
   }
 
-  return `${config.symbol} ${numericPrice.toFixed(config.decimals)}`;
+  return `${numericPrice.toFixed(config.decimals)} ${config.symbol}`;
 }
 
 /**

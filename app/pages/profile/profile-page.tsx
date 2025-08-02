@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { Separator } from "@/components/ui/separator";
 import { CollectionCard } from "../../components/common/collection-card";
-import { BuyCollectionModal } from "../../components/common/buy-collection-modal";
+import { AbsoluteBuyCollectionButton } from "../../components/common/buy-collection-button";
 import { useArtistProfileQuery } from "../../components/hooks/useArtistProfileQuery";
 import { useUserProfileQuery } from "../../components/hooks/useUserProfileQuery";
 import { useArtistCollectionsQuery } from "../../components/hooks/useArtistCollectionsQuery";
@@ -38,8 +38,6 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 	const { user: currentUser } = useUserProfileQuery();
 	const [tabValue, setTabValue] = useState("explore");
 	const [collectionsPage, setCollectionsPage] = useState(1);
-	const [selectedCollection, setSelectedCollection] = useState<ArtistCollection | null>(null);
-	const [showBuyModal, setShowBuyModal] = useState(false);
 
 	const isOwnProfile = !artistId; // If no artistId, it's the current user's profile
 
@@ -71,15 +69,6 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 
 	// Use currentUser for joined date if it's own profile, otherwise use artist data
 	const userForJoinedDate = isOwnProfile ? currentUser : artist?.user;
-
-	const handleBuyCollection = (collection: ArtistCollection) => {
-		setSelectedCollection(collection);
-		setShowBuyModal(true);
-	};
-
-	const handleBuySuccess = () => {
-		toast.success('Purchase successful');
-	};
 
 	const formatDate = (dateString: number) => {
 		try {
@@ -141,40 +130,21 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 						) ? (
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 								{(isOwnProfile ? myCollectionsData : collectionsData?.data)?.slice(0, 4).map((collection) => (
-									<div key={collection.id} className="relative">
-										<CollectionCard
-											id={collection.id}
-											name={collection.collectionName}
-											description={collection.description || "No description"}
-											artworkCount={isOwnProfile ?
-												(collection as any).arts?.length || 0 :
-												(collection as any).artsCount || 0
-											}
-											previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
-											createdBy={collection.artist.artistName}
-											price={collection.price || '0'}
-										/>
-										{/* Only show buy button for other artists' collections */}
-										{!isOwnProfile && collection.isPublished && parseFloat(collection.price || '0') > 0 && !(collection as ArtistCollection).isPurchased && (
-											<div className="absolute top-2 right-2">
-												<Button
-													size="sm"
-													onClick={() => handleBuyCollection(collection as ArtistCollection)}
-													className="bg-primary/90 hover:bg-primary shadow-lg"
-												>
-													Buy {formatPriceDisplay(collection.price || '0')}
-												</Button>
-											</div>
-										)}
-										{/* Show purchased indicator for purchased collections */}
-										{!isOwnProfile && (collection as ArtistCollection).isPurchased && (
-											<div className="absolute top-2 right-2">
-												<Badge variant="secondary" className="bg-green-500/90 text-white shadow-lg">
-													Purchased
-												</Badge>
-											</div>
-										)}
-									</div>
+									<CollectionCard
+										key={collection.id}
+										id={collection.id}
+										name={collection.collectionName}
+										description={collection.description || "No description"}
+										artworkCount={isOwnProfile ?
+											(collection as any).arts?.length || 0 :
+											(collection as any).artsCount || 0
+										}
+										previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
+										createdBy={collection.artist.artistName}
+										price={collection.price || '0'}
+										collection={collection as ArtistCollection}
+										showBuyButton={!isOwnProfile}
+									/>
 								))}
 							</div>
 						) : (
@@ -294,40 +264,21 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 						<>
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
 								{(isOwnProfile ? myCollectionsData : collectionsData?.data)?.map((collection) => (
-									<div key={collection.id} className="relative">
-										<CollectionCard
-											id={collection.id}
-											name={collection.collectionName}
-											description={collection.description || "No description"}
-											artworkCount={isOwnProfile ?
-												(collection as any).arts?.length || 0 :
-												(collection as any).artsCount || 0
-											}
-											previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
-											createdBy={collection.artist.artistName}
-											price={collection.price || '0'}
-										/>
-										{/* Only show buy button for other artists' collections */}
-										{!isOwnProfile && collection.isPublished && parseFloat(collection.price || '0') > 0 && !(collection as ArtistCollection).isPurchased && (
-											<div className="absolute top-2 right-2">
-												<Button
-													size="sm"
-													onClick={() => handleBuyCollection(collection as ArtistCollection)}
-													className="bg-primary/90 hover:bg-primary shadow-lg"
-												>
-													Buy {formatPriceDisplay(collection.price || '0')}
-												</Button>
-											</div>
-										)}
-										{/* Show purchased indicator for purchased collections */}
-										{!isOwnProfile && (collection as ArtistCollection).isPurchased && (
-											<div className="absolute top-2 right-2">
-												<Badge variant="secondary" className="bg-green-500/90 text-white shadow-lg">
-													Purchased
-												</Badge>
-											</div>
-										)}
-									</div>
+									<CollectionCard
+										key={collection.id}
+										id={collection.id}
+										name={collection.collectionName}
+										description={collection.description || "No description"}
+										artworkCount={isOwnProfile ?
+											(collection as any).arts?.length || 0 :
+											(collection as any).artsCount || 0
+										}
+										previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
+										createdBy={collection.artist.artistName}
+										price={collection.price || '0'}
+										collection={collection as ArtistCollection}
+										showBuyButton={!isOwnProfile}
+									/>
 								))}
 							</div>
 
@@ -552,24 +503,6 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 					</TabsContent>
 				))}
 			</Tabs>
-
-			<div className="">
-
-
-			</div>
-
-			{/* Buy Collection Modal */}
-			{selectedCollection && (
-				<BuyCollectionModal
-					isOpen={showBuyModal}
-					onClose={() => {
-						setShowBuyModal(false);
-						setSelectedCollection(null);
-					}}
-					collection={selectedCollection}
-					onSuccess={handleBuySuccess}
-				/>
-			)}
 
 		</div>
 	);

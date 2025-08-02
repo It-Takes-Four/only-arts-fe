@@ -1,13 +1,22 @@
 import { useState } from "react";
-import { Button } from "../common/button";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, AlertTriangle, Wallet, Image, User, Calendar, X } from "lucide-react";
+import { 
+	Dialog, 
+	DialogContent, 
+	DialogDescription, 
+	DialogFooter,
+	DialogHeader, 
+	DialogTitle 
+} from "@/components/ui/dialog";
+import { Loader2, AlertTriangle, Wallet, Image, User, Calendar, Sparkles, Check } from "lucide-react";
 import { toast } from "sonner";
 import { collectionService } from "../../services/collection-service";
 import { usePayment } from "../hooks/usePayment";
 import { formatPriceDisplay } from "../../utils/currency";
 import type { ArtistCollection } from "../../types/collection";
 import { formatDistanceToNow } from "date-fns";
+import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 
 interface BuyCollectionModalProps {
 	isOpen: boolean;
@@ -57,169 +66,160 @@ export function BuyCollectionModal({ isOpen, onClose, collection, onSuccess }: B
 		return "/placeholder-avatar.png";
 	};
 
-	if (!isOpen || !collection) return null;
+	if (!collection) return null;
 
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center">
-			{/* Backdrop */}
-			<div 
-				className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-				onClick={() => !isPurchasing && onClose()}
-			/>
-			
-			{/* Modal */}
-			<div className="relative bg-background border rounded-lg shadow-lg max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
-				{/* Header */}
-				<div className="flex items-center justify-between p-6 border-b">
-					<div>
-						<h2 className="text-lg font-semibold flex items-center gap-2">
-							<Wallet className="h-5 w-5" />
-							Purchase Collection
-						</h2>
-						<p className="text-sm text-muted-foreground mt-1">
-							Review the details and confirm your purchase
-						</p>
-					</div>
-					<Button
-						variant="ghost"
-						size="sm"
-						onClick={onClose}
-						disabled={isPurchasing}
-						className="h-8 w-8 p-0"
-					>
-						<X className="h-4 w-4" />
-					</Button>
-				</div>
+		<Dialog open={isOpen} onOpenChange={(open) => !isPurchasing && !open && onClose()}>
+			<DialogContent className="max-w-lg w-[95vw] sm:w-full mx-auto max-h-[95vh] overflow-hidden p-3 sm:p-4" showCloseButton={!isPurchasing}>
+				<DialogHeader className="text-left space-y-1 pb-1">
+					<DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
+						<div className="flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-primary/10 flex-shrink-0">
+							<Wallet className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
+						</div>
+						<span className="truncate">Purchase Collection</span>
+					</DialogTitle>
+					<DialogDescription className="text-xs sm:text-sm leading-snug">
+						Review details and confirm purchase for instant access.
+					</DialogDescription>
+				</DialogHeader>
 
-				{/* Content */}
-				<div className="p-6 space-y-6">
-					{/* Collection Preview */}
-					<div className="space-y-4">
-						<div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
+				<div className="space-y-2 sm:space-y-3 overflow-y-auto max-h-[calc(95vh-200px)]">
+					{/* Collection Preview Card */}
+					<div className="relative overflow-hidden rounded-lg border bg-gradient-to-br from-background to-muted/30 shadow-sm">
+						<div className="relative aspect-[16/9] overflow-hidden">
 							<img
 								src={getCollectionImageUrl()}
 								alt={collection.collectionName}
-								className="w-full h-full object-cover"
+								className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
 								onError={(e) => {
 									const target = e.target as HTMLImageElement;
 									target.src = "/placeholder.svg";
 								}}
 							/>
-							{collection.artsCount > 0 && (
-								<div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded-md text-xs flex items-center gap-1">
-									<Image className="h-3 w-3" />
-									{collection.artsCount}
+							<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+							
+							{/* Collection stats overlay */}
+							<div className="absolute bottom-2 left-2 right-2">
+								<div className="flex items-end justify-between gap-2">
+									<div className="flex-1 min-w-0">
+										<h3 className="font-bold text-white text-sm sm:text-base leading-tight truncate">{collection.collectionName}</h3>
+										{collection.description && (
+											<p className="text-white/80 text-xs mt-0.5 line-clamp-1">{collection.description}</p>
+										)}
+									</div>
+									{collection.artsCount > 0 && (
+										<div className="bg-black/70 backdrop-blur-sm text-white px-1.5 py-0.5 rounded text-xs flex items-center gap-1 flex-shrink-0">
+											<Image className="h-2.5 w-2.5" />
+											<span>{collection.artsCount}</span>
+										</div>
+									)}
+								</div>
+							</div>
+						</div>
+					</div>
+
+					{/* Artist Info Card */}
+					<div className="flex items-center gap-2 p-2 sm:p-3 bg-muted/50 rounded-lg border shadow-sm">
+						<div className="relative flex-shrink-0">
+							<img
+								src={getArtistAvatarUrl()}
+								alt={collection.artist.artistName}
+								className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-background"
+								onError={(e) => {
+									const target = e.target as HTMLImageElement;
+									target.src = "/placeholder-avatar.png";
+								}}
+							/>
+							{collection.artist.isVerified && (
+								<div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-blue-500 rounded-full flex items-center justify-center">
+									<Sparkles className="h-1.5 w-1.5 sm:h-2 sm:w-2 text-white" />
 								</div>
 							)}
 						</div>
-
-						<div>
-							<h3 className="font-semibold text-lg">{collection.collectionName}</h3>
-							{collection.description && (
-								<p className="text-sm text-muted-foreground mt-1">{collection.description}</p>
-							)}
-						</div>
-					</div>
-
-					{/* Artist Info */}
-					<div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-						<img
-							src={getArtistAvatarUrl()}
-							alt={collection.artist.artistName}
-							className="w-10 h-10 rounded-full object-cover"
-							onError={(e) => {
-								const target = e.target as HTMLImageElement;
-								target.src = "/placeholder-avatar.png";
-							}}
-						/>
-						<div className="flex-1">
+						<div className="flex-1 min-w-0">
 							<div className="flex items-center gap-2">
-								<p className="font-medium text-sm">{collection.artist.artistName}</p>
+								<p className="font-semibold text-xs sm:text-sm truncate">{collection.artist.artistName}</p>
 								{collection.artist.isVerified && (
-									<Badge variant="secondary" className="text-xs px-1 py-0">
-										✓ Verified
+									<Badge variant="secondary" className="text-xs px-0 py-0 bg-blue-500/10 text-blue-600 flex-shrink-0">
+										<CheckBadgeIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
 									</Badge>
 								)}
 							</div>
-							<p className="text-xs text-muted-foreground">@{collection.artist.user.username}</p>
 						</div>
 					</div>
 
-					{/* Collection Details */}
-					<div className="space-y-3">
-						<div className="flex justify-between items-center text-sm">
-							<span className="text-muted-foreground">Created</span>
-							<span className="flex items-center gap-1">
-								<Calendar className="h-3 w-3" />
+					{/* Collection Details Grid */}
+					<div className="grid grid-cols-2 gap-2">
+						<div className="p-2 bg-muted/30 rounded border">
+							<div className="flex items-center gap-1 text-xs text-muted-foreground mb-0.5">
+								<Calendar className="h-2.5 w-2.5 flex-shrink-0" />
+								<span className="truncate">Created</span>
+							</div>
+							<p className="font-medium text-xs">
 								{formatDistanceToNow(new Date(collection.createdAt), { addSuffix: true })}
-							</span>
+							</p>
 						</div>
 						
-						<div className="flex justify-between items-center text-sm">
-							<span className="text-muted-foreground">Artworks</span>
-							<span className="flex items-center gap-1">
-								<Image className="h-3 w-3" />
-								{collection.artsCount} pieces
-							</span>
-						</div>
-
-						<div className="flex justify-between items-center text-sm">
-							<span className="text-muted-foreground">Status</span>
-							<Badge variant={collection.isPublished ? "default" : "secondary"}>
-								{collection.isPublished ? "Published" : "Draft"}
-							</Badge>
+						<div className="p-2 bg-muted/30 rounded border">
+							<div className="flex items-center gap-1 text-xs text-muted-foreground mb-0.5">
+								<Image className="h-2.5 w-2.5 flex-shrink-0" />
+								<span className="truncate">Artworks</span>
+							</div>
+							<p className="font-medium text-xs">{collection.artsCount} pieces</p>
 						</div>
 					</div>
 
 					{/* Price Section */}
-					<div className="border-t pt-4">
-						<div className="flex justify-between items-center">
-							<span className="text-lg font-semibold">Total Price</span>
-							<span className="text-2xl font-bold text-primary">
-								{formatPriceDisplay(collection.price)}
-							</span>
+					<div className="p-2 sm:p-3 bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg border border-primary/20 shadow-sm">
+						<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+							<div className="flex-1">
+								<p className="text-xs text-muted-foreground mb-0.5">Total Price</p>
+								<p className="text-xl sm:text-2xl font-bold text-primary">
+									{formatPriceDisplay(collection.price)}
+								</p>
+							</div>
+							<div className="text-left sm:text-right">
+								<Badge 
+									variant={collection.isPublished ? "default" : "secondary"} 
+									className="mb-1 text-xs"
+								>
+									{collection.isPublished ? "Published" : "Draft"}
+								</Badge>
+								<p className="text-xs text-muted-foreground">One-time purchase</p>
+							</div>
 						</div>
-					</div>
-
-					{/* Warning */}
-					<div className="flex items-start gap-2 p-3 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-						<AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-500 mt-0.5 flex-shrink-0" />
-						<div className="text-xs text-yellow-800 dark:text-yellow-300">
-							<p className="font-medium mb-1">Purchase Confirmation</p>
-							<p>This purchase cannot be undone. You will get access to all artworks in this collection.</p>
-						</div>
-					</div>
-
-					{/* Action Buttons */}
-					<div className="flex gap-3">
-						<Button
-							variant="outline"
-							onClick={onClose}
-							disabled={isPurchasing}
-							className="flex-1"
-						>
-							Cancel
-						</Button>
-						<Button
-							onClick={handlePurchase}
-							disabled={isPurchasing}
-							className="flex-1"
-						>
-							{isPurchasing ? (
-								<>
-									<Loader2 className="h-4 w-4 animate-spin mr-2" />
-									{paymentStatus || "Processing..."}
-								</>
-							) : (
-								<>
-									<Wallet className="h-4 w-4 mr-2" />
-									Purchase {formatPriceDisplay(collection.price)}
-								</>
-							)}
-						</Button>
 					</div>
 				</div>
-			</div>
-		</div>
+
+				{/* Enhanced Footer */}
+				<DialogFooter className="flex-col-reverse sm:flex-row gap-2 pt-2 border-t mt-2">
+					<Button
+						variant="outline"
+						onClick={onClose}
+						disabled={isPurchasing}
+						className="flex-1 sm:flex-none cursor-pointer hover:bg-muted/80 transition-colors duration-200 h-8 sm:h-9 text-xs sm:text-sm"
+					>
+						Cancel
+					</Button>
+					<Button
+						onClick={handlePurchase}
+						disabled={isPurchasing}
+						className="flex-1 sm:flex-none bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer disabled:cursor-not-allowed h-8 sm:h-9 text-xs sm:text-sm"
+					>
+						{isPurchasing ? (
+							<>
+								<Loader2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 animate-spin mr-1.5" />
+								<span className="truncate">{paymentStatus || "Processing..."}</span>
+							</>
+						) : (
+							<>
+								<Wallet className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1.5 flex-shrink-0" />
+								<span className="truncate">Purchase for {formatPriceDisplay(collection.price)}</span>
+							</>
+						)}
+					</Button>
+				</DialogFooter>
+			</DialogContent>
+		</Dialog>
 	);
 }

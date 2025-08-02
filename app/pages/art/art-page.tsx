@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getUserInitials } from "../../utils/UtilityFunction";
 import { cn } from "@/lib/utils";
 import { AnimatedHeart } from "../../components/common/animated-heart";
+import { ArtworkShareButton } from "../../components/common/animated-share-button";
 import { useState } from "react";
 
 export function ArtPage() {
@@ -21,14 +22,12 @@ export function ArtPage() {
 	const navigate = useNavigate();
 	const [isLikeAnimating, setIsLikeAnimating] = useState(false);
 
-	console.log("Artwork Data:", artwork);
-
 	const handleAnimatedLikeToggle = async () => {
 		if (isLiking) return;
-		
+
 		setIsLikeAnimating(true);
 		await handleLikeToggle();
-		
+
 		// Reset animation state after animation completes
 		setTimeout(() => {
 			setIsLikeAnimating(false);
@@ -78,7 +77,7 @@ export function ArtPage() {
 					/>
 				) : (
 					<div className="flex items-center justify-center h-96 bg-gray-200/10 rounded-lg">
-						<ImageIcon className="h-12 w-12 text-muted-foreground"/>
+						<ImageIcon className="h-12 w-12 text-muted-foreground" />
 					</div>
 				)}
 			</div>
@@ -142,7 +141,7 @@ export function ArtPage() {
 						</div>
 					</div>
 
-					<Separator className="lg:hidden"/>
+					<Separator className="lg:hidden" />
 
 					{/* Stats Section */}
 					<div className="flex items-center justify-center w-full lg:w-fit space-x-6">
@@ -167,7 +166,7 @@ export function ArtPage() {
 				</div>
 
 				{/* Action Buttons */}
-				<Separator className="my-6"/>
+				<Separator className="my-6" />
 				<div className="flex flex-wrap justify-between gap-3">
 					<motion.div
 						whileTap={{ scale: 0.95 }}
@@ -183,10 +182,10 @@ export function ArtPage() {
 								isLiked && "bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/25"
 							)}
 						>
-							<AnimatedHeart 
-								isLiked={isLiked} 
+							<AnimatedHeart
+								isLiked={isLiked}
 								isAnimating={isLikeAnimating}
-								className="mr-2" 
+								className="mr-2"
 							/>
 							<motion.span
 								animate={{
@@ -198,13 +197,15 @@ export function ArtPage() {
 							</motion.span>
 						</Button>
 					</motion.div>
-					{/*<Button size="lg" variant="outline">*/}
-					{/*	Add to Collection*/}
-					{/*</Button>*/}
-					<Button size="lg" variant="outline">
-						<Share2 className="w-5 h-5"/>
-						Share
-					</Button>
+
+					<ArtworkShareButton
+						artwork={artwork}
+						size="lg"
+						showSocialOptions={true}
+						onShare={(method) => {
+							console.log(`Shared artwork via ${method}`);
+						}}
+					/>
 				</div>
 			</GlassCard>
 
@@ -217,29 +218,29 @@ export function ArtPage() {
 							{artwork.description}
 						</p>
 					</>
-			)}
+				)}
 
 
-			{artwork.tags.length > 0 && (
-				<>
-					<h3 className="text-lg font-semibold mb-2">Tags</h3>
-					<div className="flex flex-wrap gap-2">
-						{artwork.tags.map((tag, index) => (
-							<Badge
-								key={index}
-								variant="outline"
-								className="text-sm"
-							>
-								<Tag className="w-3 h-3 mr-1"/>
-								{tag.tagName}
-							</Badge>
-						))}
-					</div>
-				</>
-			)}
-		</GlassCard>
+				{artwork.tags.length > 0 && (
+					<>
+						<h3 className="text-lg font-semibold mb-2">Tags</h3>
+						<div className="flex flex-wrap gap-2">
+							{artwork.tags.map((tag, index) => (
+								<Badge
+									key={index}
+									variant="outline"
+									className="text-sm"
+								>
+									<Tag className="w-3 h-3 mr-1" />
+									{tag.tagName}
+								</Badge>
+							))}
+						</div>
+					</>
+				)}
+			</GlassCard>
 
-</div>
-)
-	;
+		</div>
+	)
+		;
 }
