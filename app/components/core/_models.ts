@@ -76,10 +76,10 @@ interface ArtCardProps {
     };
     imageUrl: string | null;
     tags?: {
+      name?: string;
       artId: string;
       tagId: string;
       tag: {
-        name?: string;
         id: string;
         tagName: string;
       }
