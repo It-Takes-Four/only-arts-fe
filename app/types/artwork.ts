@@ -20,15 +20,8 @@ export interface CreateArtworkResponse {
 
 // Artist Artwork Types
 export interface ArtworkTag {
-	artId: string;
 	tagId: string;
-	tag: {
-		id: string;
-		tagName: string;
-		usageCount: number;
-		createdAt: string;
-		updatedAt: string;
-	};
+	tagName: string;
 }
 
 export interface ArtworkComment {
@@ -42,27 +35,41 @@ export interface ArtworkComment {
 
 export interface ArtworkCollection {
 	id: string;
-	artId: string;
 	collectionId: string;
-	addedAt: string;
-	updatedAt: string;
+	artId: string;
 }
 
 export interface ArtistArtwork {
 	id: string;
-	imageFileId: string;
+	tokenId: string;
 	title: string;
 	description: string;
+	imageFileId: string;
 	datePosted: string;
 	updatedAt: string;
 	artistId: string;
-	tokenId: string;
-	likesCount: number;
-	isInACollection: boolean;
+	artist: {
+		id: string;
+		artistName: string;
+		isVerified: boolean;
+		user: {
+			profilePictureFileId: string | null;
+		};
+	};
 	tags: ArtworkTag[];
-	comments: ArtworkComment[];
 	collections: ArtworkCollection[];
+	comments: ArtworkComment[];
 }
 
-export type ArtistArtworksResponse = ArtistArtwork[];
+export interface ArtistArtworksResponse {
+	data: ArtistArtwork[];
+	pagination: {
+		currentPage: number;
+		perPage: number;
+		total: number;
+		totalPages: number;
+		hasNextPage: boolean;
+		hasPrevPage: boolean;
+	};
+}
 

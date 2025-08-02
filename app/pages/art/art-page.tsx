@@ -16,7 +16,6 @@ export function ArtPage() {
 	const { artwork, error } = useArtwork(artworkId);
 	const navigate = useNavigate();
 
-	console.log("artwork", artwork);
 	// Handle error state
 	if (error || !artwork) {
 		return (
@@ -70,7 +69,7 @@ export function ArtPage() {
 				<div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
 					<div className="flex items-start space-x-4 flex-1">
 						<Avatar className="h-16 w-16 ring-4 ring-primary/20">
-							<AvatarImage src={artwork.artist.userId}/>
+							<AvatarImage src={artwork.artist.user.profilePictureFileId ? `/api/files/${artwork.artist.user.profilePictureFileId}` : undefined} />
 							<AvatarFallback className="text-xl font-bold">
 								{getUserInitials(artwork.artist.artistName)}
 							</AvatarFallback>
@@ -81,9 +80,7 @@ export function ArtPage() {
 							</h1>
 							<div className="flex items-center mb-3">
 								<span className="text-lg text-muted-foreground">by&nbsp;</span>
-								<span
-									className="text-lg text-foreground font-semibold hover:text-primary cursor-pointer animate-in duration-300"
-									onClick={() => navigate(`/artist/${artwork.artist.userId}`)}>
+								<span className="text-lg text-foreground font-semibold hover:text-primary cursor-pointer animate-in duration-300" onClick={() => navigate(`/artist/${artwork.artist.id}`)}>
 									{artwork.artist.artistName}
 								</span>
 							</div>
@@ -100,7 +97,7 @@ export function ArtPage() {
 									POSTED{" "}
 									{formatDateToMonthYear(artwork.datePosted)}
 								</Badge>
-								{artwork.isInACollection && (
+								{artwork.collections && artwork.collections.length > 0 && (
 									<Badge variant="secondary">
 										In Collection
 									</Badge>
@@ -131,7 +128,7 @@ export function ArtPage() {
 								Status
 							</span>
 							<span className="text-2xl font-semibold">
-								{artwork.isInACollection
+								{artwork.collections && artwork.collections.length > 0
 									? "Collected"
 									: "Available"}
 							</span>
@@ -140,17 +137,17 @@ export function ArtPage() {
 				</div>
 
 				{/* Action Buttons */}
-				<Separator className="my-6"/>
+				<Separator className="my-6" />
 				<div className="flex flex-wrap gap-3">
 					<Button size="lg">
-						<Heart className="w-5 h-5 mr-2"/>
+						<Heart className="w-5 h-5 mr-2" />
 						Like Art
 					</Button>
 					<Button size="lg" variant="outline">
 						Add to Collection
 					</Button>
 					<Button size="lg" variant="outline">
-						<Share2 className="w-5 h-5 mr-2"/>
+						<Share2 className="w-5 h-5 mr-2" />
 						Share
 					</Button>
 				</div>
@@ -167,7 +164,7 @@ export function ArtPage() {
 								variant="outline"
 								className="text-sm"
 							>
-								<Tag className="w-3 h-3 mr-1"/>
+								<Tag className="w-3 h-3 mr-1" />
 								{tag.tagName}
 							</Badge>
 						))}
@@ -181,7 +178,7 @@ export function ArtPage() {
 				<div className="grid md:grid-cols-2 gap-6">
 					<div className="space-y-3">
 						<div className="flex items-center gap-3 text-muted-foreground">
-							<CalendarDays className="w-5 h-5"/>
+							<CalendarDays className="w-5 h-5" />
 							<span>
 								Posted on{" "}
 								{new Date(
@@ -195,17 +192,17 @@ export function ArtPage() {
 						</div>
 						{artwork.tokenId && (
 							<div className="flex items-center gap-3 text-muted-foreground">
-								<Tag className="w-5 h-5"/>
+								<Tag className="w-5 h-5" />
 								<span>
 									Token ID: {artwork.tokenId.toString()}
 								</span>
 							</div>
 						)}
 						<div className="flex items-center gap-3 text-muted-foreground">
-							<ImageIcon className="w-5 h-5"/>
+							<ImageIcon className="w-5 h-5" />
 							<span>
 								Status:{" "}
-								{artwork.isInACollection
+								{artwork.collections && artwork.collections.length > 0
 									? "In Collection"
 									: "Available"}
 							</span>
@@ -213,12 +210,12 @@ export function ArtPage() {
 					</div>
 					<div className="space-y-3">
 						<div className="flex items-center gap-3 text-muted-foreground">
-							<Heart className="w-5 h-5"/>
-							<span>{artwork.likesCount} Likes</span>
+							<Heart className="w-5 h-5" />
+							<span>{artwork.likesCount ?? 0} Likes</span>
 						</div>
 						{artwork.isInACollection && (
 							<div className="flex items-center gap-3 text-muted-foreground">
-								<ImageIcon className="w-5 h-5"/>
+								<ImageIcon className="w-5 h-5" />
 								<span>Part of a Collection</span>
 							</div>
 						)}

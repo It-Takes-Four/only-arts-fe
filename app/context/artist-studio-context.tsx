@@ -52,7 +52,7 @@ export function ArtistStudioProvider({ children }: ArtistStudioProviderProps) {
   // Calculate analytics from real data
   const analytics = {
     totalViews: 0, // This would need a separate API call to get view counts
-    totalLikes: artworks.reduce((sum: number, artwork: any) => sum + (artwork.likesCount || 0), 0),
+    totalLikes: 0, // Likes count not available in new API response
     totalShares: 0, // This would need a separate API call to get share counts
     totalSales: 0, // Sales data not available in current API response
     revenue: 0, // Revenue data not available in current API response
