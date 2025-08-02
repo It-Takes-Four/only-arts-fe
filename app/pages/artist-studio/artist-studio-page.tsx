@@ -65,9 +65,9 @@ export function ArtistStudioPage() {
 		},
 	} = useMyCollectionsWithPaginationQuery(collectionsPage, collectionsLimit);
 
-	const {
-
-	} = useMyArtworksWithPaginationQuery(artworksPage, artworksLimit);
+	const artworksQuery = useMyArtworksWithPaginationQuery(artworksPage, artworksLimit);
+	const artworksLoading = artworksQuery.isLoading;
+	const artworksData = artworksQuery.data;
 
 	const [tabValue, setTabValue] = useState("collections");
 	const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false);
