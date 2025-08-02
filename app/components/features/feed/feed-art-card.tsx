@@ -86,6 +86,13 @@ export function FeedArtCard({
 		console.log("Share post:", post.id);
 	};
 
+	const getUserProfileImageUrl = () => {
+		if (post.artist.user.profilePictureFileId) {
+			return `${import.meta.env.VITE_API_BASE_URL}/upload/profile/${post.artist.user.profilePictureFileId}`;
+		}
+		return null;
+	};
+
 	return (
 		<motion.div
 			variants={cardVariants}

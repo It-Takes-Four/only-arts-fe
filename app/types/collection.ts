@@ -109,7 +109,7 @@ export interface CollectionArt {
 			updatedAt: string;
 			user: {
 				profilePictureFileId?: string;
-			}
+			};
 		};
 	};
 }
@@ -125,7 +125,6 @@ export interface MyCollection {
 	createdAt: string;
 	updatedAt: string;
 	artistId: string;
-	arts: MyArtwork[];
 	artist: {
 		id: string;
 		userId: string;
@@ -143,7 +142,7 @@ export interface MyCollection {
 			profilePictureFileId?: string | null;
 		};
 	};
-	// arts: any[]; // Changed from artsCount to arts array
+	arts: any[]
 }
 
 // DetailedCollection is now the same as MyCollection since arts are included
@@ -209,3 +208,15 @@ export interface MyArtworksResponse {
 		hasPrevPage: boolean;
 	};
 }
+export interface PaginatedCollectionsResponse {
+  data: MyCollection[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
+}
+

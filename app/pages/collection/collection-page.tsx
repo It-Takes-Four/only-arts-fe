@@ -207,7 +207,7 @@ export function CollectionPage() {
 										: art.imageFileId 
 											? collectionService.getArtworkImageUrl(art.imageFileId)
 											: '/placeholder.svg',
-									tags: art.tags,
+									tags: art.art?.tags || art.tags || [],
 								}}
 							/>
 						))}
