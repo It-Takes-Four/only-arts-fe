@@ -26,6 +26,7 @@ import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { ImageIcon, Wallet } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDateToMonthYear } from "../../utils/dates/DateFormatter";
+import { formatPriceDisplay } from "../../utils/currency";
 import { WalletManagementModal } from "app/components/features/artist-studio/wallet-management-modal";
 
 export function ArtistStudioPage() {
@@ -315,7 +316,7 @@ export function ArtistStudioPage() {
 													</Badge>
 													{collection.price && (
 														<Badge variant="outline">
-															${collection.price.toString()}
+															{formatPriceDisplay(collection.price.toString())}
 														</Badge>
 													)}
 												</div>

@@ -5,6 +5,7 @@ import { Loader2, AlertTriangle, Wallet, Image, User, Calendar, X } from "lucide
 import { toast } from "sonner";
 import { collectionService } from "../../services/collection-service";
 import { usePayment } from "../hooks/usePayment";
+import { formatPriceDisplay } from "../../utils/currency";
 import type { ArtistCollection } from "../../types/collection";
 import { formatDistanceToNow } from "date-fns";
 
@@ -40,10 +41,6 @@ export function BuyCollectionModal({ isOpen, onClose, collection, onSuccess }: B
 		} finally {
 			setIsPurchasing(false);
 		}
-	};
-
-	const formatPrice = (price: string) => {
-		return parseFloat(price).toFixed(2);
 	};
 
 	const getCollectionImageUrl = () => {
@@ -179,7 +176,7 @@ export function BuyCollectionModal({ isOpen, onClose, collection, onSuccess }: B
 						<div className="flex justify-between items-center">
 							<span className="text-lg font-semibold">Total Price</span>
 							<span className="text-2xl font-bold text-primary">
-								${formatPrice(collection.price)}
+								{formatPriceDisplay(collection.price)}
 							</span>
 						</div>
 					</div>
@@ -216,7 +213,7 @@ export function BuyCollectionModal({ isOpen, onClose, collection, onSuccess }: B
 							) : (
 								<>
 									<Wallet className="h-4 w-4 mr-2" />
-									Purchase ${formatPrice(collection.price)}
+									Purchase {formatPriceDisplay(collection.price)}
 								</>
 							)}
 						</Button>
