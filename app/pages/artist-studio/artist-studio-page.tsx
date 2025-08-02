@@ -49,7 +49,6 @@ export function ArtistStudioPage() {
 	const collectionsLimit = 7;
 	const artworksLimit = 7;
 
-	// Paginated queries
 	const {
 		collectionsLoading,
 		collectionsData,
@@ -69,18 +68,6 @@ export function ArtistStudioPage() {
 	const artworksLoading = artworksQuery.isLoading;
 	const artworksData = artworksQuery.data;
 
-	// Debug logging
-	console.log('🎨 Artist Studio Debug:', {
-		collectionsPage,
-		collectionsLimit,
-		collectionsData: collectionsData?.data?.length,
-		collectionsPagination: collectionsData?.pagination,
-		artworksPage,
-		artworksLimit,
-		artworksData: artworksData?.data?.length,
-		artworksPagination: artworksData?.pagination,
-	});
-
 	const [tabValue, setTabValue] = useState("collections");
 	const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false);
 	const [showCreateArtworkModal, setShowCreateArtworkModal] = useState(false);
@@ -89,8 +76,6 @@ export function ArtistStudioPage() {
 
 	const handleCollectionCreated = async (collection: any) => {
 		await addCollection(collection);
-		console.log('Collection created:', collection);
-		// If we're not on the first page, go to first page to see the new collection
 		if (collectionsPage !== 1) {
 			setCollectionsPage(1);
 		}

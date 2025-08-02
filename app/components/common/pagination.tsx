@@ -46,31 +46,20 @@ export function Pagination({ pagination, onPageChange, className = "" }: Paginat
   const normalizedPagination = normalizePaginationData(pagination);
   const { currentPage, totalPages, hasNextPage, hasPrevPage } = normalizedPagination;
 
-  console.log("Pagination data:", normalizedPagination);
-
-  if (totalPages <= 1) {
-    return null;
-  }
-
-  // Generate page numbers to show
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
     const showPages = 5; // Show 5 pages around current page
     
     if (totalPages <= showPages + 2) {
-      // Show all pages if total is small
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      // Always show first page
       pages.push(1);
       
-      // Calculate start and end of middle section
       let start = Math.max(2, currentPage - 1);
       let end = Math.min(totalPages - 1, currentPage + 1);
       
-      // Adjust if we're near the beginning or end
       if (currentPage <= 3) {
         end = Math.min(totalPages - 1, 4);
       }

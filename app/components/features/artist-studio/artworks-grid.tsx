@@ -1,6 +1,6 @@
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { Button } from "../../common/button";
-import { Pagination, type PaginationData, type PaginationDataAlt, normalizePaginationData } from "../../common/pagination";
+import { Pagination, type PaginationData, type PaginationDataAlt } from "../../common/pagination";
 import { ArtCard } from "../art/art-card";
 import { collectionService } from "../../../services/collection-service";
 import type { MyArtwork } from "../../../types/collection";
@@ -37,7 +37,6 @@ export function ArtworksGrid({
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {/* Create New Artwork Card */}
           <div
             className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 flex flex-col items-center justify-center min-h-[200px] hover:border-muted-foreground/50 transition-colors cursor-pointer"
             onClick={onCreateArtwork}
@@ -46,7 +45,6 @@ export function ArtworksGrid({
             <p className="text-sm text-muted-foreground">Upload New Artwork</p>
           </div>
 
-          {/* Loading State */}
           {artworksLoading && (
             <>
               {Array.from({ length: 7 }).map((_, index) => (
@@ -108,34 +106,13 @@ export function ArtworksGrid({
         </div>
 
         {/* Pagination */}
-        <div className="mt-12 border-t border-border pt-8">
-          {pagination && onPageChange && (
-            <>
-              {(() => {
-                const normalized = normalizePaginationData(pagination);
-                const startItem = Math.min((normalized.currentPage - 1) * normalized.perPage + 1, normalized.total);
-                const endItem = Math.min(normalized.currentPage * normalized.perPage, normalized.total);
-                
-                return (
-                  <div className="flex justify-between items-center mb-4 text-sm text-muted-foreground">
-                    <span>
-                      Showing {startItem} to {endItem} of {normalized.total} artworks
-                    </span>
-                    <span>
-                      Page {normalized.currentPage} of {normalized.totalPages}
-                    </span>
-                  </div>
-                );
-              })()}
-              
-              <Pagination
-                pagination={pagination}
-                onPageChange={onPageChange}
-                className="justify-center"
-              />
-            </>
-          )}
-        </div>
+        {pagination && onPageChange && (
+          <Pagination
+            pagination={pagination}
+            onPageChange={onPageChange}
+            className="mt-8"
+          />
+        )}
       </div>
     </>
   );
