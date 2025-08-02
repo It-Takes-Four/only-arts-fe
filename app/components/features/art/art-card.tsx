@@ -96,7 +96,7 @@ export function ArtCard({ art }: ArtCardProps) {
 									key={index}
 									className="text-xs text-white/80 bg-white/20 px-2 py-1 rounded-full"
 								>
-									{tag.name || tag.tag.tagName }
+									{tag.name || ('tag' in tag && tag.tag?.tagName) || 'Unknown'}
 								</span>
 							))}
 						</div>

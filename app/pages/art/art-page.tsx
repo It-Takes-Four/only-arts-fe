@@ -153,9 +153,6 @@ export function ArtPage() {
 						{isLiking ? "..." : isLiked ? "Liked" : "Like Art"}
 					</Button>
 					<Button size="lg" variant="outline">
-						Add to Collection
-					</Button>
-					<Button size="lg" variant="outline">
 						<Share2 className="w-5 h-5 mr-2" />
 						Share
 					</Button>
