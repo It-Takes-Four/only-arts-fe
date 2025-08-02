@@ -40,6 +40,8 @@ export interface FeedArtData {
 	artistProfileFileId: string | null;
 	artDescription: string;
 	imageFileId: string;
+	likesCount: number;
+	isLiked: boolean;
 	artId: string;
 	artTitle: string;
 	createdDate: string;
