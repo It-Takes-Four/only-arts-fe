@@ -25,7 +25,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { formatPriceDisplay, parsePrice } from "../../utils/currency";
 import type { ArtistCollection } from "../../types/collection";
 import type { ArtistProfile } from "../../types/artist";
-import type { ArtistArtwork } from "../../types/artwork";
+import type { ArtistArtwork, ArtworkTag } from "../../types/artwork";
 
 interface ProfilePageProps {
 	artistId?: string;
@@ -154,7 +154,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 											price={collection.price || '0'}
 										/>
 										{/* Only show buy button for other artists' collections */}
-										{!isOwnProfile && collection.isPublished && parseFloat(collection.price || '0') > 0 && (
+										{!isOwnProfile && collection.isPublished && parseFloat(collection.price || '0') > 0 && !(collection as ArtistCollection).isPurchased && (
 											<div className="absolute top-2 right-2">
 												<Button
 													size="sm"
@@ -163,6 +163,14 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 												>
 													Buy {formatPriceDisplay(collection.price || '0')}
 												</Button>
+											</div>
+										)}
+										{/* Show purchased indicator for purchased collections */}
+										{!isOwnProfile && (collection as ArtistCollection).isPurchased && (
+											<div className="absolute top-2 right-2">
+												<Badge variant="secondary" className="bg-green-500/90 text-white shadow-lg">
+													Purchased
+												</Badge>
 											</div>
 										)}
 									</div>
@@ -181,14 +189,14 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 							<h3 className="text-xl font-semibold">Artworks</h3>
 							{(isOwnProfile ? 
 								(myArtworksData && myArtworksData.length > 8) : 
-								(artworksData && artworksData.length > 8)
+								(artworksData && artworksData.data && artworksData.data.length > 8)
 							) && (
 								<Button
 									variant="outline"
 									size="sm"
 									onClick={() => setTabValue("artworks")}
 								>
-									View All ({isOwnProfile ? myArtworksData?.length || 0 : artworksData?.length || 0})
+									View All ({isOwnProfile ? myArtworksData?.length || 0 : artworksData?.data?.length || 0})
 								</Button>
 							)}
 						</div>
@@ -209,10 +217,10 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 							</div>
 						) : /* Success state with data */ (isOwnProfile ? 
 							(myArtworksData && myArtworksData.length > 0) : 
-							(artworksData && Array.isArray(artworksData) && artworksData.length > 0)
+							(artworksData && artworksData.data && artworksData.data.length > 0)
 						) ? (
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
-								{(isOwnProfile ? myArtworksData : artworksData)?.slice(0, 8).map((artwork) => (
+								{(isOwnProfile ? myArtworksData : artworksData?.data)?.slice(0, 8).map((artwork: ArtistArtwork) => (
 									<div key={artwork.id} className="relative">
 										<ArtCard
 											art={{
@@ -229,16 +237,16 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 														(currentUser?.profilePictureFileId ? artistService.getProfilePictureUrl(currentUser.profilePictureFileId) : null) :
 														(artist?.user.profilePictureFileId ? artistService.getProfilePictureUrl(artist.user.profilePictureFileId) : null)
 												},
-												tags: artwork.tags.map(tag => ({ name: tag.tag.tagName })),
+												tags: artwork.tags.map((tag: ArtworkTag) => ({ name: tag.tagName })),
 												type: 'art',
 												createdAt: artwork.datePosted
 											}}
 										/>
 										<div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-white text-xs flex items-center gap-2">
 											<span className="flex items-center gap-1">
-												♥ {artwork.likesCount}
+												♥ 0
 											</span>
-											{artwork.isInACollection && (
+											{artwork.collections && artwork.collections.length > 0 && (
 												<span className="flex items-center gap-1">
 													📁
 												</span>
@@ -297,7 +305,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 											price={collection.price || '0'}
 										/>
 										{/* Only show buy button for other artists' collections */}
-										{!isOwnProfile && collection.isPublished && parseFloat(collection.price || '0') > 0 && (
+										{!isOwnProfile && collection.isPublished && parseFloat(collection.price || '0') > 0 && !(collection as ArtistCollection).isPurchased && (
 											<div className="absolute top-2 right-2">
 												<Button
 													size="sm"
@@ -306,6 +314,14 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 												>
 													Buy {formatPriceDisplay(collection.price || '0')}
 												</Button>
+											</div>
+										)}
+										{/* Show purchased indicator for purchased collections */}
+										{!isOwnProfile && (collection as ArtistCollection).isPurchased && (
+											<div className="absolute top-2 right-2">
+												<Badge variant="secondary" className="bg-green-500/90 text-white shadow-lg">
+													Purchased
+												</Badge>
 											</div>
 										)}
 									</div>
@@ -369,10 +385,10 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 						</div>
 					) : /* Success state with data */ (isOwnProfile ? 
 						(myArtworksData && myArtworksData.length > 0) : 
-						(artworksData && Array.isArray(artworksData) && artworksData.length > 0)
+						(artworksData && artworksData.data && artworksData.data.length > 0)
 					) ? (
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-							{(isOwnProfile ? myArtworksData : artworksData)?.map((artwork) => (
+							{(isOwnProfile ? myArtworksData : artworksData?.data)?.map((artwork: ArtistArtwork) => (
 								<div key={artwork.id} className="relative group">
 									<div className="bg-card rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
 										{/* Artwork Image */}
@@ -387,9 +403,9 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 												<div className="text-white text-center">
 													<div className="flex items-center gap-4 justify-center">
 														<span className="flex items-center gap-1">
-															♥ {(artwork as any).likesCount || 0}
+															♥ 0
 														</span>
-														{(artwork as any).isInACollection && (
+														{artwork.collections && artwork.collections.length > 0 && (
 															<span className="flex items-center gap-1">
 																📁 Collection
 															</span>
@@ -409,9 +425,9 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 											{/* Tags */}
 											{artwork.tags && artwork.tags.length > 0 && (
 												<div className="flex flex-wrap gap-1 mb-3">
-													{artwork.tags.slice(0, 3).map((tag, index) => (
+													{artwork.tags.slice(0, 3).map((tag: ArtworkTag, index: number) => (
 														<Badge key={index} variant="secondary" className="text-xs">
-															{(tag as any).tag?.tagName || (tag as any).tagName || 'Tag'}
+															{tag.tagName || 'Tag'}
 														</Badge>
 													))}
 													{artwork.tags.length > 3 && (

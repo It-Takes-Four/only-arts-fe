@@ -77,7 +77,7 @@ export function ArtPage() {
 				<div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
 					<div className="flex items-start lg:items-end space-x-4 flex-1">
 						<Avatar className="h-16 w-16 ring-4 ring-primary/20">
-							<AvatarImage src={artwork.artist.userId} />
+							<AvatarImage src={artwork.artist.user.profilePictureFileId ? `/api/files/${artwork.artist.user.profilePictureFileId}` : undefined} />
 							<AvatarFallback className="text-xl font-bold">
 								{getUserInitials(artwork.artist.artistName)}
 							</AvatarFallback>
@@ -88,7 +88,7 @@ export function ArtPage() {
 							</h1>
 							<div className="flex items-center mb-3">
 								<span className="text-lg text-muted-foreground">by&nbsp;</span>
-								<span className="text-lg text-foreground font-semibold hover:text-primary cursor-pointer animate-in duration-300" onClick={() => navigate(`/artist/${artwork.artist.userId}`)}>
+								<span className="text-lg text-foreground font-semibold hover:text-primary cursor-pointer animate-in duration-300" onClick={() => navigate(`/artist/${artwork.artist.id}`)}>
 									{artwork.artist.artistName}
 								</span>
 							</div>
@@ -105,7 +105,7 @@ export function ArtPage() {
 									POSTED{" "}
 									{formatDateToMonthYear(artwork.datePosted)}
 								</Badge>
-								{artwork.isInACollection && (
+								{artwork.collections && artwork.collections.length > 0 && (
 									<Badge variant="secondary">
 										In Collection
 									</Badge>
@@ -128,7 +128,7 @@ export function ArtPage() {
 								Likes
 							</span>
 							<span className="text-2xl font-semibold">
-								{artwork.likesCount}
+								0
 							</span>
 						</div>
 						<div className="flex flex-col items-center lg:items-end">
@@ -136,7 +136,7 @@ export function ArtPage() {
 								Status
 							</span>
 							<span className="text-2xl font-semibold">
-								{artwork.isInACollection
+								{artwork.collections && artwork.collections.length > 0
 									? "Collected"
 									: "Available"}
 							</span>
@@ -173,7 +173,7 @@ export function ArtPage() {
 								className="text-sm"
 							>
 								<Tag className="w-3 h-3 mr-1" />
-								{tag.tag.tagName}
+								{tag.tagName}
 							</Badge>
 						))}
 					</div>
@@ -210,7 +210,7 @@ export function ArtPage() {
 							<ImageIcon className="w-5 h-5" />
 							<span>
 								Status:{" "}
-								{artwork.isInACollection
+								{artwork.collections && artwork.collections.length > 0
 									? "In Collection"
 									: "Available"}
 							</span>
@@ -219,9 +219,9 @@ export function ArtPage() {
 					<div className="space-y-3">
 						<div className="flex items-center gap-3 text-muted-foreground">
 							<Heart className="w-5 h-5" />
-							<span>{artwork.likesCount} Likes</span>
+							<span>0 Likes</span>
 						</div>
-						{artwork.isInACollection && (
+						{artwork.collections && artwork.collections.length > 0 && (
 							<div className="flex items-center gap-3 text-muted-foreground">
 								<ImageIcon className="w-5 h-5" />
 								<span>Part of a Collection</span>

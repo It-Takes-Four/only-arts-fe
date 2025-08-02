@@ -101,7 +101,6 @@ export function ArtistStudioPage() {
 						</div>
 						
 						{collectionsLoading ? (
-							// Loading skeleton
 							Array.from({ length: 3 }).map((_, index) => (
 								<div key={index} className="animate-pulse">
 									<div className="bg-muted rounded-lg aspect-[4/3] mb-4"></div>
@@ -172,7 +171,7 @@ export function ArtistStudioPage() {
 												name: artwork.artist.artistName,
 												profilePicture: null // Not available in this API response
 											},
-											tags: artwork.tags.map((tag: any) => ({ name: tag.tag.tagName })),
+											tags: artwork.tags.map((tag: any) => ({ name: tag.tagName })),
 											type: 'art',
 											createdAt: artwork.datePosted
 										}} 
@@ -180,8 +179,8 @@ export function ArtistStudioPage() {
 									{/* Artwork stats overlay */}
 									<div className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm rounded-lg p-2 text-white text-xs">
 										<div className="flex items-center gap-1">
-											<span>♥ {artwork.likesCount}</span>
-											{artwork.isInACollection && (
+											<span>♥ 0</span>
+											{artwork.collections && artwork.collections.length > 0 && (
 												<span className="ml-2">In Collection</span>
 											)}
 										</div>

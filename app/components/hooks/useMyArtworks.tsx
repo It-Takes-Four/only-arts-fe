@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { collectionService } from '../../services/collection-service';
-import type { MyArtwork } from "../../types/collection";
+import type { MyArtwork, MyArtworksResponse } from "../../types/collection";
 
 export function useMyArtworks() {
   const [artworks, setArtworks] = useState<MyArtwork[]>([]);
@@ -11,8 +11,8 @@ export function useMyArtworks() {
     setLoading(true);
     setError(null);
     try {
-      const data = await collectionService.getMyArtworks();
-      setArtworks(data);
+      const data: MyArtworksResponse = await collectionService.getMyArtworks();
+      setArtworks(data.data);
     } catch (err) {
       console.error('Error loading artworks:', err);
       setError(err instanceof Error ? err.message : 'Failed to load artworks');
