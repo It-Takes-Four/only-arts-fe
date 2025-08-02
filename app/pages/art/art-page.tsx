@@ -10,11 +10,14 @@ import { collectionService } from "../../services/collection-service";
 import { formatDateToMonthYear } from "../../utils/dates/DateFormatter";
 import { motion } from "framer-motion";
 import { getUserInitials } from "../../utils/UtilityFunction";
+import { cn } from "@/lib/utils";
 
 export function ArtPage() {
 	const { artworkId } = useParams<{ artworkId: string }>();
-	const { artwork, error } = useArtwork(artworkId);
+	const { artwork, error, handleLikeToggle, isLiking, isLiked, likesCount } = useArtwork(artworkId);
 	const navigate = useNavigate();
+
+	console.log("Artwork Data:", artwork);
 
 	// Handle error state
 	if (error || !artwork) {
@@ -120,7 +123,7 @@ export function ArtPage() {
 								Likes
 							</span>
 							<span className="text-2xl font-semibold">
-								{artwork.likesCount ?? "0"}
+								{likesCount}
 							</span>
 						</div>
 						<div className="flex flex-col items-center lg:items-end">
@@ -139,9 +142,25 @@ export function ArtPage() {
 				{/* Action Buttons */}
 				<Separator className="my-6" />
 				<div className="flex flex-wrap gap-3">
-					<Button size="lg">
-						<Heart className="w-5 h-5 mr-2" />
-						Like Art
+					<Button
+						size="lg"
+						variant={isLiked ? "default" : "outline"}
+						onClick={handleLikeToggle}
+						disabled={isLiking}
+						className={cn(
+							"transition-all duration-200",
+							isLiked && "bg-red-500 hover:bg-red-600 text-white"
+						)}
+					>
+						<Heart
+							className={cn(
+								"w-5 h-5 mr-2 transition-all duration-200",
+								isLiked
+									? "fill-white text-white"
+									: "text-current"
+							)}
+						/>
+						{isLiking ? "..." : isLiked ? "Liked" : "Like Art"}
 					</Button>
 					<Button size="lg" variant="outline">
 						Add to Collection
@@ -211,14 +230,14 @@ export function ArtPage() {
 					<div className="space-y-3">
 						<div className="flex items-center gap-3 text-muted-foreground">
 							<Heart className="w-5 h-5" />
-							<span>{artwork.likesCount ?? 0} Likes</span>
+							<span>{likesCount} Likes</span>
 						</div>
-						{artwork.isInACollection && (
-							<div className="flex items-center gap-3 text-muted-foreground">
-								<ImageIcon className="w-5 h-5" />
-								<span>Part of a Collection</span>
-							</div>
-						)}
+						{/*{artwork.isInACollection && (*/}
+						{/*	<div className="flex items-center gap-3 text-muted-foreground">*/}
+						{/*		<ImageIcon className="w-5 h-5" />*/}
+						{/*		<span>Part of a Collection</span>*/}
+						{/*	</div>*/}
+						{/*)}*/}
 					</div>
 				</div>
 			</GlassCard>
