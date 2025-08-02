@@ -42,7 +42,7 @@ export function NotificationDropdown({ isOpen, error, loading, meta, notificatio
                             opacity: { duration: 0.2 },
                         }}
                         style={{ originY: 0 }} // Transform origin at top
-                        className="absolute -right-2 top-6 w-80 bg-background border border-border rounded-md shadow-lg z-50"
+                        className="absolute -right-2 top-6 w-80 bg-background border border-border rounded-md shadow-lg z-50 max-h-80 overflow-y-auto"
                         onClick={handleDropdownClick}
                     >
                         {loading && (
