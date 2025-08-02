@@ -1,6 +1,5 @@
 import { ShinyBadge } from "@/components/magicui/shiny-badge";
 import { GlassCard } from "../../components/common/glass-card";
-import { useAuthContext } from "../../components/core/auth-context";
 import { ArtCard } from "../../components/features/art/art-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/common/tabs";
 import { useState } from "react";
@@ -27,6 +26,8 @@ import type { ArtistProfile } from "../../types/artist";
 import { transformArtworkTagsForArtCard } from "../../utils/tag-helpers";
 import type { ArtistArtwork, ArtworkTag } from "../../types/artwork";
 import { FollowButton } from "app/components/common/follow-button";
+import { toast } from "sonner";
+import { fromSecondsToUnixTimestamp } from "app/utils/dates/DateFormatter";
 
 interface ProfilePageProps {
 	artistId?: string;
@@ -77,13 +78,12 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 	};
 
 	const handleBuySuccess = () => {
-		// Optionally refresh collections data or show success message
-		console.log('Purchase successful');
+		toast.success('Purchase successful');
 	};
 
-	const formatDate = (dateString: string) => {
+	const formatDate = (dateString: number) => {
 		try {
-			return formatDistanceToNow(new Date(dateString), { addSuffix: true });
+			return formatDistanceToNow(new Date(fromSecondsToUnixTimestamp(dateString)), { addSuffix: true });
 		} catch {
 			return 'Unknown time';
 		}
@@ -95,8 +95,6 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 		}
 		return "/placeholder-avatar.png";
 	};
-
-	console.log(userForJoinedDate);
 
 	const tabs = [
 		{
