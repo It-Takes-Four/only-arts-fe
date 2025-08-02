@@ -2,29 +2,36 @@ import { useState } from "react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 import { Button } from "../../common/button";
+import { Pagination, type PaginationData, type PaginationDataAlt } from "../../common/pagination";
 import { CollectionManagementCard } from "./collection-management-card";
 import { EditCollectionContentModal } from "./edit-collection-content-modal";
 import { EditCollectionCoverModal } from "./edit-collection-cover-modal";
 import { PublishCollectionModal } from "./publish-collection-modal";
+import { ManageCollectionArtsModal } from "./manage-collection-arts-modal";
 import { collectionService } from "../../../services/collection-service";
 import type { MyCollection } from "../../../types/collection";
 
 interface CollectionsGridProps {
   collections: MyCollection[];
   collectionsLoading: boolean;
+  pagination?: PaginationData | PaginationDataAlt;
   onCreateCollection: () => void;
   onCollectionUpdated: (updatedCollection: MyCollection) => void;
+  onPageChange?: (page: number) => void;
 }
 
 export function CollectionsGrid({ 
   collections, 
   collectionsLoading, 
+  pagination,
   onCreateCollection,
-  onCollectionUpdated
+  onCollectionUpdated,
+  onPageChange
 }: CollectionsGridProps) {
   const [editingCollection, setEditingCollection] = useState<MyCollection | null>(null);
   const [editingCoverCollection, setEditingCoverCollection] = useState<MyCollection | null>(null);
   const [publishingCollection, setPublishingCollection] = useState<MyCollection | null>(null);
+  const [managingArtsCollection, setManagingArtsCollection] = useState<MyCollection | null>(null);
 
   const handleContentEdit = (collection: MyCollection) => {
     setEditingCollection(collection);
@@ -36,6 +43,10 @@ export function CollectionsGrid({
 
   const handlePublish = (collection: MyCollection) => {
     setPublishingCollection(collection);
+  };
+
+  const handleManageArts = (collection: MyCollection) => {
+    setManagingArtsCollection(collection);
   };
 
   const handleContentUpdated = async (updatedData: { collectionName: string; description: string; price?: number }) => {
@@ -142,9 +153,19 @@ export function CollectionsGrid({
               onEditContent={handleContentEdit}
               onEditCover={handleCoverEdit}
               onPublish={handlePublish}
+              onManageArts={handleManageArts}
             />
           ))}
         </div>
+
+        {/* Pagination */}
+        {pagination && onPageChange && (
+          <Pagination
+            pagination={pagination}
+            onPageChange={onPageChange}
+            className="mt-8"
+          />
+        )}
       </div>
 
       {/* Modals */}
@@ -172,6 +193,15 @@ export function CollectionsGrid({
           onClose={() => setPublishingCollection(null)}
           collection={publishingCollection}
           onSuccess={handlePublished}
+        />
+      )}
+
+      {managingArtsCollection && (
+        <ManageCollectionArtsModal
+          isOpen={true}
+          onClose={() => setManagingArtsCollection(null)}
+          collection={managingArtsCollection}
+          onCollectionUpdated={onCollectionUpdated}
         />
       )}
     </>

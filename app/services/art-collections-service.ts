@@ -1,6 +1,7 @@
 import BaseService from './base-service';
 import type { CompleteCollectionPurchaseRequest, PrepareCollectionPurchaseRequest } from "../types/collection-purchase";
 import type { PurchasedCollectionsResponse } from "../types/purchased-collection";
+import type { CollectionArt } from "../types/artwork";
 
 class ArtCollectionsService extends BaseService {
     async prepareCollectionPurchase(request: PrepareCollectionPurchaseRequest): Promise<any> {
@@ -30,6 +31,15 @@ class ArtCollectionsService extends BaseService {
         }
     }
 
+    async getCollectionArts(collectionId: string): Promise<CollectionArt[]> {
+        try {
+            const { data } = await this._axios.get<CollectionArt[]>(`/art-collections/${collectionId}`);
+            return data;
+        } catch (error: any) {
+            throw new Error(error.response?.data?.message || 'Failed to fetch collection arts');
+        }
+    }
+
     // Helper method to get collection cover image URL
     getCollectionImageUrl(collectionImageFileId: string): string {
         return `${import.meta.env.VITE_API_BASE_URL}/upload/collection/${collectionImageFileId}`;
@@ -38,6 +48,11 @@ class ArtCollectionsService extends BaseService {
     // Helper method to get user profile picture URL
     getUserProfileImageUrl(profilePictureFileId: string): string {
         return `${import.meta.env.VITE_API_BASE_URL}/upload/user/${profilePictureFileId}`;
+    }
+
+    // Helper method to get artwork image URL
+    getArtworkImageUrl(imageFileId: string): string {
+        return `${import.meta.env.VITE_API_BASE_URL}/upload/art/${imageFileId}`;
     }
 }
 // Export singleton instance

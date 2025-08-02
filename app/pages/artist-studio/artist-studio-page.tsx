@@ -2,18 +2,18 @@ import { useState } from "react";
 import { useAccount } from 'wagmi';
 import { useAuthContext } from "../../components/core/auth-context";
 import { useArtistStudio } from "../../context/artist-studio-context";
+import { useMyCollectionsWithPaginationQuery } from "../../components/hooks/useMyCollectionsWithPaginationQuery";
+import { useMyArtworksWithPaginationQuery } from "../../components/hooks/useMyArtworksWithPaginationQuery";
 import { collectionService } from "../../services/collection-service";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/common/tabs";
 import { Button } from "../../components/common/button";
 import { GlassCard } from "../../components/common/glass-card";
-import { CollectionCard } from "../../components/common/collection-card";
-import { ArtCard } from "../../components/features/art/art-card";
 import { CreateCollectionModal } from "../../components/features/artist-studio/create-collection-modal";
 import { CreateArtworkModal } from "../../components/features/artist-studio/create-artwork-modal";
 import { EditArtistProfileModal } from "../../components/features/artist-studio/edit-artist-profile-modal";
 import { CollectionsGrid } from "../../components/features/artist-studio/collections-grid";
+import { ArtworksGrid } from "../../components/features/artist-studio/artworks-grid";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
 	PlusIcon,
 	ChartBarIcon,
@@ -36,64 +36,53 @@ export function ArtistStudioPage() {
 	const { user, refreshUserWithValidation } = useAuthContext();
 	const { address, isConnected } = useAccount();
 	const {
-		collections,
-		collectionsLoading,
-		addCollection,
-		updateCollection,
-		artworks,
-		artworksLoading,
 		analytics,
 		refreshProfile,
-		// Use the new mutation functions
 		createArtworkAsync,
-		isCreatingArtwork,
-		createArtworkError
+		isCreatingCollection,
+		isDoneCreatingCollection
 	} = useArtistStudio();
+
+	// Pagination states
+	const [collectionsPage, setCollectionsPage] = useState(1);
+	const [artworksPage, setArtworksPage] = useState(1);
+	const collectionsLimit = 12; // 12 collections per page (3x4 grid)
+	const artworksLimit = 15; // 15 artworks per page (3x5 grid)
+
+	// Paginated queries
+	const {
+		data: collectionsData,
+		isLoading: collectionsLoading,
+		refetch: refetchCollections
+	} = useMyCollectionsWithPaginationQuery(collectionsPage, collectionsLimit);
+
+	const {
+		data: artworksData,
+		isLoading: artworksLoading,
+		refetch: refetchArtworks
+	} = useMyArtworksWithPaginationQuery(artworksPage, artworksLimit);
+
 	const [tabValue, setTabValue] = useState("collections");
 	const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false);
 	const [showCreateArtworkModal, setShowCreateArtworkModal] = useState(false);
 	const [showEditProfileModal, setShowEditProfileModal] = useState(false);
 	const [showWalletModal, setShowWalletModal] = useState(false);
 
-	console.log("artist", user)
-	// Handle collection creation success
-	const handleCollectionCreated = (collection: any) => {
-		console.log('Before adding:', collections.length);
-
-
+	const handleCollectionCreated = async (collection: any) => {
 		console.log('Collection created:', collection);
-		// Add the new collection to the list
-		addCollection(collection);
-		console.log('After adding:', collections.length); // Should be +1
+		// Refetch collections to show the new one
+		await refetchCollections();
+		// If we're not on the first page, go to first page to see the new collection
+		if (collectionsPage !== 1) {
+			setCollectionsPage(1);
+		}
 	};
 
 	// Handle collection update
-	const handleCollectionUpdated = (updatedCollection: any) => {
+	const handleCollectionUpdated = async (updatedCollection: any) => {
 		console.log('Collection updated:', updatedCollection);
-		updateCollection(updatedCollection);
-	};
-
-	// Handle artwork creation success
-	const handleArtworkCreated = async (artworkData: any) => {
-		try {
-			console.log('ArtistStudioPage: Creating artwork with data:', artworkData);
-
-			// Use the async mutation to create artwork
-			const newArtwork = await createArtworkAsync(artworkData);
-
-			console.log('ArtistStudioPage: Artwork created successfully:', newArtwork);
-
-			// Close the modal
-			setShowCreateArtworkModal(false);
-
-			// Optional: Show success message
-			// toast.success('Artwork created successfully!');
-
-		} catch (error) {
-			console.error('ArtistStudioPage: Failed to create artwork:', error);
-			// Error is already handled by the mutation, but you can show additional UI feedback here
-			// toast.error('Failed to create artwork. Please try again.');
-		}
+		// Refetch collections to show updates
+		await refetchCollections();
 	};
 
 	// Handle artist profile update success
@@ -115,87 +104,26 @@ export function ArtistStudioPage() {
 			label: "Collections",
 			content: (
 				<CollectionsGrid
-					collections={collections}
+					collections={collectionsData?.data || []}
 					collectionsLoading={collectionsLoading}
+					pagination={collectionsData?.pagination}
 					onCreateCollection={() => setShowCreateCollectionModal(true)}
 					onCollectionUpdated={handleCollectionUpdated}
+					onPageChange={setCollectionsPage}
 				/>
 			),
 		},
 		{
 			value: "artworks",
-			label: "Artworks",
+			label: "Artworks", 
 			content: (
-				<div className="space-y-6">
-					<div className="flex justify-between items-center">
-						<h2 className="text-2xl font-bold">My Artworks</h2>
-						<div className="flex gap-2">
-							<Button
-								className="flex items-center gap-2"
-								onClick={() => setShowCreateArtworkModal(true)}
-							>
-								<PlusIcon className="h-4 w-4" />
-								Upload Artwork
-							</Button>
-						</div>
-					</div>
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-						<div
-							className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 flex flex-col items-center justify-center min-h-[200px] hover:border-muted-foreground/50 transition-colors cursor-pointer"
-							onClick={() => setShowCreateArtworkModal(true)}
-						>
-							<PlusIcon className="h-12 w-12 text-muted-foreground/50 mb-2" />
-							<p className="text-sm text-muted-foreground">Upload New Artwork</p>
-						</div>
-						{artworksLoading ? (
-							Array.from({ length: 4 }).map((_, index) => (
-								<div key={index} className="animate-pulse">
-									<div className="aspect-square bg-muted rounded-lg"></div>
-								</div>
-							))
-						) : artworks.length > 0 ? (
-							artworks.map((artwork) => (
-								<div key={artwork.id} className="relative">
-									<ArtCard
-										art={{
-											id: artwork.id,
-											title: artwork.title,
-											description: artwork.description,
-											imageUrl: collectionService.getArtworkImageUrl(artwork.imageFileId),
-											artist: {
-												id: artwork.artist.id,
-												name: artwork.artist.artistName,
-												profilePicture: null // Not available in this API response
-											},
-											tags: artwork.tags.map((tag: any) => ({ name: tag.tagName })),
-											type: 'art',
-											createdAt: artwork.datePosted
-										}}
-									/>
-									{/* Artwork stats overlay */}
-									<div className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm rounded-lg p-2 text-white text-xs">
-										<div className="flex items-center gap-1">
-											<span>♥ 0</span>
-											{artwork.collections && artwork.collections.length > 0 && (
-												<span className="ml-2">In Collection</span>
-											)}
-										</div>
-									</div>
-								</div>
-							))
-						) : (
-							<div className="col-span-full text-center py-8">
-								<p className="text-muted-foreground">No artworks yet. Upload your first artwork!</p>
-								<Button
-									className="mt-4"
-									onClick={() => setShowCreateArtworkModal(true)}
-								>
-									Upload Artwork
-								</Button>
-							</div>
-						)}
-					</div>
-				</div>
+				<ArtworksGrid
+					artworks={artworksData?.data || []}
+					artworksLoading={artworksLoading}
+					pagination={artworksData?.pagination}
+					onCreateArtwork={() => setShowCreateArtworkModal(true)}
+					onPageChange={setArtworksPage}
+				/>
 			),
 		},
 		{
@@ -295,8 +223,8 @@ export function ArtistStudioPage() {
 										<div className="h-20 bg-muted rounded-lg"></div>
 									</div>
 								))
-							) : collections.length > 0 ? (
-								collections.map((collection) => (
+							) : (collectionsData?.data || []).length > 0 ? (
+								(collectionsData?.data || []).map((collection) => (
 									<GlassCard key={collection.id} className="p-4">
 										<div className="flex justify-between items-start">
 											<div className="flex-1">
@@ -305,7 +233,7 @@ export function ArtistStudioPage() {
 													{collection.description || "No description"}
 												</p>
 												<div className="flex gap-4 mt-2">
-													<Badge variant="outline">{collection.artsCount} Artworks</Badge>
+													<Badge variant="outline">{collection.arts?.length || 0} Artworks</Badge>
 													<Badge variant="outline">
 														{collection.isPublished ? "Published" : "Draft"}
 													</Badge>
@@ -465,7 +393,9 @@ export function ArtistStudioPage() {
 			<CreateCollectionModal
 				isOpen={showCreateCollectionModal}
 				onClose={() => setShowCreateCollectionModal(false)}
-				onSuccess={handleCollectionCreated}
+				addCollection={handleCollectionCreated}
+				isPending={isCreatingCollection}
+				isSuccess={isDoneCreatingCollection}
 			/>
 
 			<CreateArtworkModal

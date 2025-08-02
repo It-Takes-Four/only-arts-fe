@@ -14,7 +14,9 @@ import type { CreateCollectionRequest } from "../../../types/collection";
 interface CreateCollectionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: (collection: any) => void;
+  addCollection: (request: any) => void;
+  isPending: boolean;
+  isSuccess: boolean;
 }
 
 interface FormData {
@@ -24,7 +26,7 @@ interface FormData {
   coverImage?: FileList;
 }
 
-export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateCollectionModalProps) {
+export function CreateCollectionModal({ isOpen, onClose, addCollection, isPending, isSuccess}: CreateCollectionModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
@@ -59,6 +61,21 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
     }
   }, [watchedCoverImage]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      reset();
+      setPreviewImage(null);
+      onClose();
+    }
+  }, [isSuccess])
+
+  useEffect(() => {
+    if (isPending) {
+      setIsSubmitting(true)
+    }
+  }, [isPending])
+  
+
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
@@ -69,15 +86,11 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
         file: data.coverImage?.[0],
       };
 
-      const response = await collectionService.createCollection(request);
+      const response = await addCollection(request);
 
-      console.log("CREATE COLLECTION", response);
-      
-      toast.success("Collection created successfully!");
-      onSuccess(response);
-      reset();
-      setPreviewImage(null);
-      onClose();
+      // reset();
+      // setPreviewImage(null);
+      // onClose();
     } catch (error: any) {
       console.error('Collection creation error:', error);
       toast.error(error.message || "Failed to create collection");
@@ -161,30 +174,9 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
                 )}
               </div>
 
-              {/* Description */}
-              <div className="flex flex-col space-y-2">
-                <Label htmlFor="description">Description (Optional)</Label>
-                <textarea
-                  id="description"
-                  placeholder="Enter collection description"
-                  {...register("description", {
-                    maxLength: {
-                      value: 500,
-                      message: "Description must be less than 500 characters",
-                    },
-                  })}
-                  className={`flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none ${errors.description ? "border-destructive" : ""}`}
-                  disabled={isSubmitting}
-                  rows={3}
-                />
-                {errors.description && (
-                  <p className="text-sm text-destructive">{errors.description.message}</p>
-                )}
-              </div>
-
               {/* Price */}
               <div className="flex flex-col space-y-2">
-                <Label htmlFor="price">Price (Optional)</Label>
+                <Label htmlFor="price">Price ({import.meta.env.VITE_DEFAULT_CURRENCY}) *</Label>
                 <Input
                   id="price"
                   type="number"
@@ -211,6 +203,27 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
                 )}
               </div>
 
+              {/* Description */}
+              <div className="flex flex-col space-y-2">
+                <Label htmlFor="description">Description (Optional)</Label>
+                <textarea
+                  id="description"
+                  placeholder="Enter collection description"
+                  {...register("description", {
+                    maxLength: {
+                      value: 500,
+                      message: "Description must be less than 500 characters",
+                    },
+                  })}
+                  className={`flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none ${errors.description ? "border-destructive" : ""}`}
+                  disabled={isSubmitting}
+                  rows={3}
+                />
+                {errors.description && (
+                  <p className="text-sm text-destructive">{errors.description.message}</p>
+                )}
+              </div>
+
               {/* Cover Image */}
               <div className="flex flex-col space-y-2">
                 <Label htmlFor="coverImage">Cover Image (Optional)</Label>
@@ -227,11 +240,11 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
                         variant="ghost"
                         size="sm"
                         onClick={() => {
-                          reset({ 
-                          collectionName: watch("collectionName"),
-                          description: watch("description"),
-                          price: watch("price")
-                        });
+                          reset({
+                            collectionName: watch("collectionName"),
+                            description: watch("description"),
+                            price: watch("price")
+                          });
                           setPreviewImage(null);
                         }}
                         className="absolute top-2 right-2 h-6 w-6 p-0 bg-background/80 backdrop-blur-sm hover:bg-background/90"
@@ -241,7 +254,7 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
                       </Button>
                     </div>
                   ) : (
-                    <div 
+                    <div
                       className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-colors"
                       onClick={() => document.getElementById('coverImage')?.click()}
                     >

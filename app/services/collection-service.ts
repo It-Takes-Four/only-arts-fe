@@ -40,9 +40,11 @@ class CollectionService extends BaseService {
 		}
 	}
 
-	async getMyArtworks(): Promise<MyArtworksResponse> {
+	async getMyArtworks(page = 1, limit = 10): Promise<MyArtworksResponse> {
 		try {
-			const { data } = await this._axios.get('/art-collections/my/arts');
+			const { data } = await this._axios.get('/art-collections/my/arts', {
+				params: { page, limit }
+			});
 			return data;
 		} catch (error: any) {
 			throw new Error(error.response?.data?.message || 'Failed to get my artworks');
@@ -160,6 +162,46 @@ class CollectionService extends BaseService {
 			return data;
 		} catch (error: any) {
 			throw new Error(error.response?.data?.message || 'Failed to purchase collection');
+		}
+	}
+
+	// Add art to collection
+	async addArtToCollection(collectionId: string, artData: {
+		title: string;
+		description: string;
+		tagIds: string[];
+		file: File;
+	}) {
+		try {
+			const formData = new FormData();
+			formData.append('title', artData.title);
+			formData.append('description', artData.description);
+			
+			// Add tag IDs as array
+			artData.tagIds.forEach(tagId => {
+				formData.append('tagIds', tagId);
+			});
+			
+			formData.append('file', artData.file);
+
+			const { data } = await this._axios.post(`/art-collections/${collectionId}/arts`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			});
+			return data;
+		} catch (error: any) {
+			throw new Error(error.response?.data?.message || 'Failed to add art to collection');
+		}
+	}
+
+	// Delete art from collection
+	async deleteArtFromCollection(collectionId: string, artId: string) {
+		try {
+			const { data } = await this._axios.delete(`/art-collections/${collectionId}/arts/${artId}`);
+			return data;
+		} catch (error: any) {
+			throw new Error(error.response?.data?.message || 'Failed to delete art from collection');
 		}
 	}
 }

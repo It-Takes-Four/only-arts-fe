@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MoreHorizontal, Edit, Image, Eye, Upload, Lock } from "lucide-react";
+import { MoreHorizontal, Edit, Image, Eye, Upload, Lock, Images } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "../../common/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +20,7 @@ interface CollectionManagementCardProps {
   onEditContent?: (collection: MyCollection) => void;
   onEditCover?: (collection: MyCollection) => void;
   onPublish?: (collection: MyCollection) => void;
+  onManageArts?: (collection: MyCollection) => void;
 }
 
 export function CollectionManagementCard({ 
@@ -27,7 +28,8 @@ export function CollectionManagementCard({
   onCollectionUpdated, 
   onEditContent,
   onEditCover,
-  onPublish
+  onPublish,
+  onManageArts
 }: CollectionManagementCardProps) {
   const [showEditContentModal, setShowEditContentModal] = useState(false);
   const [showEditCoverModal, setShowEditCoverModal] = useState(false);
@@ -48,6 +50,12 @@ export function CollectionManagementCard({
   const handlePublishClick = () => {
     if (onPublish) {
       onPublish(collection);
+    }
+  };
+
+  const handleManageArts = () => {
+    if (onManageArts) {
+      onManageArts(collection);
     }
   };
 
@@ -89,6 +97,11 @@ export function CollectionManagementCard({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleManageArts}>
+                  <Images className="h-4 w-4 mr-2" />
+                  Manage Arts
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 {!collection.isPublished ? (
                   <>
                     <DropdownMenuItem onClick={handleContentEdit}>

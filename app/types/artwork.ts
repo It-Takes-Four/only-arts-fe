@@ -122,3 +122,24 @@ export interface MyArtworksResponse {
 		hasPrevPage: boolean;
 	};
 }
+
+// Collection Art (from /art-collections/{id} endpoint)
+export interface CollectionArt {
+	id: string;
+	tokenId: string;
+	title: string;
+	description: string;
+	likesCount: number;
+	imageFileId: string;
+	datePosted: string;
+	updatedAt: string;
+	artistId: string;
+	artist: {
+		id: string;
+		artistName: string;
+		isVerified: boolean;
+		user: any;
+	};
+	tags: Array<{ tagId: string; tagName: string }>;
+	comments: any[];
+}
