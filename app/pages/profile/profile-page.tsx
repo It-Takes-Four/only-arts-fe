@@ -196,7 +196,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 									size="sm"
 									onClick={() => setTabValue("artworks")}
 								>
-									View All ({isOwnProfile ? myArtworksData?.length || 0 : artworksData?.length || 0})
+									View All ({isOwnProfile ? myArtworksData?.length || 0 : artworksData?.data.length || 0})
 								</Button>
 							)}
 						</div>
