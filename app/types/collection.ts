@@ -108,7 +108,7 @@ export interface CollectionArt {
 			updatedAt: string;
 			user: {
 				profilePictureFileId?: string;
-			}
+			};
 		};
 	};
 }
@@ -142,7 +142,6 @@ export interface MyCollection {
 			profilePictureFileId?: string | null;
 		};
 	};
-	arts: any[]; // Changed from artsCount to arts array
 }
 
 // DetailedCollection is now the same as MyCollection since arts are included

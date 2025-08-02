@@ -79,6 +79,7 @@ interface ArtCardProps {
       artId: string;
       tagId: string;
       tag: {
+        name?: string;
         id: string;
         tagName: string;
       }
