@@ -163,12 +163,12 @@ export function EditCollectionContentModal({
 
               {/* Price */}
               <div className="flex flex-col space-y-2">
-                <Label htmlFor="price">Price (ETH)</Label>
+                <Label htmlFor="price">Price</Label>
                 <div className="relative">
                   <Input
                     id="price"
                     type="number"
-                    step="0.001"
+                    step="0.00001"
                     min="0"
                     placeholder="0.000"
                     {...register("price", {

@@ -188,7 +188,7 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
                 <Input
                   id="price"
                   type="number"
-                  step="0.01"
+                  step="0.00001"
                   min="0"
                   placeholder="Enter price (e.g., 0.1 ETH)"
                   {...register("price", {
