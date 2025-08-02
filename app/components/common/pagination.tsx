@@ -46,6 +46,8 @@ export function Pagination({ pagination, onPageChange, className = "" }: Paginat
   const normalizedPagination = normalizePaginationData(pagination);
   const { currentPage, totalPages, hasNextPage, hasPrevPage } = normalizedPagination;
 
+  console.log("Pagination data:", normalizedPagination);
+
   if (totalPages <= 1) {
     return null;
   }

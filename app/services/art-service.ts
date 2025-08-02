@@ -183,8 +183,26 @@ export class ArtService extends BaseService {
 
 	async getMyArtworks(page = 1, limit = 10): Promise<any> {
 		try {
-			const response = await this._axios.get<MyArtworksResponse>(`art/my?page=${page}&limit=${limit}`)
-			return response.data
+			const response = await this._axios.get<any>(`art/my?page=${page}&limit=${limit}`)
+			const data = response.data;
+			
+			// Transform the response to match the expected format if needed
+			if (data.pagination && 'page' in data.pagination && 'limit' in data.pagination) {
+				return {
+					data: data.data,
+					pagination: {
+						currentPage: data.pagination.page,
+						perPage: data.pagination.limit,
+						total: data.pagination.total,
+						totalPages: data.pagination.totalPages,
+						hasNextPage: data.pagination.hasNextPage,
+						hasPrevPage: data.pagination.hasPrevPage,
+					}
+				};
+			}
+			
+			// If already in the correct format, return as is
+			return data;
 		} catch (error: any) {
 			throw new Error(
 				error.response?.data?.message || "Failed to fetch current user artworks"

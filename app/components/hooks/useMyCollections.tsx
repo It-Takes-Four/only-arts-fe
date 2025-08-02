@@ -11,8 +11,8 @@ export function useMyCollections() {
     setLoading(true);
     setError(null);
     try {
-      const data = await collectionService.getMyCollections();
-      setCollections(data);
+      const response = await collectionService.getMyCollections();
+      setCollections(response.data);
     } catch (err) {
       console.error('Error loading collections:', err);
       setError(err instanceof Error ? err.message : 'Failed to load collections');

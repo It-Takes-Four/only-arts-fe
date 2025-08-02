@@ -31,10 +31,30 @@ class CollectionService extends BaseService {
 
 	async getMyCollections(page = 1, limit = 10): Promise<PaginatedCollectionsResponse> {
 		try {
-			const response = await this._axios.get<PaginatedCollectionsResponse>(`/art-collections/my/collections`, {
+			const response = await this._axios.get<any>(`/art-collections/my/collections`, {
 				params: { page, limit }
 			});
-			return response.data;
+			
+			// Transform the response to match the expected format if needed
+			const data = response.data;
+			
+			// If the API returns page/limit format, transform to currentPage/perPage
+			if (data.pagination && 'page' in data.pagination && 'limit' in data.pagination) {
+				return {
+					data: data.data,
+					pagination: {
+						currentPage: data.pagination.page,
+						perPage: data.pagination.limit,
+						total: data.pagination.total,
+						totalPages: data.pagination.totalPages,
+						hasNextPage: data.pagination.hasNextPage,
+						hasPrevPage: data.pagination.hasPrevPage,
+					}
+				};
+			}
+			
+			// If already in the correct format, return as is
+			return data;
 		} catch (error: any) {
 			throw new Error(error.response?.data?.message || 'Failed to get my collections');
 		}

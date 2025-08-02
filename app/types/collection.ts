@@ -215,8 +215,8 @@ export interface MyArtworksResponse {
 export interface PaginatedCollectionsResponse {
 	data: MyCollection[];
 	pagination: {
-		page: number;
-		limit: number;
+		currentPage: number;
+		perPage: number;
 		total: number;
 		totalPages: number;
 		hasNextPage: boolean;

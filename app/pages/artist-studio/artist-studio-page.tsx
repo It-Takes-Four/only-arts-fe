@@ -46,8 +46,8 @@ export function ArtistStudioPage() {
 	// Pagination states
 	const [collectionsPage, setCollectionsPage] = useState(1);
 	const [artworksPage, setArtworksPage] = useState(1);
-	const collectionsLimit = 12; // 12 collections per page (3x4 grid)
-	const artworksLimit = 15; // 15 artworks per page (3x5 grid)
+	const collectionsLimit = 7;
+	const artworksLimit = 7;
 
 	// Paginated queries
 	const {
@@ -69,6 +69,18 @@ export function ArtistStudioPage() {
 	const artworksLoading = artworksQuery.isLoading;
 	const artworksData = artworksQuery.data;
 
+	// Debug logging
+	console.log('🎨 Artist Studio Debug:', {
+		collectionsPage,
+		collectionsLimit,
+		collectionsData: collectionsData?.data?.length,
+		collectionsPagination: collectionsData?.pagination,
+		artworksPage,
+		artworksLimit,
+		artworksData: artworksData?.data?.length,
+		artworksPagination: artworksData?.pagination,
+	});
+
 	const [tabValue, setTabValue] = useState("collections");
 	const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false);
 	const [showCreateArtworkModal, setShowCreateArtworkModal] = useState(false);
@@ -87,6 +99,17 @@ export function ArtistStudioPage() {
 	// Handle collection update
 	const handleCollectionUpdated = async (updatedCollection: any) => {
 		console.log('Collection updated:', updatedCollection);
+	};
+
+	// Handle page changes
+	const handleCollectionsPageChange = (page: number) => {
+		console.log('📄 Collections page changed to:', page);
+		setCollectionsPage(page);
+	};
+
+	const handleArtworksPageChange = (page: number) => {
+		console.log('🎨 Artworks page changed to:', page);
+		setArtworksPage(page);
 	};
 
 	// Handle artist profile update success
@@ -113,7 +136,7 @@ export function ArtistStudioPage() {
 					pagination={collectionsData?.pagination}
 					onCreateCollection={() => setShowCreateCollectionModal(true)}
 					onCollectionUpdated={handleCollectionUpdated}
-					onPageChange={setCollectionsPage}
+					onPageChange={handleCollectionsPageChange}
 					publishCollection={publishCollection}
 					publishCollectionIsPending={publishCollectionIsPending}
 					publishCollectionIsSuccess={publishCollectionIsSuccess}
@@ -129,7 +152,7 @@ export function ArtistStudioPage() {
 					artworksLoading={artworksLoading}
 					pagination={artworksData?.pagination}
 					onCreateArtwork={() => setShowCreateArtworkModal(true)}
-					onPageChange={setArtworksPage}
+					onPageChange={handleArtworksPageChange}
 				/>
 			),
 		},
@@ -401,8 +424,8 @@ export function ArtistStudioPage() {
 				isOpen={showCreateCollectionModal}
 				onClose={() => setShowCreateCollectionModal(false)}
 				addCollection={handleCollectionCreated}
-				isPending={isCreatingCollection}
-				isSuccess={isDoneCreatingCollection}
+				isPending={addCollectionIsPending}
+				isSuccess={addCollectionIsSuccess}
 			/>
 
 			<CreateArtworkModal

@@ -1,9 +1,10 @@
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { Button } from "../../common/button";
-import { Pagination, type PaginationData, type PaginationDataAlt } from "../../common/pagination";
+import { Pagination, type PaginationData, type PaginationDataAlt, normalizePaginationData } from "../../common/pagination";
 import { ArtCard } from "../art/art-card";
 import { collectionService } from "../../../services/collection-service";
 import type { MyArtwork } from "../../../types/collection";
+import { Heart } from "lucide-react";
 
 interface ArtworksGridProps {
   artworks: MyArtwork[];
@@ -80,7 +81,10 @@ export function ArtworksGrid({
               {/* Artwork stats overlay */}
               <div className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm rounded-lg p-2 text-white text-xs">
                 <div className="flex items-center gap-1">
-                  <span>♥ {artwork.likesCount || 0}</span>
+                  <span>
+                    <Heart className="h-4 w-4" />
+                  </span>
+                  <span>{artwork.likesCount || 0}</span>
                   {artwork.collections && artwork.collections.length > 0 && (
                     <span className="ml-2">In Collection</span>
                   )}
@@ -104,13 +108,34 @@ export function ArtworksGrid({
         </div>
 
         {/* Pagination */}
-        {pagination && onPageChange && (
-          <Pagination
-            pagination={pagination}
-            onPageChange={onPageChange}
-            className="mt-8"
-          />
-        )}
+        <div className="mt-12 border-t border-border pt-8">
+          {pagination && onPageChange && (
+            <>
+              {(() => {
+                const normalized = normalizePaginationData(pagination);
+                const startItem = Math.min((normalized.currentPage - 1) * normalized.perPage + 1, normalized.total);
+                const endItem = Math.min(normalized.currentPage * normalized.perPage, normalized.total);
+                
+                return (
+                  <div className="flex justify-between items-center mb-4 text-sm text-muted-foreground">
+                    <span>
+                      Showing {startItem} to {endItem} of {normalized.total} artworks
+                    </span>
+                    <span>
+                      Page {normalized.currentPage} of {normalized.totalPages}
+                    </span>
+                  </div>
+                );
+              })()}
+              
+              <Pagination
+                pagination={pagination}
+                onPageChange={onPageChange}
+                className="justify-center"
+              />
+            </>
+          )}
+        </div>
       </div>
     </>
   );
