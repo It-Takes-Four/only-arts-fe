@@ -26,8 +26,7 @@ export function UnifiedFeedItemComponent({
 				const postContent = item.post?.content || "";
 				const postTitle =
 					item.post?.title ||
-					`${
-						item.post?.artistName || "Unknown Artist"
+					`${item.post?.artistName || "Unknown Artist"
 					} shared a post`;
 
 				return {
@@ -134,11 +133,11 @@ export function UnifiedFeedItemComponent({
 			className={cn(
 				"bg-card border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300",
 				displayData.type === "art" &&
-					"border-purple-200/50 hover:border-purple-300/50",
+				"border-purple-200/50 hover:border-purple-300/50",
 				displayData.type === "collection" &&
-					"border-blue-200/50 hover:border-blue-300/50",
+				"border-blue-200/50 hover:border-blue-300/50",
 				displayData.type === "post" &&
-					"border-green-200/50 hover:border-green-300/50"
+				"border-green-200/50 hover:border-green-300/50"
 			)}
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
@@ -150,11 +149,11 @@ export function UnifiedFeedItemComponent({
 				className={cn(
 					"p-4 pb-3",
 					displayData.type === "art" &&
-						"bg-gradient-to-r from-purple-50/30 to-pink-50/30 dark:from-purple-900/10 dark:to-pink-900/10",
+					"bg-gradient-to-r from-purple-50/30 to-pink-50/30 dark:from-purple-900/10 dark:to-pink-900/10",
 					displayData.type === "collection" &&
-						"bg-gradient-to-r from-blue-50/30 to-cyan-50/30 dark:from-blue-900/10 dark:to-cyan-900/10",
+					"bg-gradient-to-r from-blue-50/30 to-cyan-50/30 dark:from-blue-900/10 dark:to-cyan-900/10",
 					displayData.type === "post" &&
-						"bg-gradient-to-r from-green-50/30 to-emerald-50/30 dark:from-green-900/10 dark:to-emerald-900/10"
+					"bg-gradient-to-r from-green-50/30 to-emerald-50/30 dark:from-green-900/10 dark:to-emerald-900/10"
 				)}
 			>
 				<div className="flex items-center justify-between mb-3">
@@ -223,11 +222,11 @@ export function UnifiedFeedItemComponent({
 						className={cn(
 							"w-8 h-8 rounded-full bg-gradient-to-br flex items-center justify-center opacity-75",
 							displayData.type === "art" &&
-								"from-purple-400 to-pink-400",
+							"from-purple-400 to-pink-400",
 							displayData.type === "collection" &&
-								"from-blue-400 to-cyan-400",
+							"from-blue-400 to-cyan-400",
 							displayData.type === "post" &&
-								"from-green-400 to-emerald-400"
+							"from-green-400 to-emerald-400"
 						)}
 					>
 						<span className="text-sm">{getTypeIcon()}</span>
@@ -327,9 +326,9 @@ export function UnifiedFeedItemComponent({
 						className={cn(
 							"absolute inset-0 bg-gradient-to-t from-black/20 to-transparent",
 							displayData.type === "art" &&
-								"from-purple-900/30 to-transparent",
+							"from-purple-900/30 to-transparent",
 							displayData.type === "collection" &&
-								"from-blue-900/30 to-transparent"
+							"from-blue-900/30 to-transparent"
 						)}
 					/>
 				</div>
@@ -338,35 +337,36 @@ export function UnifiedFeedItemComponent({
 			{/* Actions */}
 			<div className="p-4 pt-3">
 				<div className="flex items-center justify-between">
-					<div className="flex items-center space-x-4">
-						<Button
-							variant="ghost"
-							size="sm"
-							className="h-8 px-2 text-muted-foreground hover:text-red-500 transition-colors"
-						>
-							<Heart className="w-4 h-4 mr-1" />
-							<span className="text-xs">0</span>
-						</Button>
-
-						<Button
+					<div className="flex items-center space-x-4 w-full">
+						{displayData.type === "art" && (
+							<Button
+								variant="ghost"
+								size="sm"
+								className="h-8 px-2 text-muted-foreground hover:text-red-500 transition-colors"
+							>
+								<Heart className="w-4 h-4 mr-1" />
+								<span className="text-xs">0</span>
+							</Button>
+						)}
+						{/* <Button
 							variant="ghost"
 							size="sm"
 							className="h-8 px-2 text-muted-foreground hover:text-blue-500 transition-colors"
 						>
 							<MessageCircle className="w-4 h-4 mr-1" />
 							<span className="text-xs">0</span>
-						</Button>
+						</Button> */}
 
 						<Button
 							variant="ghost"
 							size="sm"
-							className="h-8 px-2 text-muted-foreground hover:text-green-500 transition-colors"
+							className="ml-auto h-8 px-2 text-muted-foreground hover:text-green-500 transition-colors"
 						>
 							<Share2 className="w-4 h-4" />
 						</Button>
 					</div>
 
-					<div className="flex items-center space-x-2">
+					{/* <div className="flex items-center space-x-2">
 						<Button
 							variant="ghost"
 							size="sm"
@@ -375,7 +375,7 @@ export function UnifiedFeedItemComponent({
 							<Eye className="w-4 h-4 mr-1" />
 							<span className="text-xs">0</span>
 						</Button>
-					</div>
+					</div> */}
 				</div>
 			</div>
 		</motion.article>
