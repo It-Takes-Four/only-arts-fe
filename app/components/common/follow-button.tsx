@@ -6,7 +6,7 @@ export const FollowButton = ({
 	isFollowing: initialFollowing = false,
 	onFollowChange = (newState: boolean) => { },
 	size = 16,
-	className = ""
+	className = "hover:cursor-pointer"
 }) => {
 	const [isFollowing, setIsFollowing] = useState(initialFollowing);
 	const [isHovered, setIsHovered] = useState(false);
