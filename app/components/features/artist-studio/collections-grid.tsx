@@ -38,13 +38,14 @@ export function CollectionsGrid({
     setPublishingCollection(collection);
   };
 
-  const handleContentUpdated = async (updatedData: { collectionName: string; description: string }) => {
+  const handleContentUpdated = async (updatedData: { collectionName: string; description: string; price?: number }) => {
     if (editingCollection) {
       // Optimistic update
       const optimisticCollection = {
         ...editingCollection,
         collectionName: updatedData.collectionName,
         description: updatedData.description,
+        price: updatedData.price?.toString() || editingCollection.price,
         updatedAt: new Date().toISOString()
       };
       onCollectionUpdated(optimisticCollection);

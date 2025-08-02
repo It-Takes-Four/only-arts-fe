@@ -106,7 +106,9 @@ export function PublishCollectionModal({
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
                 <strong>Important:</strong> Publishing your collection is irreversible. 
-                Once published, the collection will be visible to all users and cannot be unpublished.
+                Once published, the collection will be visible to all users and you will 
+                <strong> no longer be able to edit</strong> the collection details, price, 
+                or cover image.
               </AlertDescription>
             </Alert>
 

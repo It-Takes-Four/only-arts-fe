@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { MoreHorizontal, Edit, Image, Eye, Upload } from "lucide-react";
+import { MoreHorizontal, Edit, Image, Eye, Upload, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "../../common/button";
 import { Badge } from "@/components/ui/badge";
@@ -89,16 +89,16 @@ export function CollectionManagementCard({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={handleContentEdit}>
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit Details
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleCoverEdit}>
-                  <Image className="h-4 w-4 mr-2" />
-                  Change Cover
-                </DropdownMenuItem>
-                {!collection.isPublished && (
+                {!collection.isPublished ? (
                   <>
+                    <DropdownMenuItem onClick={handleContentEdit}>
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit Details & Price
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleCoverEdit}>
+                      <Image className="h-4 w-4 mr-2" />
+                      Change Cover
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem 
                       onClick={handlePublishClick}
@@ -108,19 +108,30 @@ export function CollectionManagementCard({
                       Publish Collection
                     </DropdownMenuItem>
                   </>
+                ) : (
+                  <DropdownMenuItem className="text-muted-foreground cursor-not-allowed">
+                    <Lock className="h-4 w-4 mr-2" />
+                    Collection is Published
+                  </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
 
           {/* Status Badge */}
-          <div className="absolute top-2 left-2">
+          <div className="absolute top-2 left-2 flex gap-1">
             <Badge 
               variant={collection.isPublished ? "default" : "secondary"}
               className="text-xs"
             >
               {collection.isPublished ? "Published" : "Draft"}
             </Badge>
+            {collection.isPublished && (
+              <Badge variant="outline" className="text-xs bg-background/80">
+                <Lock className="h-3 w-3 mr-1" />
+                Locked
+              </Badge>
+            )}
           </div>
         </div>
 

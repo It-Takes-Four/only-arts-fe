@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
-import { X, Edit, Loader2 } from "lucide-react";
+import { X, DollarSign, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "../../common/button";
 import { Input } from "@/components/ui/input";
@@ -10,25 +10,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { collectionService } from "../../../services/collection-service";
 import type { MyCollection } from "../../../types/collection";
 
-interface EditCollectionContentModalProps {
+interface EditCollectionPriceModalProps {
   isOpen: boolean;
   onClose: () => void;
   collection: MyCollection;
-  onSuccess: (updatedData: { collectionName: string; description: string; price?: number }) => void;
+  onSuccess: (updatedPrice: number) => void;
 }
 
 interface FormData {
-  collectionName: string;
-  description: string;
-  price?: number;
+  price: number;
 }
 
-export function EditCollectionContentModal({ 
+export function EditCollectionPriceModal({ 
   isOpen, 
   onClose, 
   collection, 
   onSuccess 
-}: EditCollectionContentModalProps) {
+}: EditCollectionPriceModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -40,27 +38,21 @@ export function EditCollectionContentModal({
   } = useForm<FormData>({
     mode: "onTouched",
     defaultValues: {
-      collectionName: collection.collectionName || "",
-      description: collection.description || "",
-      price: collection.price ? parseFloat(collection.price) : undefined,
+      price: collection.price ? parseFloat(collection.price) : 0,
     },
   });
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
-      await collectionService.updateCollectionContent(collection.id, {
-        collectionName: data.collectionName,
-        description: data.description,
-        price: data.price,
-      });
+      await collectionService.updateCollectionPrice(collection.id, data.price);
 
-      toast.success("Collection details updated successfully!");
-      onSuccess(data);
+      toast.success("Collection price updated successfully!");
+      onSuccess(data.price);
       onClose();
     } catch (error: any) {
-      console.error('Collection update error:', error);
-      toast.error(error.message || "Failed to update collection");
+      console.error('Collection price update error:', error);
+      toast.error(error.message || "Failed to update collection price");
     } finally {
       setIsSubmitting(false);
     }
@@ -97,9 +89,9 @@ export function EditCollectionContentModal({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="p-2 bg-primary/10 rounded-lg">
-                  <Edit className="h-5 w-5 text-primary" />
+                  <DollarSign className="h-5 w-5 text-primary" />
                 </div>
-                <CardTitle>Edit Collection Details</CardTitle>
+                <CardTitle>Edit Collection Price</CardTitle>
               </div>
               <Button
                 variant="ghost"
@@ -115,55 +107,17 @@ export function EditCollectionContentModal({
 
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {/* Collection Name */}
-              <div className="flex flex-col space-y-2">
-                <Label htmlFor="collectionName">Collection Name *</Label>
-                <Input
-                  id="collectionName"
-                  placeholder="Enter collection name"
-                  {...register("collectionName", {
-                    required: "Collection name is required",
-                    minLength: {
-                      value: 2,
-                      message: "Collection name must be at least 2 characters",
-                    },
-                    maxLength: {
-                      value: 100,
-                      message: "Collection name must be less than 100 characters",
-                    },
-                  })}
-                  className={errors.collectionName ? "border-destructive" : ""}
-                  disabled={isSubmitting}
-                />
-                {errors.collectionName && (
-                  <p className="text-sm text-destructive">{errors.collectionName.message}</p>
-                )}
+              {/* Collection Info */}
+              <div className="bg-muted/50 rounded-lg p-3 mb-4">
+                <h4 className="font-medium text-sm">{collection.collectionName}</h4>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {collection.arts?.length || 0} artwork{collection.arts?.length !== 1 ? 's' : ''}
+                </p>
               </div>
 
-              {/* Description */}
+              {/* Price Input */}
               <div className="flex flex-col space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <textarea
-                  id="description"
-                  placeholder="Enter collection description"
-                  {...register("description", {
-                    maxLength: {
-                      value: 500,
-                      message: "Description must be less than 500 characters",
-                    },
-                  })}
-                  className={`flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none ${errors.description ? "border-destructive" : ""}`}
-                  disabled={isSubmitting}
-                  rows={3}
-                />
-                {errors.description && (
-                  <p className="text-sm text-destructive">{errors.description.message}</p>
-                )}
-              </div>
-
-              {/* Price */}
-              <div className="flex flex-col space-y-2">
-                <Label htmlFor="price">Price (ETH)</Label>
+                <Label htmlFor="price">Price (ETH) *</Label>
                 <div className="relative">
                   <Input
                     id="price"
@@ -172,12 +126,16 @@ export function EditCollectionContentModal({
                     min="0"
                     placeholder="0.000"
                     {...register("price", {
+                      required: "Price is required",
                       min: {
                         value: 0,
                         message: "Price must be a positive number",
                       },
                       validate: (value) => {
-                        if (value !== undefined && value !== null && value < 0) {
+                        if (value === undefined || value === null) {
+                          return "Price is required";
+                        }
+                        if (value < 0) {
                           return "Price must be a positive number";
                         }
                         return true;
@@ -194,9 +152,21 @@ export function EditCollectionContentModal({
                   <p className="text-sm text-destructive">{errors.price.message}</p>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Set the price for your entire collection (optional)
+                  Set the price for your entire collection. Users will pay this amount to purchase all artworks in the collection.
                 </p>
               </div>
+
+              {/* Current Price Display */}
+              {collection.price && (
+                <div className="bg-muted/30 rounded-lg p-3">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground">Current Price:</span>
+                    <span className="font-medium">
+                      Ξ {parseFloat(collection.price).toFixed(3)} ETH
+                    </span>
+                  </div>
+                </div>
+              )}
 
               {/* Submit Buttons */}
               <div className="flex gap-3 pt-4">
@@ -211,7 +181,7 @@ export function EditCollectionContentModal({
                 </Button>
                 <Button
                   type="submit"
-                  disabled={isSubmitting || !watch("collectionName")}
+                  disabled={isSubmitting || watch("price") === undefined}
                   className="flex-1"
                 >
                   {isSubmitting ? (
@@ -220,7 +190,7 @@ export function EditCollectionContentModal({
                       Updating...
                     </>
                   ) : (
-                    "Update Collection"
+                    "Update Price"
                   )}
                 </Button>
               </div>

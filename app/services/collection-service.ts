@@ -106,8 +106,8 @@ class CollectionService extends BaseService {
 		}
 	}
 
-	// Update collection content (name and description)
-	async updateCollectionContent(collectionId: string, content: { collectionName: string; description: string }) {
+	// Update collection content (name, description, and price)
+	async updateCollectionContent(collectionId: string, content: { collectionName: string; description: string; price?: number }) {
 		try {
 			const { data } = await this._axios.patch(`/art-collections/${collectionId}/content`, content);
 			return data;
