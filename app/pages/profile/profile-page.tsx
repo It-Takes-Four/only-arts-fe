@@ -20,10 +20,11 @@ import { collectionService } from "../../services/collection-service";
 import { formatDistanceToNow } from 'date-fns';
 import { FancyLoading } from "../../components/common/fancy-loading";
 import { Button } from "../../components/common/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, FolderArchiveIcon, FolderIcon, LucideHeart } from "lucide-react";
 import { formatPriceDisplay, parsePrice } from "../../utils/currency";
 import type { ArtistCollection } from "../../types/collection";
 import type { ArtistProfile } from "../../types/artist";
+import { transformArtworkTagsForArtCard } from "../../utils/tag-helpers";
 import type { ArtistArtwork, ArtworkTag } from "../../types/artwork";
 import { FollowButton } from "app/components/common/follow-button";
 
@@ -237,18 +238,20 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 														(currentUser?.profilePictureFileId ? artistService.getProfilePictureUrl(currentUser.profilePictureFileId) : null) :
 														(artist?.user.profilePictureFileId ? artistService.getProfilePictureUrl(artist.user.profilePictureFileId) : null)
 												},
-												tags: artwork.tags.map((tag: ArtworkTag) => ({ name: tag.tagName })),
+												tags: transformArtworkTagsForArtCard(artwork.tags, artwork.id),
 												type: 'art',
 												createdAt: artwork.datePosted
 											}}
 										/>
 										<div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-white text-xs flex items-center gap-2">
 											<span className="flex items-center gap-1">
-												♥ 0
+												<LucideHeart className="h-4 w-4" />
+												0
 											</span>
 											{artwork.collections && artwork.collections.length > 0 && (
 												<span className="flex items-center gap-1">
-													📁
+													<FolderIcon className="h-4 w-4" />
+													{artwork.collections.length}
 												</span>
 											)}
 										</div>
@@ -389,87 +392,39 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 					) ? (
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
 							{(isOwnProfile ? myArtworksData : artworksData?.data)?.map((artwork: ArtistArtwork) => (
-								<div key={artwork.id} className="relative group">
-									<div className="bg-card rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-										{/* Artwork Image */}
-										<div className="aspect-square relative">
-											<img
-												src={artwork.imageFileId ? collectionService.getArtworkImageUrl(artwork.imageFileId) : "/placeholder.svg"}
-												alt={artwork.title}
-												className="w-full h-full object-cover"
-											/>
-											{/* Overlay with stats */}
-											<div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-												<div className="text-white text-center">
-													<div className="flex items-center gap-4 justify-center">
-														<span className="flex items-center gap-1">
-															♥ 0
-														</span>
-														{artwork.collections && artwork.collections.length > 0 && (
-															<span className="flex items-center gap-1">
-																📁 Collection
-															</span>
-														)}
-													</div>
-												</div>
-											</div>
-										</div>
-
-										{/* Artwork Info */}
-										<div className="p-4">
-											<h3 className="font-semibold text-lg mb-1 truncate">{artwork.title}</h3>
-											<p className="text-sm text-muted-foreground mb-2 line-clamp-2">
-												{artwork.description || "No description"}
-											</p>
-
-											{/* Tags */}
-											{artwork.tags && artwork.tags.length > 0 && (
-												<div className="flex flex-wrap gap-1 mb-3">
-													{artwork.tags.slice(0, 3).map((tag: ArtworkTag, index: number) => (
-														<Badge key={index} variant="secondary" className="text-xs">
-															{tag.tagName || 'Tag'}
-														</Badge>
-													))}
-													{artwork.tags.length > 3 && (
-														<Badge variant="outline" className="text-xs">
-															+{artwork.tags.length - 3}
-														</Badge>
-													)}
-												</div>
-											)}
-
-											{/* Artist Info */}
-											<div className="flex items-center gap-2">
-												<img
-													src="/placeholder-avatar.png"
-													alt="Artist"
-													className="w-6 h-6 rounded-full"
-												/>
-												<span className="text-sm text-muted-foreground">
-													{isOwnProfile ?
-														(artist?.artistName || 'Unknown Artist') :
-														'Artist'
-													}
-												</span>
-											</div>
-										</div>
+								<div key={artwork.id} className="relative">
+									<ArtCard
+										art={{
+											id: artwork.id,
+											title: artwork.title,
+											description: artwork.description,
+											imageUrl: collectionService.getArtworkImageUrl(artwork.imageFileId),
+											artist: {
+												id: artwork.artistId,
+												name: isOwnProfile ?
+													(currentUser?.artist?.artistName || "Unknown Artist") :
+													(artist?.artistName || "Unknown Artist"),
+												profilePicture: isOwnProfile ?
+													(currentUser?.profilePictureFileId ? artistService.getProfilePictureUrl(currentUser.profilePictureFileId) : null) :
+													(artist?.user.profilePictureFileId ? artistService.getProfilePictureUrl(artist.user.profilePictureFileId) : null)
+											},
+											tags: transformArtworkTagsForArtCard(artwork.tags, artwork.id),
+											type: 'art',
+											createdAt: artwork.datePosted
+										}}
+									/>
+									<div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-white text-xs flex items-center gap-2">
+										<span className="flex items-center gap-1">
+											<LucideHeart className="h-4 w-4" />
+											0
+										</span>
+										{artwork.collections && artwork.collections.length > 0 && (
+											<span className="flex items-center gap-1">
+												<FolderIcon className="h-4 w-4" />
+												{artwork.collections.length}
+											</span>
+										)}
 									</div>
-
-									{/* Only show buy button for other artists' artworks */}
-									{!isOwnProfile && (
-										<div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-											<Button
-												size="sm"
-												onClick={() => {
-													// Handle individual artwork purchase
-													console.log('Buy artwork:', artwork.id);
-												}}
-												className="bg-primary/90 hover:bg-primary shadow-lg"
-											>
-												Buy
-											</Button>
-										</div>
-									)}
 								</div>
 							))}
 						</div>
