@@ -26,13 +26,13 @@ interface CollectionManagementCardProps {
 }
 
 export function CollectionManagementCard({
-																					 collection,
-																					 onCollectionUpdated,
-																					 onEditContent,
-																					 onEditCover,
-																					 onPublish,
-																					 onManageArts
-																				 }: CollectionManagementCardProps) {
+	collection,
+	onCollectionUpdated,
+	onEditContent,
+	onEditCover,
+	onPublish,
+	onManageArts
+}: CollectionManagementCardProps) {
 	const [showEditContentModal, setShowEditContentModal] = useState(false);
 	const [showEditCoverModal, setShowEditCoverModal] = useState(false);
 	const [showPublishModal, setShowPublishModal] = useState(false);
@@ -72,7 +72,6 @@ export function CollectionManagementCard({
 				className="group relative bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg transition-all duration-200"
 				whileHover={{ y: -2 }}
 				layout
-				onClick={() => navigate(`/collection/${collection.id}`)}
 			>
 				{/* Cover Image */}
 				<div className="aspect-[4/3] bg-muted relative overflow-hidden rounded-t-lg">
@@ -84,7 +83,7 @@ export function CollectionManagementCard({
 						/>
 					) : (
 						<div className="w-full h-full flex items-center justify-center">
-							<Image className="h-12 w-12 text-muted-foreground"/>
+							<Image className="h-12 w-12 text-muted-foreground" />
 						</div>
 					)}
 
@@ -97,37 +96,37 @@ export function CollectionManagementCard({
 									size="sm"
 									className="h-8 w-8 p-0 bg-background/80 backdrop-blur-sm hover:bg-background/90"
 								>
-									<MoreHorizontal className="h-4 w-4"/>
+									<MoreHorizontal className="h-4 w-4" />
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
 								<DropdownMenuItem onClick={handleManageArts}>
-									<Images className="h-4 w-4 mr-2"/>
+									<Images className="h-4 w-4 mr-2" />
 									Manage Arts
 								</DropdownMenuItem>
-								<DropdownMenuSeparator/>
+								<DropdownMenuSeparator />
 								{!collection.isPublished ? (
 									<>
 										<DropdownMenuItem onClick={handleContentEdit}>
-											<Edit className="h-4 w-4 mr-2"/>
+											<Edit className="h-4 w-4 mr-2" />
 											Edit Details & Price
 										</DropdownMenuItem>
 										<DropdownMenuItem onClick={handleCoverEdit}>
-											<Image className="h-4 w-4 mr-2"/>
+											<Image className="h-4 w-4 mr-2" />
 											Change Cover
 										</DropdownMenuItem>
-										<DropdownMenuSeparator/>
+										<DropdownMenuSeparator />
 										<DropdownMenuItem
 											onClick={handlePublishClick}
 											className="text-green-600 dark:text-green-400"
 										>
-											<Upload className="h-4 w-4 mr-2"/>
+											<Upload className="h-4 w-4 mr-2" />
 											Publish Collection
 										</DropdownMenuItem>
 									</>
 								) : (
 									<DropdownMenuItem className="text-muted-foreground cursor-not-allowed">
-										<Lock className="h-4 w-4 mr-2"/>
+										<Lock className="h-4 w-4 mr-2" />
 										Collection is Published
 									</DropdownMenuItem>
 								)}
@@ -153,8 +152,8 @@ export function CollectionManagementCard({
 						<Tooltip>
 							<TooltipTrigger asChild>
 								<Badge variant="secondary"
-											 className="text-foreground font-semibold border-border gap-x-1.5">
-									<Images/>
+									className="text-foreground font-semibold border-border gap-x-1.5">
+									<Images />
 									{collection.arts?.length || 0}
 								</Badge>
 							</TooltipTrigger>
@@ -165,12 +164,27 @@ export function CollectionManagementCard({
 						</Tooltip>
 					</div>
 
-					<p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-						{collection.description || "No description provided"}
-					</p>
+					<div className="flex items-center justify-between mb-2">
+						<div className="flex-1">
+							<p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+								{collection.description || "No description provided"}
+							</p>
+						</div>
+						<div className="flex-shrink-0">
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={() => navigate(`/collection/${collection.id}`)}
+							>
+								<Eye className="h-4 w-4" />
+							</Button>
+						</div>
+					</div>
+
+
 					{collection.price && (
 						<>
-							<Separator className="my-3"/>
+							<Separator className="my-3" />
 							<div className="flex items-center justify-between">
 								<span className="text-sm text-muted-foreground">Price</span>
 								<span className="font-semibold text-lg">{parseFloat(collection.price).toFixed(4)} ETH</span>

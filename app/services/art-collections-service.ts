@@ -33,7 +33,7 @@ class ArtCollectionsService extends BaseService {
 
     async getCollectionArts(collectionId: string): Promise<CollectionArt[]> {
         try {
-            const { data } = await this._axios.get<CollectionArt[]>(`/art-collections/${collectionId}`);
+            const { data } = await this._axios.get<CollectionArt[]>(`/art-collections/${collectionId}/arts`);
             return data;
         } catch (error: any) {
             throw new Error(error.response?.data?.message || 'Failed to fetch collection arts');
