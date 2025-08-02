@@ -141,6 +141,7 @@ export interface MyCollection {
 			profilePictureFileId?: string | null;
 		};
 	};
+	arts: any[]
 }
 
 // DetailedCollection is now the same as MyCollection since arts are included
