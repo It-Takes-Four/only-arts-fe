@@ -7,7 +7,6 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { Separator } from "@/components/ui/separator";
-import { FollowButton } from "../../components/common/follow-button";
 import { CollectionCard } from "../../components/common/collection-card";
 import { BuyCollectionModal } from "../../components/common/buy-collection-modal";
 import { useArtistProfileQuery } from "../../components/hooks/useArtistProfileQuery";
@@ -26,6 +25,7 @@ import { formatPriceDisplay, parsePrice } from "../../utils/currency";
 import type { ArtistCollection } from "../../types/collection";
 import type { ArtistProfile } from "../../types/artist";
 import type { ArtistArtwork, ArtworkTag } from "../../types/artwork";
+import { FollowButton } from "app/components/common/follow-button";
 
 interface ProfilePageProps {
 	artistId?: string;
@@ -541,7 +541,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 								{!isOwnProfile &&
 									<>
 										<Separator orientation="vertical" className="bg-white/25 h-5 mr-1 ml-4" />
-										<FollowButton />
+										<FollowButton artistId={artist.id} />
 									</>
 								}
 							</span>
