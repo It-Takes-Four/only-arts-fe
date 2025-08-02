@@ -295,7 +295,7 @@ export function ArtistStudioPage() {
 
 			{/* Artist Info */}
 			<GlassCard className="mb-8 py-4 px-8">
-				<div className="flex items-center justify-between">
+				<div className="flex justify-between">
 					<div className="flex items-center gap-4">
 						<Avatar className="w-20 h-20">
 							<AvatarImage
