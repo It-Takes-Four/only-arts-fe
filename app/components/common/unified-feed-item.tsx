@@ -50,6 +50,8 @@ export function UnifiedFeedItemComponent({
 					artistProfileFileId: item.art?.artistProfileFileId || null,
 					createdDate: item.art?.createdDate || item.createdDate,
 					imageFileId: item.art?.imageFileId || null,
+					likesCount: item.art?.likesCount || 0,
+					isLiked: item.art?.isLiked || false,
 					tags: item.art?.tags || [],
 					type: "art" as const,
 					url: `/art/${item.feedItemId}`,
@@ -345,7 +347,7 @@ export function UnifiedFeedItemComponent({
 								className="h-8 px-2 text-muted-foreground hover:text-red-500 transition-colors"
 							>
 								<Heart className="w-4 h-4 mr-1" />
-								<span className="text-xs">0</span>
+								<span className="text-xs">{displayData.likesCount}</span>
 							</Button>
 						)}
 						{/* <Button

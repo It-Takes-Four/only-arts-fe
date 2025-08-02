@@ -8,17 +8,31 @@ import { useArtwork } from "../../components/hooks/useArtwork";
 import { useNavigate, useParams } from "react-router";
 import { collectionService } from "../../services/collection-service";
 import { formatDateToMonthYear } from "../../utils/dates/DateFormatter";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { getUserInitials } from "../../utils/UtilityFunction";
 import { cn } from "@/lib/utils";
+import { AnimatedHeart } from "../../components/common/animated-heart";
+import { ArtworkShareButton } from "../../components/common/animated-share-button";
+import { useState } from "react";
 
 export function ArtPage() {
 	const { artworkId } = useParams<{ artworkId: string }>();
 	const { artwork, error, handleLikeToggle, isLiking, isLiked, likesCount } =
 		useArtwork(artworkId);
 	const navigate = useNavigate();
+	const [isLikeAnimating, setIsLikeAnimating] = useState(false);
 
-	console.log("Artwork Data:", artwork);
+	const handleAnimatedLikeToggle = async () => {
+		if (isLiking) return;
+
+		setIsLikeAnimating(true);
+		await handleLikeToggle();
+
+		// Reset animation state after animation completes
+		setTimeout(() => {
+			setIsLikeAnimating(false);
+		}, 800);
+	};
 
 	// Handle error state
 	if (error || !artwork) {
@@ -63,7 +77,7 @@ export function ArtPage() {
 					/>
 				) : (
 					<div className="flex items-center justify-center h-96 bg-gray-200/10 rounded-lg">
-						<ImageIcon className="h-12 w-12 text-muted-foreground"/>
+						<ImageIcon className="h-12 w-12 text-muted-foreground" />
 					</div>
 				)}
 			</div>
@@ -127,7 +141,7 @@ export function ArtPage() {
 						</div>
 					</div>
 
-					<Separator className="lg:hidden"/>
+					<Separator className="lg:hidden" />
 
 					{/* Stats Section */}
 					<div className="flex items-center justify-center w-full lg:w-fit space-x-6">
@@ -135,43 +149,63 @@ export function ArtPage() {
 							<span className="text-xs text-muted-foreground font-mono uppercase">
 								Likes
 							</span>
-							<span className="text-2xl font-semibold">
-								{likesCount}
-							</span>
+							<AnimatePresence mode="wait">
+								<motion.span
+									key={likesCount}
+									className="text-2xl font-semibold"
+									initial={{ scale: 0.8, opacity: 0 }}
+									animate={{ scale: 1, opacity: 1 }}
+									exit={{ scale: 1.2, opacity: 0 }}
+									transition={{ duration: 0.3, ease: "easeOut" }}
+								>
+									{likesCount}
+								</motion.span>
+							</AnimatePresence>
 						</div>
 					</div>
 				</div>
 
 				{/* Action Buttons */}
-				<Separator className="my-6"/>
+				<Separator className="my-6" />
 				<div className="flex flex-wrap justify-between gap-3">
-					<Button
-						size="lg"
-						variant={isLiked ? "default" : "outline"}
-						onClick={handleLikeToggle}
-						disabled={isLiking}
-						className={cn(
-							"transition-all duration-200",
-							isLiked && "bg-red-500 hover:bg-red-600 text-white"
-						)}
+					<motion.div
+						whileTap={{ scale: 0.95 }}
+						transition={{ duration: 0.1 }}
 					>
-						<Heart
+						<Button
+							size="lg"
+							variant={isLiked ? "default" : "outline"}
+							onClick={handleAnimatedLikeToggle}
+							disabled={isLiking}
 							className={cn(
-								"w-5 h-5 transition-all duration-200",
-								isLiked
-									? "fill-white text-white"
-									: "text-current"
+								"transition-all duration-300 overflow-hidden",
+								isLiked && "bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/25"
 							)}
-						/>
-						{isLiking ? "..." : isLiked ? "Liked" : "Like Art"}
-					</Button>
-					{/*<Button size="lg" variant="outline">*/}
-					{/*	Add to Collection*/}
-					{/*</Button>*/}
-					<Button size="lg" variant="outline">
-						<Share2 className="w-5 h-5"/>
-						Share
-					</Button>
+						>
+							<AnimatedHeart
+								isLiked={isLiked}
+								isAnimating={isLikeAnimating}
+								className="mr-2"
+							/>
+							<motion.span
+								animate={{
+									x: isLikeAnimating ? [0, -2, 2, 0] : 0
+								}}
+								transition={{ duration: 0.3 }}
+							>
+								{isLiking ? "..." : isLiked ? "Liked" : "Like Art"}
+							</motion.span>
+						</Button>
+					</motion.div>
+
+					<ArtworkShareButton
+						artwork={artwork}
+						size="lg"
+						showSocialOptions={true}
+						onShare={(method) => {
+							console.log(`Shared artwork via ${method}`);
+						}}
+					/>
 				</div>
 			</GlassCard>
 
@@ -184,29 +218,29 @@ export function ArtPage() {
 							{artwork.description}
 						</p>
 					</>
-			)}
+				)}
 
 
-			{artwork.tags.length > 0 && (
-				<>
-					<h3 className="text-lg font-semibold mb-2">Tags</h3>
-					<div className="flex flex-wrap gap-2">
-						{artwork.tags.map((tag, index) => (
-							<Badge
-								key={index}
-								variant="outline"
-								className="text-sm"
-							>
-								<Tag className="w-3 h-3 mr-1"/>
-								{tag.tagName}
-							</Badge>
-						))}
-					</div>
-				</>
-			)}
-		</GlassCard>
+				{artwork.tags.length > 0 && (
+					<>
+						<h3 className="text-lg font-semibold mb-2">Tags</h3>
+						<div className="flex flex-wrap gap-2">
+							{artwork.tags.map((tag, index) => (
+								<Badge
+									key={index}
+									variant="outline"
+									className="text-sm"
+								>
+									<Tag className="w-3 h-3 mr-1" />
+									{tag.tagName}
+								</Badge>
+							))}
+						</div>
+					</>
+				)}
+			</GlassCard>
 
-</div>
-)
-	;
+		</div>
+	)
+		;
 }

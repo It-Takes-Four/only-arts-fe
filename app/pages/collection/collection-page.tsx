@@ -4,17 +4,15 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Calendar, Heart, Share2, Eye, User, Bookmark } from "lucide-react";
+import { Heart, User, Bookmark } from "lucide-react";
 import { useParams, Link } from "react-router";
 import { collectionService } from "../../services/collection-service";
 import { artCollectionsService } from "../../services/art-collections-service";
-import { useEffect } from "react";
 import { useCollection } from "../../components/hooks/useCollection";
-import { formatTimestampToMonthYear } from "../../utils/dates/DateFormatter";
 import { motion } from "framer-motion";
-import { FancyLoading } from "../../components/common/fancy-loading";
 import { getUserInitials } from "../../utils/UtilityFunction";
 import { formatPriceDisplay } from "../../utils/currency";
+import { BuyCollectionButton } from "../../components/common/buy-collection-button";
 
 export function CollectionPage() {
 	const { collectionId } = useParams<{ collectionId: string }>();
@@ -70,9 +68,18 @@ export function CollectionPage() {
 			>
 				{/* Subtle gradient overlay for better text readability */}
 				<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent rounded-lg" />
-				
+
 				{/* Collection Info Glass Card */}
 				<GlassCard className="relative z-10 py-6 px-8">
+					<div className="absolute top-2 right-2">
+						<BuyCollectionButton 
+							collection={collection as any}
+							onPurchaseSuccess={() => {
+								// Handle successful purchase - maybe refetch collection data
+								console.log('Collection purchased successfully');
+							}}
+						/>
+					</div>
 					<div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-2">
 						<div className="flex items-start lg:items-end space-x-4 flex-1">
 							<div className="flex flex-col flex-1">
@@ -135,11 +142,11 @@ export function CollectionPage() {
 				<div className="flex items-center space-x-4">
 					<Link to={`/artist/${collection.artist.id}`}>
 						<Avatar className="h-20 w-20 hover:ring-2 hover:ring-primary/20 transition-all cursor-pointer">
-							<AvatarImage 
-								src={collection.artist.user.profilePictureFileId 
+							<AvatarImage
+								src={collection.artist.user.profilePictureFileId
 									? artCollectionsService.getUserProfileImageUrl(collection.artist.user.profilePictureFileId)
 									: ""
-								} 
+								}
 							/>
 							<AvatarFallback className="text-lg font-bold">
 								{getUserInitials(collection.artist.artistName)}
@@ -148,7 +155,7 @@ export function CollectionPage() {
 					</Link>
 					<div className="flex-1">
 						<div className="flex items-center space-x-2 mb-2">
-							<Link 
+							<Link
 								to={`/artist/${collection.artist.id}`}
 								className="text-xl font-bold hover:text-primary transition-colors cursor-pointer"
 							>
@@ -214,9 +221,9 @@ export function CollectionPage() {
 										profilePicture: art.art?.artist?.user?.profilePictureFileId || collection.artist.user.profilePictureFileId,
 									},
 									createdAt: art.addedAt || art.createdAt,
-									imageUrl: art.art?.imageFileId 
+									imageUrl: art.art?.imageFileId
 										? collectionService.getArtworkImageUrl(art.art.imageFileId)
-										: art.imageFileId 
+										: art.imageFileId
 											? collectionService.getArtworkImageUrl(art.imageFileId)
 											: '/placeholder.svg',
 									tags: art.art?.tags || art.tags || [],

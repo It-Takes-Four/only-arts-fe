@@ -1,0 +1,162 @@
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { MoreHorizontal, Edit, Image, Eye, Upload } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "../../common/button";
+import { Badge } from "@/components/ui/badge";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger,
+  DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu";
+import { collectionService } from "../../../services/collection-service";
+import type { MyCollection } from "../../../types/collection";
+
+interface CollectionManagementCardProps {
+  collection: MyCollection;
+  onCollectionUpdated: (updatedCollection: MyCollection) => void;
+  onEditContent?: (collection: MyCollection) => void;
+  onEditCover?: (collection: MyCollection) => void;
+  onPublish?: (collection: MyCollection) => void;
+}
+
+export function CollectionManagementCard({ 
+  collection, 
+  onCollectionUpdated, 
+  onEditContent,
+  onEditCover,
+  onPublish
+}: CollectionManagementCardProps) {
+  const [showEditContentModal, setShowEditContentModal] = useState(false);
+  const [showEditCoverModal, setShowEditCoverModal] = useState(false);
+  const [showPublishModal, setShowPublishModal] = useState(false);
+
+  const handleContentEdit = () => {
+    if (onEditContent) {
+      onEditContent(collection);
+    }
+  };
+
+  const handleCoverEdit = () => {
+    if (onEditCover) {
+      onEditCover(collection);
+    }
+  };
+
+  const handlePublishClick = () => {
+    if (onPublish) {
+      onPublish(collection);
+    }
+  };
+
+  const coverImageUrl = collection.coverImageFileId 
+    ? collectionService.getCollectionImageUrl(collection.coverImageFileId)
+    : null;
+
+  return (
+    <>
+      <motion.div
+        className="group relative bg-card rounded-lg border border-border overflow-hidden hover:shadow-lg transition-all duration-200"
+        whileHover={{ y: -2 }}
+        layout
+      >
+        {/* Cover Image */}
+        <div className="aspect-[4/3] bg-muted relative overflow-hidden">
+          {coverImageUrl ? (
+            <img
+              src={coverImageUrl}
+              alt={`${collection.collectionName} cover`}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <Image className="h-12 w-12 text-muted-foreground" />
+            </div>
+          )}
+          
+          {/* Action Menu - Always visible */}
+          <div className="absolute top-2 right-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 p-0 bg-background/80 backdrop-blur-sm hover:bg-background/90"
+                >
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleContentEdit}>
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit Details
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleCoverEdit}>
+                  <Image className="h-4 w-4 mr-2" />
+                  Change Cover
+                </DropdownMenuItem>
+                {!collection.isPublished && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem 
+                      onClick={handlePublishClick}
+                      className="text-green-600 dark:text-green-400"
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      Publish Collection
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* Status Badge */}
+          <div className="absolute top-2 left-2">
+            <Badge 
+              variant={collection.isPublished ? "default" : "secondary"}
+              className="text-xs"
+            >
+              {collection.isPublished ? "Published" : "Draft"}
+            </Badge>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="p-4">
+          <h3 className="font-semibold text-lg mb-2 line-clamp-1">
+            {collection.collectionName}
+          </h3>
+          
+          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+            {collection.description || "No description provided"}
+          </p>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-xs">
+                {collection.arts?.length || 0} artwork{collection.arts?.length !== 1 ? 's' : ''}
+              </Badge>
+              {collection.price && (
+                <Badge variant="outline" className="text-xs">
+                  {parseFloat(collection.price).toFixed(3)} ETH
+                </Badge>
+              )}
+            </div>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 px-3 text-xs"
+            >
+              <Eye className="h-3 w-3 mr-1" />
+              View
+            </Button>
+          </div>
+        </div>
+      </motion.div>
+    </>
+  );
+}

@@ -8,6 +8,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useNavigate } from "react-router";
 import { getUserInitials } from "../../utils/UtilityFunction";
 import { formatPriceDisplay } from "../../utils/currency";
+import { AbsoluteBuyCollectionButton } from "./buy-collection-button";
+import type { ArtistCollection } from "../../types/collection";
 
 interface CollectionCardProps {
 	id: string
@@ -19,6 +21,10 @@ interface CollectionCardProps {
 	createdByAvatar?: string
 	price?: string | null
 	viewMode?: "grid" | "row" | "table"
+	// Optional: pass the full collection object for buy functionality
+	collection?: ArtistCollection
+	// Optional: whether to show buy button (useful for own collections)
+	showBuyButton?: boolean
 }
 
 export function CollectionCard({
@@ -31,6 +37,8 @@ export function CollectionCard({
 	createdByAvatar,
 	price,
 	viewMode = "grid",
+	collection,
+	showBuyButton = true,
 }: CollectionCardProps) {
 	const navigate = useNavigate();
 
@@ -135,8 +143,19 @@ export function CollectionCard({
 	// Original grid view (show only one image)
 	return (
 		// On click redirect to collection details page
-		<Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer"
+		<Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer relative"
 			onClick={() => navigate(`/collection/${id}`)}>
+			{/* Buy button overlay */}
+			{showBuyButton && collection && (
+				<AbsoluteBuyCollectionButton 
+					collection={collection}
+					position="top-right"
+					onPurchaseSuccess={() => {
+						// Handle successful purchase - maybe trigger a refetch
+						console.log('Collection purchased successfully');
+					}}
+				/>
+			)}
 			<div className="relative aspect-[4/3] overflow-hidden bg-muted">
 				{previewImage ? (
 					<div className="grid gap-1 h-full">

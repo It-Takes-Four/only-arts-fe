@@ -15,6 +15,7 @@ import { AuthProvider } from "./components/core/auth-context";
 import { ToastProvider } from "./components/common/toast-provider";
 import { WalletProvider } from "./components/core/wallet-context";
 import { SearchProvider } from "./context/search-context";
+import { Toaster } from "@/components/ui/sonner";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -58,6 +59,7 @@ export default function App() {
           <AuthProvider>
             <Outlet />
             <ToastProvider />
+            <Toaster />
           </AuthProvider>
         </WalletProvider>
       </ThemeProvider>

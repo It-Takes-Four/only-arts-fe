@@ -12,6 +12,7 @@ interface ArtistStudioContextType {
   collections: any[];
   collectionsLoading: boolean;
   addCollection: (collection: any) => void;
+  updateCollection: (updatedCollection: any) => void;
   refreshCollections: () => void;
 
   // Artworks
@@ -58,7 +59,7 @@ interface ArtistStudioProviderProps {
 
 export function ArtistStudioProvider({ children }: ArtistStudioProviderProps) {
   const { refreshUserWithValidation } = useAuthContext();
-  const { collections, isLoading: collectionsLoading, addCollection, refresh: refreshCollections } = useMyCollectionsQuery();
+  const { collections, isLoading: collectionsLoading, addCollection, updateCollection, refresh: refreshCollections } = useMyCollectionsQuery();
   const { 
     artworks, 
     isLoading: artworksLoading, 
@@ -117,6 +118,7 @@ export function ArtistStudioProvider({ children }: ArtistStudioProviderProps) {
     collections,
     collectionsLoading,
     addCollection,
+    updateCollection,
     refreshCollections,
     artworks,
     artworksLoading,
