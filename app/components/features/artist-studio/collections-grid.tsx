@@ -6,6 +6,7 @@ import { CollectionManagementCard } from "./collection-management-card";
 import { EditCollectionContentModal } from "./edit-collection-content-modal";
 import { EditCollectionCoverModal } from "./edit-collection-cover-modal";
 import { PublishCollectionModal } from "./publish-collection-modal";
+import { ManageCollectionArtsModal } from "./manage-collection-arts-modal";
 import { collectionService } from "../../../services/collection-service";
 import type { MyCollection } from "../../../types/collection";
 
@@ -25,6 +26,7 @@ export function CollectionsGrid({
   const [editingCollection, setEditingCollection] = useState<MyCollection | null>(null);
   const [editingCoverCollection, setEditingCoverCollection] = useState<MyCollection | null>(null);
   const [publishingCollection, setPublishingCollection] = useState<MyCollection | null>(null);
+  const [managingArtsCollection, setManagingArtsCollection] = useState<MyCollection | null>(null);
 
   const handleContentEdit = (collection: MyCollection) => {
     setEditingCollection(collection);
@@ -36,6 +38,10 @@ export function CollectionsGrid({
 
   const handlePublish = (collection: MyCollection) => {
     setPublishingCollection(collection);
+  };
+
+  const handleManageArts = (collection: MyCollection) => {
+    setManagingArtsCollection(collection);
   };
 
   const handleContentUpdated = async (updatedData: { collectionName: string; description: string; price?: number }) => {
@@ -142,6 +148,7 @@ export function CollectionsGrid({
               onEditContent={handleContentEdit}
               onEditCover={handleCoverEdit}
               onPublish={handlePublish}
+              onManageArts={handleManageArts}
             />
           ))}
         </div>
@@ -172,6 +179,15 @@ export function CollectionsGrid({
           onClose={() => setPublishingCollection(null)}
           collection={publishingCollection}
           onSuccess={handlePublished}
+        />
+      )}
+
+      {managingArtsCollection && (
+        <ManageCollectionArtsModal
+          isOpen={true}
+          onClose={() => setManagingArtsCollection(null)}
+          collection={managingArtsCollection}
+          onCollectionUpdated={onCollectionUpdated}
         />
       )}
     </>
