@@ -42,6 +42,19 @@ export function useMyCollectionsQuery(enabled = true) {
     }
   })
 
+  const publishCollectionMutation = useMutation({
+    mutationFn: async (collectionId: string) => {
+      return await collectionService.publishCollection(collectionId)
+    },
+    onSuccess: async () => {
+      await refreshCollections()
+    },
+    onError: (error) => {
+      console.error('Failed to create collection:', error);
+      queryClient.invalidateQueries({ queryKey: ['my-collections'] });
+    }
+  })
+
   const updateCollection = (updatedCollection: MyCollection) => {
     queryClient.setQueryData(['my-collections'], (old: PaginatedCollectionsResponse | undefined) => {
       if (!old) return old;
@@ -85,6 +98,11 @@ export function useMyCollectionsQuery(enabled = true) {
       isSuccess: addCollectionMutation.isSuccess,
       isError: addCollectionMutation.isError,
       error: addCollectionMutation.error,
+    },
+    publishCollection: publishCollectionMutation.mutate,
+    publishCollectionStatus: {
+      isPending: publishCollectionMutation.isPending,
+      isSuccess: publishCollectionMutation.isSuccess
     },
     updateCollection,
     removeCollection,
