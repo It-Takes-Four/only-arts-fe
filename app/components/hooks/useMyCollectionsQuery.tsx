@@ -42,34 +42,6 @@ export function useMyCollectionsQuery(enabled = true) {
     }
   })
 
-  const addCollection = (newCollection: MyCollection) => {
-    queryClient.setQueryData(['my-collections'], (old: PaginatedCollectionsResponse | undefined) => {
-      if (!old) {
-        return {
-          data: [newCollection],
-          pagination: {
-            page: 1,
-            limit: 10,
-            total: 1,
-            totalPages: 1,
-            hasNextPage: false,
-            hasPrevPage: false,
-          }
-        };
-      }
-
-      return {
-        ...old,
-        data: [newCollection, ...old.data],
-        pagination: {
-          ...old.pagination,
-          total: old.pagination.total + 1,
-          totalPages: Math.ceil((old.pagination.total + 1) / old.pagination.limit),
-        }
-      };
-    });
-  };
-
   const updateCollection = (updatedCollection: MyCollection) => {
     queryClient.setQueryData(['my-collections'], (old: PaginatedCollectionsResponse | undefined) => {
       if (!old) return old;
