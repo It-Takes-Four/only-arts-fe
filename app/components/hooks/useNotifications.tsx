@@ -19,6 +19,9 @@ export function useNotifications(initialPage = 1, initialLimit = 10) {
       const res = await notificationService.getMyNotifications(page, limit);
       setNotifications(res.data);
       setMeta(res.pagination);
+
+      console.log("notifications", notifications);
+      
     } catch (err) {
       setError(err as Error);
     } finally {
@@ -32,15 +35,19 @@ export function useNotifications(initialPage = 1, initialLimit = 10) {
 
   const removeNotification = useCallback(
     async (id: string) => {
+      // Optimistic update - remove from UI immediately
+      const originalNotifications = notifications;
+      setNotifications(prev => prev.filter(notification => notification.id !== id));
+
       try {
         await notificationService.removeNotification(id);
-        // Re-fetch after deletion
-        await fetchNotifications();
       } catch (err) {
+        // Revert on error
+        setNotifications(originalNotifications);
         setError(err as Error);
       }
     },
-    [fetchNotifications]
+    [notifications]
   );
 
   return {
