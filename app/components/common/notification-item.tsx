@@ -1,3 +1,4 @@
+import React from "react";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { Button } from "./button";
@@ -5,14 +6,15 @@ import { Button } from "./button";
 interface NotificationItemProps {
     index: number
     id: string
-    title: string
-    content: string
-    time: Date
+    message: string
+    createdAt: Date | string
+    removeNotification: (id: string) => void
 }
 
-function formatTimePassed(date: Date): string {
+function formatTimePassed(date: string | Date): string {
+    const dateObj = typeof date === "string" ? new Date(date) : date;
     const now = Date.now();
-    const diff = now - date.getTime(); // in ms
+    const diff = now - dateObj.getTime();
 
     const seconds = Math.floor(diff / 1000);
     const minutes = Math.floor(diff / (1000 * 60));
@@ -25,7 +27,12 @@ function formatTimePassed(date: Date): string {
     return `${days} day${days > 1 ? "s" : ""} ago`;
 }
 
-export function NotificationItem({ id, content, time, title, index }: NotificationItemProps) {
+export function NotificationItem({ id, message, createdAt, index, removeNotification }: NotificationItemProps) {
+
+    const handleRemoveNotification = (e: React.MouseEvent) => {
+        e.stopPropagation()
+        removeNotification(id)
+    }
     return (
         <>
             <motion.div
@@ -43,14 +50,17 @@ export function NotificationItem({ id, content, time, title, index }: Notificati
                 }}
                 className={`p-3 border-b border-muted transition-colors ${index === 2 ? "border-b-0" : ""}`}
             >
-                <div className="flex gap-2">
-                    <div className="flex flex-col gap-1 w-full">
-                        <p className="text-xs text-foreground text-left">{content}</p>
-                        <p className="text-xs text-muted-foreground text-left">{formatTimePassed(time)}</p>
+                <div className="flex gap-2 items-start">
+                    <div className="flex flex-col gap-1 flex-1 min-w-0">
+                        <p className="text-xs text-foreground text-left break-words text-wrap">{message}</p>
+                        <p className="text-xs text-muted-foreground text-left">{formatTimePassed(createdAt)}</p>
                     </div>
                     <Button
                         variant="ghost"
                         className="hover:text-foreground p-1 ml-auto"
+                        onClick={(e: React.MouseEvent) => {
+                            handleRemoveNotification(e)
+                        }}
                     >
                         <X className="w-4 h-4" />
                     </Button>

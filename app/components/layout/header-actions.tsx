@@ -2,12 +2,23 @@ import { Button } from "../common/button";
 import { Bell, Search } from "lucide-react";
 import { NotificationDropdown } from "../common/notification-dropdown";
 import { useState } from "react";
+import { useNotifications } from "../hooks/useNotifications";
 
 interface HeaderActionsProps {
   onSearchClick?: () => void;
 }
 
 export function HeaderActions({ onSearchClick }: HeaderActionsProps) {
+  const {
+    notifications,
+    loading,
+    error,
+    page,
+    meta,
+    setPage,
+    removeNotification,
+  } = useNotifications();
+
   const [notificationIsOpen, setNotificationIsOpen] = useState<boolean>(false)
 
   const toggleNotificationDropdown = () => {
@@ -28,10 +39,20 @@ export function HeaderActions({ onSearchClick }: HeaderActionsProps) {
 
       {/* Notification Bell */}
       <Button variant="ghost" size="icon" className="h-9 w-9 relative" onClick={() => { toggleNotificationDropdown() }} >
-        <Bell className="h-5 w-5"/>
+        <Bell className="h-5 w-5" />
         {/* Notification dot */}
-        <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-        <NotificationDropdown isOpen={notificationIsOpen} />
+        {!loading && notifications.length > 0 && (
+          <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+        )}
+
+        {/* Notification dropdown */}
+        <NotificationDropdown isOpen={notificationIsOpen} notifications={notifications}
+          loading={loading}
+          error={error}
+          page={page}
+          meta={meta}
+          setPage={setPage}
+          removeNotification={removeNotification} />
       </Button>
     </div>
   );
