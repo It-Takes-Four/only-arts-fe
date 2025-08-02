@@ -10,7 +10,7 @@ import { collectionService } from "../../services/collection-service";
 import { artCollectionsService } from "../../services/art-collections-service";
 import { useEffect } from "react";
 import { useCollection } from "../../components/hooks/useCollection";
-import { formatDateToMonthYear } from "../../utils/dates/DateFormatter";
+import { formatTimestampToMonthYear } from "../../utils/dates/DateFormatter";
 import { motion } from "framer-motion";
 import { FancyLoading } from "../../components/common/fancy-loading";
 import { getUserInitials } from "../../utils/UtilityFunction";
@@ -19,6 +19,18 @@ import { formatPriceDisplay } from "../../utils/currency";
 export function CollectionPage() {
 	const { collectionId } = useParams<{ collectionId: string }>();
 	const { collection, collectionImageUrl, error } = useCollection(collectionId);
+
+	const formatDate = (dateString: string) => {
+		const date = new Date(dateString);
+		const now = new Date();
+		const diffTime = Math.abs(now.getTime() - date.getTime());
+		const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+		if (diffDays === 1) return "Yesterday";
+		if (diffDays < 7) return `${diffDays} days ago`;
+		if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
+		return date.toLocaleDateString();
+	};
 
 	// Handle error state
 	if (error || !collection) {
@@ -77,7 +89,7 @@ export function CollectionPage() {
 										variant="outline"
 										className="font-mono text-xs uppercase border-white/25 text-white"
 									>
-										CREATED {formatDateToMonthYear(collection.createdAt)}
+										CREATED {formatDate(collection.createdAt)}
 									</Badge>
 									{collection.isPublished && (
 										<Badge variant="secondary" className="bg-green-500/20 text-green-100 font-mono uppercase">

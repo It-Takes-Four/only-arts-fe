@@ -172,6 +172,7 @@ export interface MyArtwork {
 	likesCount: number;
 	isInACollection: boolean;
 	tags: Array<{
+		tagName?: string;
 		artId: string;
 		tagId: string;
 		tag: {
