@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useNavigate } from "react-router";
 import { getUserInitials } from "../../utils/UtilityFunction";
+import { formatPriceDisplay } from "../../utils/currency";
 
 interface CollectionCardProps {
 	id: string
@@ -75,7 +76,7 @@ export function CollectionCard({
 				</TableCell>
 				<TableCell>
 					{price ? (
-						<span className="font-semibold">${price}</span>
+						<span className="font-semibold">{formatPriceDisplay(price)}</span>
 					) : (
 						<span className="text-sm text-muted-foreground">Free</span>
 					)}
@@ -123,7 +124,7 @@ export function CollectionCard({
 								</span>
 
 							</div>
-							{price && <span className="font-semibold text-xl">${price}</span>}
+							{price && <span className="font-semibold text-xl">{formatPriceDisplay(price)}</span>}
 						</div>
 					</CardContent>
 				</div>
@@ -190,7 +191,7 @@ export function CollectionCard({
 					<Separator className="my-3" />
 					<div className="flex items-center justify-between">
 						<span className="text-sm text-muted-foreground">Price</span>
-						<span className="font-semibold text-lg">{price ? `$${price}` : "Free"}</span>
+						<span className="font-semibold text-lg">{price ? formatPriceDisplay(price) : "Free"}</span>
 					</div>
 				</>
 			</CardContent>

@@ -13,11 +13,11 @@ import { CreateArtworkModal } from "../../components/features/artist-studio/crea
 import { EditArtistProfileModal } from "../../components/features/artist-studio/edit-artist-profile-modal";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { 
-	PlusIcon, 
-	ChartBarIcon, 
-	EyeIcon, 
-	HeartIcon, 
+import {
+	PlusIcon,
+	ChartBarIcon,
+	EyeIcon,
+	HeartIcon,
 	ShareIcon,
 	FolderIcon,
 	PencilIcon,
@@ -26,7 +26,9 @@ import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { ImageIcon, Wallet } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDateToMonthYear } from "../../utils/dates/DateFormatter";
+import { formatPriceDisplay } from "../../utils/currency";
 import { WalletManagementModal } from "app/components/features/artist-studio/wallet-management-modal";
+import type { MyCollection } from "app/types/collection";
 
 export function ArtistStudioPage() {
 	const { user, refreshUserWithValidation } = useAuthContext();
@@ -49,9 +51,13 @@ export function ArtistStudioPage() {
 
 	// Handle collection creation success
 	const handleCollectionCreated = (collection: any) => {
+		console.log('Before adding:', collections.length);
+		
+		
 		console.log('Collection created:', collection);
 		// Add the new collection to the list
 		addCollection(collection);
+		console.log('After adding:', collections.length); // Should be +1
 	};
 
 	// Handle artwork creation success
@@ -82,7 +88,7 @@ export function ArtistStudioPage() {
 				<div className="space-y-6">
 					<div className="flex justify-between items-center">
 						<h2 className="text-2xl font-bold">My Collections</h2>
-						<Button 
+						<Button
 							className="flex items-center gap-2"
 							onClick={() => setShowCreateCollectionModal(true)}
 						>
@@ -91,14 +97,14 @@ export function ArtistStudioPage() {
 						</Button>
 					</div>
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-						<div 
+						<div
 							className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 flex flex-col items-center justify-center min-h-[200px] hover:border-muted-foreground/50 transition-colors cursor-pointer"
 							onClick={() => setShowCreateCollectionModal(true)}
 						>
 							<PlusIcon className="h-12 w-12 text-muted-foreground/50 mb-2" />
 							<p className="text-sm text-muted-foreground">Create New Collection</p>
 						</div>
-						
+
 						{collectionsLoading ? (
 							// Loading skeleton
 							Array.from({ length: 3 }).map((_, index) => (
@@ -134,7 +140,7 @@ export function ArtistStudioPage() {
 					<div className="flex justify-between items-center">
 						<h2 className="text-2xl font-bold">My Artworks</h2>
 						<div className="flex gap-2">
-							<Button 
+							<Button
 								className="flex items-center gap-2"
 								onClick={() => setShowCreateArtworkModal(true)}
 							>
@@ -144,14 +150,14 @@ export function ArtistStudioPage() {
 						</div>
 					</div>
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-						<div 
+						<div
 							className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 flex flex-col items-center justify-center min-h-[200px] hover:border-muted-foreground/50 transition-colors cursor-pointer"
 							onClick={() => setShowCreateArtworkModal(true)}
 						>
 							<PlusIcon className="h-12 w-12 text-muted-foreground/50 mb-2" />
 							<p className="text-sm text-muted-foreground">Upload New Artwork</p>
 						</div>
-                        {artworksLoading ? (
+						{artworksLoading ? (
 							Array.from({ length: 4 }).map((_, index) => (
 								<div key={index} className="animate-pulse">
 									<div className="aspect-square bg-muted rounded-lg"></div>
@@ -160,7 +166,7 @@ export function ArtistStudioPage() {
 						) : artworks.length > 0 ? (
 							artworks.map((artwork) => (
 								<div key={artwork.id} className="relative">
-									<ArtCard 
+									<ArtCard
 										art={{
 											id: artwork.id,
 											title: artwork.title,
@@ -174,7 +180,7 @@ export function ArtistStudioPage() {
 											tags: artwork.tags.map((tag: any) => ({ name: tag.tag.tagName })),
 											type: 'art',
 											createdAt: artwork.datePosted
-										}} 
+										}}
 									/>
 									{/* Artwork stats overlay */}
 									<div className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm rounded-lg p-2 text-white text-xs">
@@ -190,7 +196,7 @@ export function ArtistStudioPage() {
 						) : (
 							<div className="col-span-full text-center py-8">
 								<p className="text-muted-foreground">No artworks yet. Upload your first artwork!</p>
-								<Button 
+								<Button
 									className="mt-4"
 									onClick={() => setShowCreateArtworkModal(true)}
 								>
@@ -208,7 +214,7 @@ export function ArtistStudioPage() {
 			content: (
 				<div className="space-y-6">
 					<h2 className="text-2xl font-bold">Engagement Analytics</h2>
-					
+
 					{/* Overview Cards */}
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4">
 						<Card>
@@ -243,7 +249,7 @@ export function ArtistStudioPage() {
 								<p className="text-xs text-muted-foreground">Not available yet</p>
 							</CardContent>
 						</Card>
-						
+
 						<Card>
 							<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 								<CardTitle className="text-sm font-medium">Total Likes</CardTitle>
@@ -254,7 +260,7 @@ export function ArtistStudioPage() {
 								<p className="text-xs text-muted-foreground">Not available yet</p>
 							</CardContent>
 						</Card>
-						
+
 						<Card>
 							<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 								<CardTitle className="text-sm font-medium">Total Shares</CardTitle>
@@ -265,7 +271,7 @@ export function ArtistStudioPage() {
 								<p className="text-xs text-muted-foreground">Not available yet</p>
 							</CardContent>
 						</Card>
-						
+
 						<Card>
 							<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 								<CardTitle className="text-sm font-medium">Total Sales</CardTitle>
@@ -276,7 +282,7 @@ export function ArtistStudioPage() {
 								<p className="text-xs text-muted-foreground">Not available yet</p>
 							</CardContent>
 						</Card>
-						
+
 						<Card>
 							<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 								<CardTitle className="text-sm font-medium">Revenue</CardTitle>
@@ -315,7 +321,7 @@ export function ArtistStudioPage() {
 													</Badge>
 													{collection.price && (
 														<Badge variant="outline">
-															${collection.price.toString()}
+															{formatPriceDisplay(collection.price.toString())}
 														</Badge>
 													)}
 												</div>
@@ -327,7 +333,7 @@ export function ArtistStudioPage() {
 							) : (
 								<div className="text-center py-8">
 									<p className="text-muted-foreground">No collections yet. Create your first collection!</p>
-									<Button 
+									<Button
 										className="mt-4"
 										onClick={() => setShowCreateCollectionModal(true)}
 									>
@@ -373,11 +379,11 @@ export function ArtistStudioPage() {
 			<GlassCard className="mb-8 py-4 px-8">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-4">
-						<img 
-							src={user.profilePictureFileId 
+						<img
+							src={user.profilePictureFileId
 								? `${import.meta.env.VITE_API_BASE_URL}/upload/profile/${user.profilePictureFileId}`
 								: "https://placehold.co/80x80"
-							} 
+							}
 							alt="Artist Avatar"
 							className="rounded-full w-20 h-20 shadow-lg object-cover"
 							onError={(e) => {
@@ -390,12 +396,12 @@ export function ArtistStudioPage() {
 							<p className="text-sm text-muted-foreground mt-1">{user.artist.bio || "No bio available"}</p>
 							<div className="flex items-center gap-2 mt-2">
 								<Badge variant="outline"
-											 className="font-mono text-primary-foreground text-xs uppercase border-white/25">
+									className="font-mono text-primary-foreground text-xs uppercase border-white/25">
 									{user?.artist?.createdAt ? `JOINED ${formatDateToMonthYear(user.artist.createdAt)}` : 'ARTIST'}
 								</Badge>
 								{user.artist.isVerified && (
 									<Badge variant="default" className="font-mono uppercase" >
-										<CheckBadgeIcon className="mb-0.25"/>
+										<CheckBadgeIcon className="mb-0.25" />
 										Verified Artist
 									</Badge>
 								)}
@@ -472,7 +478,7 @@ export function ArtistStudioPage() {
 				onClose={() => setShowCreateCollectionModal(false)}
 				onSuccess={handleCollectionCreated}
 			/>
-			
+
 			<CreateArtworkModal
 				isOpen={showCreateArtworkModal}
 				onClose={() => setShowCreateArtworkModal(false)}

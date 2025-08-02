@@ -124,7 +124,6 @@ export interface MyCollection {
 	createdAt: string;
 	updatedAt: string;
 	artistId: string;
-	arts: MyArtwork[];
 	artist: {
 		id: string;
 		userId: string;
@@ -212,6 +211,18 @@ export interface MyArtwork {
 		createdAt: string;
 		updatedAt: string;
 	};
+}
+
+export interface PaginatedCollectionsResponse {
+  data: MyCollection[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
 }
 
 export type MyArtworksResponse = MyArtwork[];

@@ -14,6 +14,7 @@ import { formatDateToMonthYear } from "../../utils/dates/DateFormatter";
 import { motion } from "framer-motion";
 import { FancyLoading } from "../../components/common/fancy-loading";
 import { getUserInitials } from "../../utils/UtilityFunction";
+import { formatPriceDisplay } from "../../utils/currency";
 
 export function CollectionPage() {
 	const { collectionId } = useParams<{ collectionId: string }>();
@@ -109,7 +110,7 @@ export function CollectionPage() {
 									Price
 								</span>
 								<span className="text-2xl font-semibold text-white">
-									{collection.price ? `${collection.price} ETH` : 'Free'}
+									{collection.price ? formatPriceDisplay(collection.price) : 'Free'}
 								</span>
 							</div>
 						</div>

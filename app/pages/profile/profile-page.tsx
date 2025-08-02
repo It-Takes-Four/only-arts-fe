@@ -22,6 +22,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { FancyLoading } from "../../components/common/fancy-loading";
 import { Button } from "../../components/common/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { formatPriceDisplay, parsePrice } from "../../utils/currency";
 import type { ArtistCollection } from "../../types/collection";
 import type { ArtistProfile } from "../../types/artist";
 import type { ArtistArtwork } from "../../types/artwork";
@@ -42,29 +43,29 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 	const isOwnProfile = !artistId; // If no artistId, it's the current user's profile
 
 	// Fetch data based on whether it's own profile or another artist's profile
-	const { 
-		data: collectionsData, 
+	const {
+		data: collectionsData,
 		isLoading: collectionsLoading,
 		error: collectionsError
 	} = useArtistCollectionsQuery(artistId || '', collectionsPage, 10);
 
-	const { 
-		data: artworksData, 
+	const {
+		data: artworksData,
 		isLoading: artworksLoading,
 		error: artworksError
 	} = useArtistArtworksQuery(artistId || '');
 
 	// Fetch own collections and artworks when viewing own profile
-	const { 
-		collections: myCollectionsData, 
+	const {
+		collections: myCollectionsData,
 		isLoading: myCollectionsLoading,
-		error: myCollectionsError 
+		error: myCollectionsError
 	} = useMyCollectionsQuery();
 
-	const { 
-		artworks: myArtworksData, 
+	const {
+		artworks: myArtworksData,
 		isLoading: myArtworksLoading,
-		error: myArtworksError 
+		error: myArtworksError
 	} = useMyArtworksQuery();
 
 	// Use currentUser for joined date if it's own profile, otherwise use artist data
@@ -106,18 +107,18 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 						<div className="flex items-center justify-between mb-4">
 							<h3 className="text-xl font-semibold">Collections</h3>
 							{/* Show View All button based on data availability */}
-							{(isOwnProfile ? 
-								(myCollectionsData && myCollectionsData.length > 4) : 
+							{(isOwnProfile ?
+								(myCollectionsData && myCollectionsData.length > 4) :
 								(collectionsData?.data && collectionsData.data.length > 4)
 							) && (
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={() => setTabValue("collections")}
-								>
-									View All ({isOwnProfile ? myCollectionsData?.length || 0 : collectionsData?.pagination?.total || 0})
-								</Button>
-							)}
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => setTabValue("collections")}
+									>
+										View All ({isOwnProfile ? myCollectionsData?.length || 0 : collectionsData?.pagination?.total || 0})
+									</Button>
+								)}
 						</div>
 						{/* Loading state */}
 						{(isOwnProfile ? myCollectionsLoading : collectionsLoading) ? (
@@ -134,8 +135,8 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 							<div className="text-center py-4">
 								<p className="text-muted-foreground text-sm">Failed to load collections</p>
 							</div>
-						) : /* Success state with data */ (isOwnProfile ? 
-							(myCollectionsData && myCollectionsData.length > 0) : 
+						) : /* Success state with data */ (isOwnProfile ?
+							(myCollectionsData && myCollectionsData.length > 0) :
 							(collectionsData?.data && Array.isArray(collectionsData.data) && collectionsData.data.length > 0)
 						) ? (
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -145,13 +146,13 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 											id={collection.id}
 											name={collection.collectionName}
 											description={collection.description || "No description"}
-											artworkCount={isOwnProfile ? 
-												(collection as any).arts?.length || 0 : 
+											artworkCount={isOwnProfile ?
+												(collection as any).arts?.length || 0 :
 												(collection as any).artsCount || 0
 											}
 											previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
 											createdBy={collection.artist.artistName}
-											price={parseFloat(collection.price || '0')}
+											price={collection.price || '0'}
 										/>
 										{/* Only show buy button for other artists' collections */}
 										{!isOwnProfile && collection.isPublished && parseFloat(collection.price || '0') > 0 && (
@@ -161,7 +162,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 													onClick={() => handleBuyCollection(collection as ArtistCollection)}
 													className="bg-primary/90 hover:bg-primary shadow-lg"
 												>
-													Buy ${parseFloat(collection.price || '0').toFixed(2)}
+													Buy {formatPriceDisplay(collection.price || '0')}
 												</Button>
 											</div>
 										)}
@@ -179,18 +180,18 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 					<div>
 						<div className="flex items-center justify-between mb-4">
 							<h3 className="text-xl font-semibold">Artworks</h3>
-							{(isOwnProfile ? 
-								(myArtworksData && myArtworksData.length > 8) : 
+							{(isOwnProfile ?
+								(myArtworksData && myArtworksData.length > 8) :
 								(artworksData && artworksData.length > 8)
 							) && (
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={() => setTabValue("artworks")}
-								>
-									View All ({isOwnProfile ? myArtworksData?.length || 0 : artworksData?.length || 0})
-								</Button>
-							)}
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => setTabValue("artworks")}
+									>
+										View All ({isOwnProfile ? myArtworksData?.length || 0 : artworksData?.length || 0})
+									</Button>
+								)}
 						</div>
 						{/* Loading state */}
 						{(isOwnProfile ? myArtworksLoading : artworksLoading) ? (
@@ -207,8 +208,8 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 							<div className="text-center py-4">
 								<p className="text-muted-foreground text-sm">Failed to load artworks</p>
 							</div>
-						) : /* Success state with data */ (isOwnProfile ? 
-							(myArtworksData && myArtworksData.length > 0) : 
+						) : /* Success state with data */ (isOwnProfile ?
+							(myArtworksData && myArtworksData.length > 0) :
 							(artworksData && Array.isArray(artworksData) && artworksData.length > 0)
 						) ? (
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
@@ -222,8 +223,8 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 												imageUrl: collectionService.getArtworkImageUrl(artwork.imageFileId),
 												artist: {
 													id: artwork.artistId,
-													name: isOwnProfile ? 
-														(currentUser?.artist?.artistName || "Unknown Artist") : 
+													name: isOwnProfile ?
+														(currentUser?.artist?.artistName || "Unknown Artist") :
 														(artist?.artistName || "Unknown Artist"),
 													profilePicture: isOwnProfile ?
 														(currentUser?.profilePictureFileId ? artistService.getProfilePictureUrl(currentUser.profilePictureFileId) : null) :
@@ -276,8 +277,8 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 						<div className="text-center py-8">
 							<p className="text-muted-foreground">Failed to load collections</p>
 						</div>
-					) : /* Success state with data */ (isOwnProfile ? 
-						(myCollectionsData && myCollectionsData.length > 0) : 
+					) : /* Success state with data */ (isOwnProfile ?
+						(myCollectionsData && myCollectionsData.length > 0) :
 						(collectionsData?.data && Array.isArray(collectionsData.data) && collectionsData.data.length > 0)
 					) ? (
 						<>
@@ -288,13 +289,13 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 											id={collection.id}
 											name={collection.collectionName}
 											description={collection.description || "No description"}
-											artworkCount={isOwnProfile ? 
-												(collection as any).arts?.length || 0 : 
+											artworkCount={isOwnProfile ?
+												(collection as any).arts?.length || 0 :
 												(collection as any).artsCount || 0
 											}
 											previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
 											createdBy={collection.artist.artistName}
-											price={parseFloat(collection.price || '0')}
+											price={collection.price || '0'}
 										/>
 										{/* Only show buy button for other artists' collections */}
 										{!isOwnProfile && collection.isPublished && parseFloat(collection.price || '0') > 0 && (
@@ -304,7 +305,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 													onClick={() => handleBuyCollection(collection as ArtistCollection)}
 													className="bg-primary/90 hover:bg-primary shadow-lg"
 												>
-													Buy ${parseFloat(collection.price || '0').toFixed(2)}
+													Buy {formatPriceDisplay(collection.price || '0')}
 												</Button>
 											</div>
 										)}
@@ -367,8 +368,8 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 						<div className="text-center py-8">
 							<p className="text-muted-foreground">Failed to load artworks</p>
 						</div>
-					) : /* Success state with data */ (isOwnProfile ? 
-						(myArtworksData && myArtworksData.length > 0) : 
+					) : /* Success state with data */ (isOwnProfile ?
+						(myArtworksData && myArtworksData.length > 0) :
 						(artworksData && Array.isArray(artworksData) && artworksData.length > 0)
 					) ? (
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -405,7 +406,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 											<p className="text-sm text-muted-foreground mb-2 line-clamp-2">
 												{artwork.description || "No description"}
 											</p>
-											
+
 											{/* Tags */}
 											{artwork.tags && artwork.tags.length > 0 && (
 												<div className="flex flex-wrap gap-1 mb-3">
@@ -430,8 +431,8 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 													className="w-6 h-6 rounded-full"
 												/>
 												<span className="text-sm text-muted-foreground">
-													{isOwnProfile ? 
-														(artist?.artistName || 'Unknown Artist') : 
+													{isOwnProfile ?
+														(artist?.artistName || 'Unknown Artist') :
 														'Artist'
 													}
 												</span>
@@ -503,7 +504,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 			>
 
 				<ShinyBadge className="self-start">
-					<CheckBadgeIcon className="size-4 mr-1"/>
+					<CheckBadgeIcon className="size-4 mr-1" />
 					{artist.isVerified ? 'VERIFIED ARTIST' : 'ARTIST'}
 				</ShinyBadge>
 
@@ -511,8 +512,8 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 
 				<GlassCard className="py-4 px-8 flex flex-col lg:flex-row justify-between">
 					<div className="flex items-start space-x-4">
-						<img 
-							src={getProfilePictureUrl()} 
+						<img
+							src={getProfilePictureUrl()}
 							alt="Artist Avatar"
 							className="rounded-full w-20 h-20 shadow-lg object-cover"
 							onError={(e) => {
@@ -524,8 +525,8 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 								<h1 className="text-2xl font-bold text-white">{artist.artistName}</h1>
 								{!isOwnProfile &&
 									<>
-                    <Separator orientation="vertical" className="bg-white/25 h-5 mr-1 ml-4"/>
-                    <FollowButton/>
+										<Separator orientation="vertical" className="bg-white/25 h-5 mr-1 ml-4" />
+										<FollowButton />
 									</>
 								}
 							</span>
@@ -534,12 +535,12 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 								<p className="text-sm text-white/90 mt-2 max-w-md">{artist.bio}</p>
 							)}
 							<Badge variant="outline"
-										 className="mt-2 font-mono text-primary-foreground text-xs uppercase border-white/25">
+								className="mt-2 font-mono text-primary-foreground text-xs uppercase border-white/25">
 								JOINED {userForJoinedDate?.createdAt ? formatDate(userForJoinedDate.createdAt).toUpperCase() : 'UNKNOWN TIME'}
 							</Badge>
 						</div>
 					</div>
-					<Separator className="bg-white/15 my-4 lg:hidden"/>
+					<Separator className="bg-white/15 my-4 lg:hidden" />
 
 					<div className="rounded-lg flex items-end space-x-6">
 						<div className="flex flex-col items-center lg:items-end flex-1">
