@@ -18,15 +18,21 @@ interface CollectionsGridProps {
   onCreateCollection: () => void;
   onCollectionUpdated: (updatedCollection: MyCollection) => void;
   onPageChange?: (page: number) => void;
+  publishCollection: (collectionId: string) => void;
+  publishCollectionIsPending: boolean;
+  publishCollectionIsSuccess: boolean;
 }
 
-export function CollectionsGrid({ 
-  collections, 
-  collectionsLoading, 
+export function CollectionsGrid({
+  collections,
+  collectionsLoading,
   pagination,
   onCreateCollection,
   onCollectionUpdated,
-  onPageChange
+  onPageChange,
+  publishCollection,
+  publishCollectionIsPending,
+  publishCollectionIsSuccess
 }: CollectionsGridProps) {
   const [editingCollection, setEditingCollection] = useState<MyCollection | null>(null);
   const [editingCoverCollection, setEditingCoverCollection] = useState<MyCollection | null>(null);
@@ -87,24 +93,7 @@ export function CollectionsGrid({
   };
 
   const handlePublished = async () => {
-    if (publishingCollection) {
-      // Optimistic update
-      const publishedCollection = {
-        ...publishingCollection,
-        isPublished: true,
-        updatedAt: new Date().toISOString()
-      };
-      onCollectionUpdated(publishedCollection);
-      setPublishingCollection(null);
-
-      // Refresh collections to get server state
-      try {
-        const freshCollection = await collectionService.getCollectionById(publishingCollection.id);
-        onCollectionUpdated(freshCollection);
-      } catch (error) {
-        console.error('Failed to refresh collection after publish:', error);
-      }
-    }
+    setPublishingCollection(null);
   };
 
   return (
@@ -120,7 +109,7 @@ export function CollectionsGrid({
             Create Collection
           </Button>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {/* Create New Collection Card */}
           <div
@@ -193,6 +182,9 @@ export function CollectionsGrid({
           onClose={() => setPublishingCollection(null)}
           collection={publishingCollection}
           onSuccess={handlePublished}
+          publishCollection={publishCollection}
+          publishCollectionIsPending={publishCollectionIsPending}
+          publishCollectionIsSuccess={publishCollectionIsSuccess}
         />
       )}
 

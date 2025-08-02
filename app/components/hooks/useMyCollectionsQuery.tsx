@@ -100,7 +100,7 @@ export function useMyCollectionsQuery(enabled = true) {
       error: addCollectionMutation.error,
     },
     publishCollection: publishCollectionMutation.mutate,
-    publishCollectionStatus: {
+    publishCollectionStatus: {  
       isPending: publishCollectionMutation.isPending,
       isSuccess: publishCollectionMutation.isSuccess
     },

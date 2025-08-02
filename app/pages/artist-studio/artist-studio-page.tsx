@@ -51,15 +51,22 @@ export function ArtistStudioPage() {
 
 	// Paginated queries
 	const {
-		data: collectionsData,
-		isLoading: collectionsLoading,
-		refetch: refetchCollections
+		collectionsLoading,
+		collectionsData,
+		addCollection,
+		addCollectionStatus:{
+			addCollectionIsPending,
+			addCollectionIsSuccess
+		},
+		publishCollection,
+		publishCollectionStatus:{
+			publishCollectionIsPending,
+			publishCollectionIsSuccess
+		},
 	} = useMyCollectionsWithPaginationQuery(collectionsPage, collectionsLimit);
 
 	const {
-		data: artworksData,
-		isLoading: artworksLoading,
-		refetch: refetchArtworks
+
 	} = useMyArtworksWithPaginationQuery(artworksPage, artworksLimit);
 
 	const [tabValue, setTabValue] = useState("collections");
@@ -69,9 +76,8 @@ export function ArtistStudioPage() {
 	const [showWalletModal, setShowWalletModal] = useState(false);
 
 	const handleCollectionCreated = async (collection: any) => {
+		await addCollection(collection);
 		console.log('Collection created:', collection);
-		// Refetch collections to show the new one
-		await refetchCollections();
 		// If we're not on the first page, go to first page to see the new collection
 		if (collectionsPage !== 1) {
 			setCollectionsPage(1);
@@ -81,8 +87,6 @@ export function ArtistStudioPage() {
 	// Handle collection update
 	const handleCollectionUpdated = async (updatedCollection: any) => {
 		console.log('Collection updated:', updatedCollection);
-		// Refetch collections to show updates
-		await refetchCollections();
 	};
 
 	// Handle artist profile update success
@@ -110,12 +114,15 @@ export function ArtistStudioPage() {
 					onCreateCollection={() => setShowCreateCollectionModal(true)}
 					onCollectionUpdated={handleCollectionUpdated}
 					onPageChange={setCollectionsPage}
+					publishCollection={publishCollection}
+					publishCollectionIsPending={publishCollectionIsPending}
+					publishCollectionIsSuccess={publishCollectionIsSuccess}
 				/>
 			),
 		},
 		{
 			value: "artworks",
-			label: "Artworks", 
+			label: "Artworks",
 			content: (
 				<ArtworksGrid
 					artworks={artworksData?.data || []}

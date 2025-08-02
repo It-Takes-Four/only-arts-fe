@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { X, Upload, AlertTriangle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -13,29 +13,43 @@ interface PublishCollectionModalProps {
   onClose: () => void;
   collection: MyCollection;
   onSuccess: () => void;
+  publishCollection: (collectionId: string) => void;
+  publishCollectionIsPending: boolean;
+  publishCollectionIsSuccess: boolean;
 }
 
-export function PublishCollectionModal({ 
-  isOpen, 
-  onClose, 
-  collection, 
-  onSuccess 
+export function PublishCollectionModal({
+  isOpen,
+  onClose,
+  collection,
+  onSuccess,
+  publishCollection,
+  publishCollectionIsPending,
+  publishCollectionIsSuccess
 }: PublishCollectionModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (publishCollectionIsPending) setIsSubmitting(true);
+  }, [publishCollectionIsPending])
+
+  useEffect(() => {
+    if (publishCollectionIsSuccess) {
+      toast.success("Collection published successfully!");
+      onSuccess();
+      setIsSubmitting(false);
+      onClose();
+    }
+  }, [publishCollectionIsSuccess])
+
 
   const handlePublish = async () => {
     setIsSubmitting(true);
     try {
-      await collectionService.publishCollection(collection.id);
-      
-      toast.success("Collection published successfully!");
-      onSuccess();
-      onClose();
+      await publishCollection(collection.id);
     } catch (error: any) {
       console.error('Publish collection error:', error);
       toast.error(error.message || "Failed to publish collection");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -105,9 +119,9 @@ export function PublishCollectionModal({
             <Alert>
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
-                <strong>Important:</strong> Publishing your collection is irreversible. 
-                Once published, the collection will be visible to all users and you will 
-                <strong> no longer be able to edit</strong> the collection details, price, 
+                <strong>Important:</strong> Publishing your collection is irreversible.
+                Once published, the collection will be visible to all users and you will
+                <strong> no longer be able to edit</strong> the collection details, price,
                 or cover image.
               </AlertDescription>
             </Alert>

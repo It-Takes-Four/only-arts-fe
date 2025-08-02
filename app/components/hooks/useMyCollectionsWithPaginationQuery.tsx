@@ -1,9 +1,11 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { collectionService } from '../../services/collection-service';
 import type { PaginatedCollectionsResponse } from '../../types/collection';
 
 export function useMyCollectionsWithPaginationQuery(page: number = 1, limit: number = 10, enabled = true) {
-  return useQuery<PaginatedCollectionsResponse>({
+  const queryClient = useQueryClient();
+
+  const query = useQuery({
     queryKey: ['my-collections-paginated', page, limit],
     queryFn: async () => {
       console.log('🔄 Fetching my collections...', 'page:', page, 'limit:', limit);
@@ -22,5 +24,56 @@ export function useMyCollectionsWithPaginationQuery(page: number = 1, limit: num
     },
     refetchOnWindowFocus: false,
     refetchOnMount: true,
-  });
+  })
+
+  const refreshCollections = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['my-collections-paginated', page, limit] });
+    await query.refetch()
+  };
+
+  const addCollectionMutation = useMutation({
+    mutationFn: async (request: any) => {
+      return await collectionService.createCollection(request)
+    },
+    onSuccess: async () => {
+      await refreshCollections()
+    },
+    onError: (error) => {
+      console.error('Failed to create collection:', error);
+      // Optionally invalidate to refetch and get correct state
+      queryClient.invalidateQueries({ queryKey: ['my-collections'] });
+    }
+  })
+
+  const publishCollectionMutation = useMutation({
+    mutationFn: async (collectionId: string) => {
+      return await collectionService.publishCollection(collectionId)
+    },
+    onSuccess: async () => {
+      await refreshCollections()
+    },
+    onError: (error) => {
+      console.error('Failed to create collection:', error);
+      queryClient.invalidateQueries({ queryKey: ['my-collections'] });
+    }
+  })
+
+  const removeCollection = (collectionId: string) => {
+
+  };
+
+  return {
+    collectionsLoading: query.isLoading,
+    collectionsData: query.data,
+    addCollection: addCollectionMutation.mutate,
+    addCollectionStatus: {
+      addCollectionIsPending: addCollectionMutation.isPending,
+      addCollectionIsSuccess: addCollectionMutation.isSuccess,
+    },
+    publishCollection: publishCollectionMutation.mutate,
+    publishCollectionStatus: {
+      publishCollectionIsPending: publishCollectionMutation.isPending,
+      publishCollectionIsSuccess: publishCollectionMutation.isSuccess,
+    }
+  }
 }
