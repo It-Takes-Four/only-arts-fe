@@ -178,11 +178,11 @@ export function CollectionCard({
 							<Badge variant="secondary"
 								className="text-foreground font-semibold border-border gap-x-1.5">
 								<Images />
-								{artworkCount}
+								{artworkCount ?? "0"}
 							</Badge>
 						</TooltipTrigger>
 						<TooltipContent className="bg-popover text-popover-foreground py-2 ">
-							<p className="font-mono">{artworkCount} ITEMS</p>
+							<p className="font-mono">{artworkCount ?? "0"} ITEMS</p>
 						</TooltipContent>
 					</Tooltip>
 				</div>

@@ -14,6 +14,12 @@ const formatDate = (date: Date, includeSecond: boolean = false) => {
     return `${year}-${month}-${day}${formattedTime}`;
 };
 
+export const formatTimestampToMonthYear = (timestamp: number) => {
+    const date = new Date(timestamp * 1000);
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short' };
+    return date.toLocaleDateString('en-US', options).toUpperCase();
+}
+
 export const formatDateToMonthYear = (dateString: string) => {
     const date = new Date(dateString);
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short' };

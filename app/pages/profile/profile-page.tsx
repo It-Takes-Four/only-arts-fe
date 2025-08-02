@@ -81,9 +81,9 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 		console.log('Purchase successful');
 	};
 
-	const formatDate = (timestamp: number) => {
+	const formatDate = (dateString: string) => {
 		try {
-			return formatDistanceToNow(new Date(timestamp * 1000), { addSuffix: true });
+			return formatDistanceToNow(new Date(dateString), { addSuffix: true });
 		} catch {
 			return 'Unknown time';
 		}

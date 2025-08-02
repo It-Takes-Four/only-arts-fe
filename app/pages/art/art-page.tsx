@@ -1,11 +1,4 @@
-import {
-	CalendarDays,
-	Heart,
-	ImageIcon,
-	Tag,
-	User,
-	Share2,
-} from "lucide-react";
+import { CalendarDays, Heart, ImageIcon, Share2, Tag, } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { GlassCard } from "../../components/common/glass-card";
@@ -16,7 +9,6 @@ import { useNavigate, useParams } from "react-router";
 import { collectionService } from "../../services/collection-service";
 import { formatDateToMonthYear } from "../../utils/dates/DateFormatter";
 import { motion } from "framer-motion";
-import { FancyLoading } from "../../components/common/fancy-loading";
 import { getUserInitials } from "../../utils/UtilityFunction";
 
 export function ArtPage() {
@@ -67,7 +59,7 @@ export function ArtPage() {
 					/>
 				) : (
 					<div className="flex items-center justify-center h-96 bg-gray-200/10 rounded-lg">
-						<ImageIcon className="h-12 w-12 text-muted-foreground" />
+						<ImageIcon className="h-12 w-12 text-muted-foreground"/>
 					</div>
 				)}
 			</div>
@@ -75,7 +67,7 @@ export function ArtPage() {
 			{/* Artwork Info Glass Card */}
 			<GlassCard className="py-6 px-8 mb-6">
 				<div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6">
-					<div className="flex items-start lg:items-end space-x-4 flex-1">
+					<div className="flex items-start space-x-4 flex-1">
 						<Avatar className="h-16 w-16 ring-4 ring-primary/20">
 							<AvatarImage src={artwork.artist.user.profilePictureFileId ? `/api/files/${artwork.artist.user.profilePictureFileId}` : undefined} />
 							<AvatarFallback className="text-xl font-bold">
@@ -111,7 +103,7 @@ export function ArtPage() {
 									</Badge>
 								)}
 								{artwork.tokenId && (
-									<Badge variant="outline">
+									<Badge variant="outline" className="font-mono text-xs uppercase">
 										Token #{artwork.tokenId.toString()}
 									</Badge>
 								)}
@@ -119,16 +111,16 @@ export function ArtPage() {
 						</div>
 					</div>
 
-					<Separator className="my-4 lg:hidden" />
+					<Separator className="lg:hidden"/>
 
 					{/* Stats Section */}
-					<div className="flex items-end space-x-6">
+					<div className="flex items-center justify-center w-full lg:w-fit space-x-6">
 						<div className="flex flex-col items-center lg:items-end">
 							<span className="text-xs text-muted-foreground font-mono uppercase">
 								Likes
 							</span>
 							<span className="text-2xl font-semibold">
-								0
+								{artwork.likesCount ?? "0"}
 							</span>
 						</div>
 						<div className="flex flex-col items-center lg:items-end">
@@ -219,9 +211,9 @@ export function ArtPage() {
 					<div className="space-y-3">
 						<div className="flex items-center gap-3 text-muted-foreground">
 							<Heart className="w-5 h-5" />
-							<span>0 Likes</span>
+							<span>{artwork.likesCount ?? 0} Likes</span>
 						</div>
-						{artwork.collections && artwork.collections.length > 0 && (
+						{artwork.isInACollection && (
 							<div className="flex items-center gap-3 text-muted-foreground">
 								<ImageIcon className="w-5 h-5" />
 								<span>Part of a Collection</span>
