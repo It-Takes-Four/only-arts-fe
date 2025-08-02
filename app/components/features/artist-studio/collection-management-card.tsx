@@ -126,12 +126,6 @@ export function CollectionManagementCard({
             >
               {collection.isPublished ? "Published" : "Draft"}
             </Badge>
-            {collection.isPublished && (
-              <Badge variant="outline" className="text-xs bg-background/80">
-                <Lock className="h-3 w-3 mr-1" />
-                Locked
-              </Badge>
-            )}
           </div>
         </div>
 
