@@ -1,35 +1,31 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Bell, Check, X } from "lucide-react";
-import { useState } from "react";
 import { NotificationItem } from "./notification-item";
+import { NotificationItemSkeleton } from "./notification-item-skeleton";
+import type { Notification } from "app/types/notifications";
 
 interface NotificationDropdownProps {
+    notifications: Notification[]
+    loading: boolean
+    error: Error | null
+    page: number
+    meta: {
+        currentPage: number;
+        perPage: number;
+        total: number;
+        totalPages: number;
+        hasNextPage: boolean;
+        hasPrevPage: boolean;
+    } | null
+    setPage: any
+    removeNotification: (id: string) => void
     isOpen: boolean;
 }
 
-export function NotificationDropdown({ isOpen }: NotificationDropdownProps) {
-    
+export function NotificationDropdown({ isOpen, error, loading, meta, notifications, page, removeNotification, setPage }: NotificationDropdownProps) {
 
-    const dummyNotificationData = [
-        {
-            id: "lskdjflasdjfsdf",
-            title: "New message received",
-            content: "John sent you a message",
-            time: new Date(Date.now()),
-        },
-        {
-            id: "sfkhefwehif",
-            title: "Task completed",
-            content: "Your report has been processed",
-            time: new Date(Date.now()),
-        },
-        {
-            id: "askdjhakjdw",
-            title: "System update",
-            content: "New features are now available",
-            time: new Date(Date.now()),
-        },
-    ]
+    const handleDropdownClick = (e: React.MouseEvent) => {
+        e.stopPropagation()
+    }
 
     return (
         <div className="relative">
@@ -46,13 +42,37 @@ export function NotificationDropdown({ isOpen }: NotificationDropdownProps) {
                             opacity: { duration: 0.2 },
                         }}
                         style={{ originY: 0 }} // Transform origin at top
-                        className="absolute -right-2 top-5 w-80 bg-background border border-border rounded-lg shadow-lg z-50"
+                        className="absolute -right-2 top-6 w-80 bg-background border border-border rounded-md shadow-lg z-50 max-h-80 overflow-y-auto"
+                        onClick={handleDropdownClick}
                     >
-                        <div className="max-h-96 overflow-y-auto">
-                            {dummyNotificationData.map((notification, index) => (
-                                <NotificationItem content={notification.content} id={notification.id} index={index} time={notification.time} title={notification.title} />
-                            ))}
-                        </div>
+                        {loading && (
+                            <>
+                                <NotificationItemSkeleton />
+                                <NotificationItemSkeleton />
+                                <NotificationItemSkeleton />
+                            </>
+                        )}
+
+                        {!loading && error && (
+                            <div className="py-4 text-destructive">Failed to load notifications.</div>
+                        )}
+
+                        {!loading && !error && notifications.length === 0 && (
+                            <div className="py-4 text-muted-foreground">You have read all notifications</div>
+                        )}
+
+                        {!loading && !error && notifications.length > 0 && (
+                            notifications.map((notification, index) => (
+                                <NotificationItem
+                                    key={notification.id}
+                                    id={notification.id}
+                                    message={notification.message}
+                                    index={index}
+                                    createdAt={notification.createdAt}
+                                    removeNotification={removeNotification}
+                                />
+                            ))
+                        )}
                     </motion.div>
                 )}
             </AnimatePresence>
