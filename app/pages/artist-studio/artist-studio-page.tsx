@@ -11,6 +11,7 @@ import { ArtCard } from "../../components/features/art/art-card";
 import { CreateCollectionModal } from "../../components/features/artist-studio/create-collection-modal";
 import { CreateArtworkModal } from "../../components/features/artist-studio/create-artwork-modal";
 import { EditArtistProfileModal } from "../../components/features/artist-studio/edit-artist-profile-modal";
+import { CollectionsGrid } from "../../components/features/artist-studio/collections-grid";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -38,6 +39,7 @@ export function ArtistStudioPage() {
 		collections,
 		collectionsLoading,
 		addCollection,
+		updateCollection,
 		artworks,
 		artworksLoading,
 		addArtwork,
@@ -60,6 +62,12 @@ export function ArtistStudioPage() {
 		// Add the new collection to the list
 		addCollection(collection);
 		console.log('After adding:', collections.length); // Should be +1
+	};
+
+	// Handle collection update
+	const handleCollectionUpdated = (updatedCollection: any) => {
+		console.log('Collection updated:', updatedCollection);
+		updateCollection(updatedCollection);
 	};
 
 	// Handle artwork creation success
@@ -87,50 +95,12 @@ export function ArtistStudioPage() {
 			value: "collections",
 			label: "Collections",
 			content: (
-				<div className="space-y-6">
-					<div className="flex justify-between items-center">
-						<h2 className="text-2xl font-bold">My Collections</h2>
-						<Button
-							className="flex items-center gap-2"
-							onClick={() => setShowCreateCollectionModal(true)}
-						>
-							<PlusIcon className="h-4 w-4" />
-							Create Collection
-						</Button>
-					</div>
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-						<div
-							className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 flex flex-col items-center justify-center min-h-[200px] hover:border-muted-foreground/50 transition-colors cursor-pointer"
-							onClick={() => setShowCreateCollectionModal(true)}
-						>
-							<PlusIcon className="h-12 w-12 text-muted-foreground/50 mb-2" />
-							<p className="text-sm text-muted-foreground">Create New Collection</p>
-						</div>
-
-						{collectionsLoading ? (
-							Array.from({ length: 3 }).map((_, index) => (
-								<div key={index} className="animate-pulse">
-									<div className="bg-muted rounded-lg aspect-[4/3] mb-4"></div>
-									<div className="h-4 bg-muted rounded mb-2"></div>
-									<div className="h-3 bg-muted rounded w-3/4"></div>
-								</div>
-							))
-						) : (
-							collections.map((collection) => (
-								<CollectionCard
-									key={collection.id}
-									id={collection.id}
-									name={collection.collectionName}
-									description={collection.description || "No description"}
-									artworkCount={collection.artsCount}
-									previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : ""}
-									createdBy={collection.artist.artistName}
-									price={collection.price ? parseFloat(collection.price).toString() : null}
-								/>
-							))
-						)}
-					</div>
-				</div>
+				<CollectionsGrid
+					collections={collections}
+					collectionsLoading={collectionsLoading}
+					onCreateCollection={() => setShowCreateCollectionModal(true)}
+					onCollectionUpdated={handleCollectionUpdated}
+				/>
 			),
 		},
 		{

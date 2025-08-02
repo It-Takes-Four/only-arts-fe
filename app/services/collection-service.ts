@@ -55,6 +55,14 @@ class CollectionService extends BaseService {
 			const formData = new FormData();
 			formData.append('collectionName', request.collectionName);
 
+			if (request.description) {
+				formData.append('description', request.description);
+			}
+
+			if (request.price !== undefined) {
+				formData.append('price', request.price.toString());
+			}
+
 			if (request.file) {
 				formData.append('file', request.file);
 			}
@@ -95,6 +103,43 @@ class CollectionService extends BaseService {
 			return data;
 		} catch (error: any) {
 			throw new Error(error.response?.data?.message || 'Failed to update collection');
+		}
+	}
+
+	// Update collection content (name and description)
+	async updateCollectionContent(collectionId: string, content: { collectionName: string; description: string }) {
+		try {
+			const { data } = await this._axios.patch(`/art-collections/${collectionId}/content`, content);
+			return data;
+		} catch (error: any) {
+			throw new Error(error.response?.data?.message || 'Failed to update collection content');
+		}
+	}
+
+	// Update collection cover image
+	async updateCollectionCoverImage(collectionId: string, file: File) {
+		try {
+			const formData = new FormData();
+			formData.append('coverImage', file);
+
+			const { data } = await this._axios.patch(`/art-collections/${collectionId}/cover-image`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			});
+			return data;
+		} catch (error: any) {
+			throw new Error(error.response?.data?.message || 'Failed to update collection cover image');
+		}
+	}
+
+	// Publish collection (irreversible)
+	async publishCollection(collectionId: string) {
+		try {
+			const { data } = await this._axios.patch(`/art-collections/${collectionId}/publish`);
+			return data;
+		} catch (error: any) {
+			throw new Error(error.response?.data?.message || 'Failed to publish collection');
 		}
 	}
 

@@ -1,5 +1,7 @@
 export interface CreateCollectionRequest {
 	collectionName: string;
+	description?: string;
+	price?: number;
 	file?: File;
 }
 

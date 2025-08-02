@@ -1,32 +1,34 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
-import { X, Upload, Folder, Loader2 } from "lucide-react";
+import { X, Edit, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "../../common/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { collectionService } from "../../../services/collection-service";
-import type { CreateCollectionRequest } from "../../../types/collection";
+import type { MyCollection } from "../../../types/collection";
 
-interface CreateCollectionModalProps {
+interface EditCollectionContentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: (collection: any) => void;
+  collection: MyCollection;
+  onSuccess: (updatedData: { collectionName: string; description: string }) => void;
 }
 
 interface FormData {
   collectionName: string;
-  description?: string;
-  price?: number;
-  coverImage?: FileList;
+  description: string;
 }
 
-export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateCollectionModalProps) {
+export function EditCollectionContentModal({ 
+  isOpen, 
+  onClose, 
+  collection, 
+  onSuccess 
+}: EditCollectionContentModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const {
     register,
@@ -37,50 +39,25 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
   } = useForm<FormData>({
     mode: "onTouched",
     defaultValues: {
-      collectionName: "",
-      description: "",
-      price: undefined,
+      collectionName: collection.collectionName || "",
+      description: collection.description || "",
     },
   });
-
-  const watchedCoverImage = watch("coverImage");
-
-  // Handle image preview
-  useEffect(() => {
-    if (watchedCoverImage && watchedCoverImage.length > 0) {
-      const file = watchedCoverImage[0];
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPreviewImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setPreviewImage(null);
-    }
-  }, [watchedCoverImage]);
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     try {
-      const request: CreateCollectionRequest = {
+      await collectionService.updateCollectionContent(collection.id, {
         collectionName: data.collectionName,
         description: data.description,
-        price: data.price,
-        file: data.coverImage?.[0],
-      };
+      });
 
-      const response = await collectionService.createCollection(request);
-
-      console.log("CREATE COLLECTION", response);
-      
-      toast.success("Collection created successfully!");
-      onSuccess(response);
-      reset();
-      setPreviewImage(null);
+      toast.success("Collection details updated successfully!");
+      onSuccess(data);
       onClose();
     } catch (error: any) {
-      console.error('Collection creation error:', error);
-      toast.error(error.message || "Failed to create collection");
+      console.error('Collection update error:', error);
+      toast.error(error.message || "Failed to update collection");
     } finally {
       setIsSubmitting(false);
     }
@@ -88,7 +65,6 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
 
   const handleClose = () => {
     reset();
-    setPreviewImage(null);
     onClose();
   };
 
@@ -118,9 +94,9 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="p-2 bg-primary/10 rounded-lg">
-                  <Folder className="h-5 w-5 text-primary" />
+                  <Edit className="h-5 w-5 text-primary" />
                 </div>
-                <CardTitle>Create New Collection</CardTitle>
+                <CardTitle>Edit Collection Details</CardTitle>
               </div>
               <Button
                 variant="ghost"
@@ -163,7 +139,7 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
 
               {/* Description */}
               <div className="flex flex-col space-y-2">
-                <Label htmlFor="description">Description (Optional)</Label>
+                <Label htmlFor="description">Description</Label>
                 <textarea
                   id="description"
                   placeholder="Enter collection description"
@@ -180,89 +156,6 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
                 {errors.description && (
                   <p className="text-sm text-destructive">{errors.description.message}</p>
                 )}
-              </div>
-
-              {/* Price */}
-              <div className="flex flex-col space-y-2">
-                <Label htmlFor="price">Price (Optional)</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="Enter price (e.g., 0.1 ETH)"
-                  {...register("price", {
-                    min: {
-                      value: 0,
-                      message: "Price must be a positive number",
-                    },
-                    validate: (value) => {
-                      if (value !== undefined && value !== null && value < 0) {
-                        return "Price must be a positive number";
-                      }
-                      return true;
-                    },
-                  })}
-                  className={errors.price ? "border-destructive" : ""}
-                  disabled={isSubmitting}
-                />
-                {errors.price && (
-                  <p className="text-sm text-destructive">{errors.price.message}</p>
-                )}
-              </div>
-
-              {/* Cover Image */}
-              <div className="flex flex-col space-y-2">
-                <Label htmlFor="coverImage">Cover Image (Optional)</Label>
-                <div className="space-y-3">
-                  {previewImage ? (
-                    <div className="relative">
-                      <img
-                        src={previewImage}
-                        alt="Cover preview"
-                        className="w-full h-32 object-cover rounded-lg border border-border"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          reset({ 
-                          collectionName: watch("collectionName"),
-                          description: watch("description"),
-                          price: watch("price")
-                        });
-                          setPreviewImage(null);
-                        }}
-                        className="absolute top-2 right-2 h-6 w-6 p-0 bg-background/80 backdrop-blur-sm hover:bg-background/90"
-                        disabled={isSubmitting}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <div 
-                      className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-colors"
-                      onClick={() => document.getElementById('coverImage')?.click()}
-                    >
-                      <Upload className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-sm text-muted-foreground mb-2">
-                        Click to upload cover image
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        PNG, JPG, GIF up to 10MB
-                      </p>
-                    </div>
-                  )}
-                  <Input
-                    id="coverImage"
-                    type="file"
-                    accept="image/*"
-                    {...register("coverImage")}
-                    className="hidden"
-                    disabled={isSubmitting}
-                  />
-                </div>
               </div>
 
               {/* Submit Buttons */}
@@ -284,10 +177,10 @@ export function CreateCollectionModal({ isOpen, onClose, onSuccess }: CreateColl
                   {isSubmitting ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Creating...
+                      Updating...
                     </>
                   ) : (
-                    "Create Collection"
+                    "Update Collection"
                   )}
                 </Button>
               </div>
