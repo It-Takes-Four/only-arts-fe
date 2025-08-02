@@ -49,4 +49,16 @@ export interface SearchResponse {
   artists: SearchArtist[];
 }
 
+export interface PaginatedSearchResponse<T> {
+  data: T[];
+  pagination: {
+    currentPage: number;
+    perPage: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
+}
+
 export type SearchResultType = 'all' | 'arts' | 'collections' | 'artists';

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/common/tabs";
 import { FancyLoading } from "../../components/common/fancy-loading";
 import { searchService } from "../../services/search-service";
-import type { SearchResponse, SearchResultType } from "../../types/search";
+import type { SearchResponse, SearchResultType, PaginatedSearchResponse, SearchArt, SearchCollection, SearchArtist } from "../../types/search";
 import {
   SearchResultsAll,
   SearchResultsArts,
@@ -18,6 +18,15 @@ export function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [searchResults, setSearchResults] = useState<SearchResponse | null>(null);
+  const [paginatedResults, setPaginatedResults] = useState<{
+    arts: PaginatedSearchResponse<SearchArt> | null;
+    collections: PaginatedSearchResponse<SearchCollection> | null;
+    artists: PaginatedSearchResponse<SearchArtist> | null;
+  }>({
+    arts: null,
+    collections: null,
+    artists: null
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<SearchResultType>('all');
@@ -26,11 +35,15 @@ export function SearchPage() {
 
   useEffect(() => {
     if (query) {
-      performSearch(query);
+      if (activeTab === 'all') {
+        performSearchAll(query);
+      } else {
+        performSearchPaginated(query, activeTab as 'arts' | 'collections' | 'artists');
+      }
     }
-  }, [query]);
+  }, [query, activeTab]);
 
-  const performSearch = async (searchQuery: string) => {
+  const performSearchAll = async (searchQuery: string) => {
     if (!searchQuery.trim()) {
       setError('Search query cannot be empty');
       return;
@@ -40,7 +53,7 @@ export function SearchPage() {
     setError(null);
 
     try {
-      const results = await searchService.search(searchQuery);
+      const results = await searchService.searchAll(searchQuery);
       setSearchResults(results);
     } catch (err: any) {
       setError(err.message || 'Failed to search');
@@ -50,23 +63,43 @@ export function SearchPage() {
     }
   };
 
+  const performSearchPaginated = async (searchQuery: string, type: 'arts' | 'collections' | 'artists', page: number = 1) => {
+    if (!searchQuery.trim()) {
+      setError('Search query cannot be empty');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const results = await searchService.searchPaginated(searchQuery, type, page);
+      setPaginatedResults(prev => ({
+        ...prev,
+        [type]: results
+      }));
+    } catch (err: any) {
+      setError(err.message || 'Failed to search');
+      setPaginatedResults(prev => ({
+        ...prev,
+        [type]: null
+      }));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleTabChange = (tab: string) => {
-    setActiveTab(tab as SearchResultType);
-  };
-
-  const getTotalCount = () => {
-    if (!searchResults) return 0;
-    return searchResults.arts.length + searchResults.collections.length + searchResults.artists.length;
-  };
-
-  const getTabCount = (type: SearchResultType) => {
-    if (!searchResults) return 0;
-    switch (type) {
-      case 'arts': return searchResults.arts.length;
-      case 'collections': return searchResults.collections.length;
-      case 'artists': return searchResults.artists.length;
-      case 'all': return getTotalCount();
-      default: return 0;
+    const newTab = tab as SearchResultType;
+    setActiveTab(newTab);
+    // Clear previous results to show loading state
+    if (newTab === 'all') {
+      setSearchResults(null);
+    } else {
+      setPaginatedResults(prev => ({
+        ...prev,
+        [newTab]: null
+      }));
     }
   };
 
@@ -147,7 +180,11 @@ export function SearchPage() {
         )}
 
         {/* Search Results */}
-        {searchResults && !isLoading && query && (
+        {((activeTab === 'all' && searchResults) || 
+          (activeTab === 'arts' && paginatedResults.arts) ||
+          (activeTab === 'collections' && paginatedResults.collections) ||
+          (activeTab === 'artists' && paginatedResults.artists)) && 
+          !isLoading && query && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -158,71 +195,41 @@ export function SearchPage() {
               <h1 className="text-2xl font-bold mb-2">
                 Search Results for "{query}"
               </h1>
-              <p className="text-muted-foreground">
-                Found {getTotalCount()} results
-              </p>
             </div>
 
             {/* Tabs */}
             <Tabs value={activeTab} onValueChange={handleTabChange}>
               <TabsList className="mb-8">
                 <TabsTrigger value="all">
-                  All ({getTabCount('all')})
+                  All
                 </TabsTrigger>
                 <TabsTrigger value="arts">
-                  Arts ({getTabCount('arts')})
+                  Arts
                 </TabsTrigger>
                 <TabsTrigger value="collections">
-                  Collections ({getTabCount('collections')})
+                  Collections
                 </TabsTrigger>
                 <TabsTrigger value="artists">
-                  Artists ({getTabCount('artists')})
+                  Artists
                 </TabsTrigger>
               </TabsList>
 
               <TabsContent value="all">
-                <SearchResultsAll searchResults={searchResults} />
+                {searchResults && <SearchResultsAll searchResults={searchResults} />}
               </TabsContent>
 
               <TabsContent value="arts">
-                <SearchResultsArts arts={searchResults.arts} />
+                {paginatedResults.arts && <SearchResultsArts arts={paginatedResults.arts.data} />}
               </TabsContent>
 
               <TabsContent value="collections">
-                <SearchResultsCollections collections={searchResults.collections} />
+                {paginatedResults.collections && <SearchResultsCollections collections={paginatedResults.collections.data} />}
               </TabsContent>
 
               <TabsContent value="artists">
-                <SearchResultsArtists artists={searchResults.artists} />
+                {paginatedResults.artists && <SearchResultsArtists artists={paginatedResults.artists.data} />}
               </TabsContent>
             </Tabs>
-          </motion.div>
-        )}
-
-        {/* No Results */}
-        {searchResults && getTotalCount() === 0 && !isLoading && query && (
-          <motion.div
-            className="text-center py-20"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="text-center">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.3, delay: 0.2 }}
-                className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4 mx-auto"
-              >
-                <span className="text-2xl">😔</span>
-              </motion.div>
-              <p className="text-lg font-medium mb-2">
-                No Results Found
-              </p>
-              <p className="text-sm text-muted-foreground mb-4">
-                Try searching with different keywords or check your spelling.
-              </p>
-            </div>
           </motion.div>
         )}
       </div>
