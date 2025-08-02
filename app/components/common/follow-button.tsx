@@ -1,25 +1,41 @@
 import React, { useState } from 'react';
 import { UserPlus, UserCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useFollow } from '../hooks/useFollow';
+
+interface FollowButtonProps {
+	artistId: string;
+	size?: number;
+	className?: string;
+}
 
 export const FollowButton = ({
-	isFollowing: initialFollowing = false,
-	onFollowChange = (newState: boolean) => { },
+	artistId,
 	size = 16,
-	className = "hover:cursor-pointer"
-}) => {
-	const [isFollowing, setIsFollowing] = useState(initialFollowing);
+	className = ""
+}: FollowButtonProps) => {
+	// const [isFollowing, setIsFollowing] = useState(initialFollowing);
+	const { isFollowing, loading, follow, unfollow } = useFollow(artistId);
 	const [isHovered, setIsHovered] = useState(false);
 
-	const handleClick = () => {
-		const newState = !isFollowing;
-		setIsFollowing(newState);
-		onFollowChange(newState);
+	// const handleClick = () => {
+	// const newState = !isFollowing;
+	// setIsFollowing(newState);
+	// onFollowChange(newState);
+	// };
+
+	const handleClick = async () => {
+		if (loading) return;
+		if (isFollowing) {
+			await unfollow();
+		} else {
+			await follow();
+		}
 	};
 
 	return (
 		<motion.button
-			className={`relative overflow-hidden hover:bg-primary-foreground/10 transition-colors rounded-lg py-1 px-3 ${className}`}
+			className={`relative overflow-hidden hover:bg-primary-foreground/10 transition-colors rounded-lg py-1 px-3 hover:cursor-pointer ${className}`}
 			onClick={handleClick}
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
