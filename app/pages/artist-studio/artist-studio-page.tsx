@@ -25,10 +25,11 @@ import {
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { ImageIcon, Wallet } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatDateToMonthYear } from "../../utils/dates/DateFormatter";
+import { formatTimestampToMonthYear } from "../../utils/dates/DateFormatter";
 import { formatPriceDisplay } from "../../utils/currency";
 import { WalletManagementModal } from "app/components/features/artist-studio/wallet-management-modal";
 import type { MyCollection } from "app/types/collection";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function ArtistStudioPage() {
 	const { user, refreshUserWithValidation } = useAuthContext();
@@ -49,6 +50,7 @@ export function ArtistStudioPage() {
 	const [showEditProfileModal, setShowEditProfileModal] = useState(false);
 	const [showWalletModal, setShowWalletModal] = useState(false);
 
+	console.log("artist", user)
 	// Handle collection creation success
 	const handleCollectionCreated = (collection: any) => {
 		console.log('Before adding:', collections.length);
@@ -106,7 +108,6 @@ export function ArtistStudioPage() {
 						</div>
 
 						{collectionsLoading ? (
-							// Loading skeleton
 							Array.from({ length: 3 }).map((_, index) => (
 								<div key={index} className="animate-pulse">
 									<div className="bg-muted rounded-lg aspect-[4/3] mb-4"></div>
@@ -177,7 +178,7 @@ export function ArtistStudioPage() {
 												name: artwork.artist.artistName,
 												profilePicture: null // Not available in this API response
 											},
-											tags: artwork.tags.map((tag: any) => ({ name: tag.tag.tagName })),
+											tags: artwork.tags.map((tag: any) => ({ name: tag.tagName })),
 											type: 'art',
 											createdAt: artwork.datePosted
 										}}
@@ -185,8 +186,8 @@ export function ArtistStudioPage() {
 									{/* Artwork stats overlay */}
 									<div className="absolute top-2 right-2 bg-black/50 backdrop-blur-sm rounded-lg p-2 text-white text-xs">
 										<div className="flex items-center gap-1">
-											<span>♥ {artwork.likesCount}</span>
-											{artwork.isInACollection && (
+											<span>♥ 0</span>
+											{artwork.collections && artwork.collections.length > 0 && (
 												<span className="ml-2">In Collection</span>
 											)}
 										</div>
@@ -379,25 +380,24 @@ export function ArtistStudioPage() {
 			<GlassCard className="mb-8 py-4 px-8">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-4">
-						<img
-							src={user.profilePictureFileId
-								? `${import.meta.env.VITE_API_BASE_URL}/upload/profile/${user.profilePictureFileId}`
-								: "https://placehold.co/80x80"
-							}
-							alt="Artist Avatar"
-							className="rounded-full w-20 h-20 shadow-lg object-cover"
-							onError={(e) => {
-								const target = e.target as HTMLImageElement;
-								target.src = "https://placehold.co/80x80";
-							}}
-						/>
+						<Avatar className="w-20 h-20">
+							<AvatarImage
+								src={user.profilePictureFileId
+									? `${import.meta.env.VITE_API_BASE_URL}/upload/profile/${user.profilePictureFileId}`
+									: undefined}
+								alt="Artist Avatar"
+							/>
+							<AvatarFallback className="text-lg font-bold">
+								{user.artist.artistName ? user.artist.artistName.charAt(0).toUpperCase() : "?"}
+							</AvatarFallback>
+						</Avatar>
 						<div>
 							<h2 className="text-2xl font-bold">{user.artist.artistName}</h2>
 							<p className="text-sm text-muted-foreground mt-1">{user.artist.bio || "No bio available"}</p>
 							<div className="flex items-center gap-2 mt-2">
 								<Badge variant="outline"
 									className="font-mono text-primary-foreground text-xs uppercase border-white/25">
-									{user?.artist?.createdAt ? `JOINED ${formatDateToMonthYear(user.artist.createdAt)}` : 'ARTIST'}
+									{user?.createdAt ? `JOINED ${formatTimestampToMonthYear(user?.createdAt)}` : 'ARTIST'}
 								</Badge>
 								{user.artist.isVerified && (
 									<Badge variant="default" className="font-mono uppercase" >

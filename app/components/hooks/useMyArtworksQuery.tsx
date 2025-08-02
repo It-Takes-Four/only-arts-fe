@@ -1,15 +1,16 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { collectionService } from '../../services/collection-service';
-import type { MyArtwork } from '../../types/collection';
+import type { MyArtworksResponse, MyArtwork } from '../../types/collection';
 
-export function useMyArtworksQuery() {
+export function useMyArtworksQuery(enabled = true) {
   const queryClient = useQueryClient();
 
-  const query = useQuery({
+  const query = useQuery<MyArtworksResponse>({
     queryKey: ['my-artworks'],
     queryFn: async () => {
       return await collectionService.getMyArtworks();
     },
+    enabled,
     staleTime: 3 * 60 * 1000, // 3 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
     retry: (failureCount, error: any) => {
@@ -27,27 +28,36 @@ export function useMyArtworksQuery() {
   };
 
   const addArtwork = (newArtwork: MyArtwork) => {
-    queryClient.setQueryData(['my-artworks'], (old: MyArtwork[] | undefined) => {
-      return old ? [newArtwork, ...old] : [newArtwork];
+    queryClient.setQueryData(['my-artworks'], (old: MyArtworksResponse | undefined) => {
+      if (!old) return { data: [newArtwork], pagination: { currentPage: 1, perPage: 10, total: 1, totalPages: 1, hasNextPage: false, hasPrevPage: false } };
+      return { ...old, data: [newArtwork, ...old.data] };
     });
   };
 
   const updateArtwork = (updatedArtwork: MyArtwork) => {
-    queryClient.setQueryData(['my-artworks'], (old: MyArtwork[] | undefined) => {
-      return old?.map(artwork => 
-        artwork.id === updatedArtwork.id ? updatedArtwork : artwork
-      ) || [];
+    queryClient.setQueryData(['my-artworks'], (old: MyArtworksResponse | undefined) => {
+      if (!old) return undefined;
+      return {
+        ...old,
+        data: old.data.map(artwork => 
+          artwork.id === updatedArtwork.id ? updatedArtwork : artwork
+        )
+      };
     });
   };
 
   const removeArtwork = (artworkId: string) => {
-    queryClient.setQueryData(['my-artworks'], (old: MyArtwork[] | undefined) => {
-      return old?.filter(artwork => artwork.id !== artworkId) || [];
+    queryClient.setQueryData(['my-artworks'], (old: MyArtworksResponse | undefined) => {
+      if (!old) return undefined;
+      return {
+        ...old,
+        data: old.data.filter(artwork => artwork.id !== artworkId)
+      };
     });
   };
 
   return {
-    artworks: query.data || [],
+    artworks: query.data?.data || [],
     isLoading: query.isLoading,
     error: query.error?.message || null,
     refresh: refreshArtworks,

@@ -20,6 +20,7 @@ export interface ArtistCollection {
 	price: string;
 	tokenId: string;
 	isPublished: boolean;
+	isPurchased?: boolean; // Whether the current user has purchased this collection
 	createdAt: string;
 	updatedAt: string;
 	artistId: string;
@@ -162,25 +163,29 @@ export interface MyCollectionsResponse {
 // Interface for the artist's artwork response
 export interface MyArtwork {
 	id: string;
-	imageFileId: string;
+	tokenId: string;
 	title: string;
 	description: string;
+	imageFileId: string;
 	datePosted: string;
 	updatedAt: string;
 	artistId: string;
-	tokenId?: string;
-	likesCount: number;
-	isInACollection: boolean;
-	tags: Array<{
-		artId: string;
-		tagId: string;
-		tag: {
-			id: string;
-			tagName: string;
-			usageCount: number;
-			createdAt: string;
-			updatedAt: string;
+	artist: {
+		id: string;
+		artistName: string;
+		isVerified: boolean;
+		user: {
+			profilePictureFileId: string | null;
 		};
+	};
+	tags: Array<{
+		tagId: string;
+		tagName: string;
+	}>;
+	collections: Array<{
+		id: string;
+		collectionId: string;
+		artId: string;
 	}>;
 	comments: Array<{
 		id: string;
@@ -189,31 +194,20 @@ export interface MyArtwork {
 		updatedAt: string;
 		userId: string;
 		artId: string;
-		user: {
-			id: string;
-			email: string;
-			username: string;
-			profilePictureFileId?: string;
-			createdAt: string;
-			updatedAt: string;
-		};
 	}>;
-	artist: {
-		id: string;
-		userId: string;
-		artistName: string;
-		isNsfw: boolean;
-		bio?: string;
-		walletAddress?: string;
-		totalFollowers: number;
-		totalArts: number;
-		totalCollections: number;
-		isVerified: boolean;
-		createdAt: string;
-		updatedAt: string;
-	};
 }
 
+export interface MyArtworksResponse {
+	data: MyArtwork[];
+	pagination: {
+		currentPage: number;
+		perPage: number;
+		total: number;
+		totalPages: number;
+		hasNextPage: boolean;
+		hasPrevPage: boolean;
+	};
+}
 export interface PaginatedCollectionsResponse {
   data: MyCollection[];
   pagination: {
@@ -226,4 +220,3 @@ export interface PaginatedCollectionsResponse {
   };
 }
 
-export type MyArtworksResponse = MyArtwork[];

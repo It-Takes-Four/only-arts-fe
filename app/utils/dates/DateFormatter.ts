@@ -14,6 +14,12 @@ const formatDate = (date: Date, includeSecond: boolean = false) => {
     return `${year}-${month}-${day}${formattedTime}`;
 };
 
+export const formatTimestampToMonthYear = (timestamp: number) => {
+    const date = new Date(timestamp * 1000);
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short' };
+    return date.toLocaleDateString('en-US', options).toUpperCase();
+}
+
 export const formatDateToMonthYear = (dateString: string) => {
     const date = new Date(dateString);
     const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short' };
@@ -58,4 +64,9 @@ export const dayOfWeekData: DayOfWeek[] = [
 export const getDayOfWeekName = (day_of_week: number) => {
     const day = dayOfWeekData.find(day => day.day_of_week === day_of_week);
     return day ? day.name : "Invalid day"; // If day is found, return its name; otherwise, return "Invalid day"
+}
+
+export const fromSecondsToUnixTimestamp = (seconds: number) => {
+    const date = new Date(seconds * 1000);
+    return date.getTime();
 }

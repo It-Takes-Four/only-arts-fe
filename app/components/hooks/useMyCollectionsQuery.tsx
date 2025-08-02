@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { collectionService } from '../../services/collection-service';
 import type { MyCollection, PaginatedCollectionsResponse } from '../../types/collection';
 
-export function useMyCollectionsQuery() {
+export function useMyCollectionsQuery(enabled = true) {
   const queryClient = useQueryClient();
 
   const query = useQuery({
@@ -10,6 +10,7 @@ export function useMyCollectionsQuery() {
     queryFn: async (): Promise<PaginatedCollectionsResponse> => {
       return await collectionService.getMyCollections();
     },
+    enabled,
     staleTime: 3 * 60 * 1000, // 3 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
     retry: (failureCount, error: any) => {
