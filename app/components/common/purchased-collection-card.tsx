@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 import { Calendar, Image, DollarSign, CheckCircle } from "lucide-react";
 import { artCollectionsService } from "app/services/art-collections-service";
+import { formatPriceDisplay } from "../../utils/currency";
 import type { PurchasedCollection } from "app/types/purchased-collection";
 import { getUserInitials } from "../../utils/UtilityFunction";
 
@@ -26,11 +27,6 @@ export function PurchasedCollectionCard({
 		} catch {
 			return "Unknown time";
 		}
-	};
-
-	const formatPrice = (price: string) => {
-		const numPrice = parseFloat(price);
-		return `${numPrice} ETH`;
 	};
 
 	const getImageUrl = () => {
@@ -163,7 +159,7 @@ export function PurchasedCollectionCard({
 								<div className="flex items-center gap-1 text-sm text-muted-foreground">
 									<DollarSign className="w-4 h-4" />
 									<span className="font-medium">
-										{formatPrice(collection.price)}
+										{formatPriceDisplay(collection.price)}
 									</span>
 								</div>
 								<div className="flex items-center gap-1 text-sm text-muted-foreground">

@@ -22,6 +22,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { FancyLoading } from "../../components/common/fancy-loading";
 import { Button } from "../../components/common/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { formatPriceDisplay, parsePrice } from "../../utils/currency";
 import type { ArtistCollection } from "../../types/collection";
 import type { ArtistProfile } from "../../types/artist";
 import type { ArtistArtwork } from "../../types/artwork";
@@ -151,7 +152,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 											}
 											previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
 											createdBy={collection.artist.artistName}
-											price={parseFloat(collection.price || '0')}
+											price={collection.price || '0'}
 										/>
 										{/* Only show buy button for other artists' collections */}
 										{!isOwnProfile && collection.isPublished && parseFloat(collection.price || '0') > 0 && (
@@ -161,7 +162,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 													onClick={() => handleBuyCollection(collection as ArtistCollection)}
 													className="bg-primary/90 hover:bg-primary shadow-lg"
 												>
-													Buy ${parseFloat(collection.price || '0').toFixed(2)}
+													Buy {formatPriceDisplay(collection.price || '0')}
 												</Button>
 											</div>
 										)}
@@ -294,7 +295,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 											}
 											previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
 											createdBy={collection.artist.artistName}
-											price={parseFloat(collection.price || '0')}
+											price={collection.price || '0'}
 										/>
 										{/* Only show buy button for other artists' collections */}
 										{!isOwnProfile && collection.isPublished && parseFloat(collection.price || '0') > 0 && (
@@ -304,7 +305,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 													onClick={() => handleBuyCollection(collection as ArtistCollection)}
 													className="bg-primary/90 hover:bg-primary shadow-lg"
 												>
-													Buy ${parseFloat(collection.price || '0').toFixed(2)}
+													Buy {formatPriceDisplay(collection.price || '0')}
 												</Button>
 											</div>
 										)}

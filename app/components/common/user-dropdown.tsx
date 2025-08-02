@@ -4,8 +4,6 @@ import { Button } from "app/components/common/button";
 import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
 import { LogOut, Settings, Palette, User } from "lucide-react";
 import { useState } from "react";
-import { useAuthContext } from "app/components/core/auth-context";
-import { toast } from "sonner";
 import { getUserInitials } from "../../utils/UtilityFunction";
 
 interface User {

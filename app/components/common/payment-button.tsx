@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { usePayment } from "../hooks/usePayment";
 import { Button } from "./button";
+import { getCurrencySymbol } from "../../utils/currency";
 
 interface PaymentButtonProps {
     collectionId: string;
@@ -17,7 +18,7 @@ export function PaymentButton({ collectionId, artistWalletAddress }: PaymentButt
 
     return (
         <Button type="button" size="default" disabled={isPaying} onClick={() => { handlePurchaseCollection() }}>
-            {isPaying ? paymentStatus : "Purchase Collection"}
+            {isPaying ? paymentStatus : `Purchase Collection (${getCurrencySymbol()})`}
         </Button>
     )
 }
