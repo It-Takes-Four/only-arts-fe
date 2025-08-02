@@ -215,4 +215,16 @@ export interface MyArtwork {
 	};
 }
 
+export interface PaginatedCollectionsResponse {
+  data: MyCollection[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
+}
+
 export type MyArtworksResponse = MyArtwork[];

@@ -3,11 +3,11 @@ import { UserPlus, UserCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const FollowButton = ({
-																isFollowing: initialFollowing = false,
-																onFollowChange = (newState: boolean) => {},
-																size = 16,
-																className = ""
-															}) => {
+	isFollowing: initialFollowing = false,
+	onFollowChange = (newState: boolean) => { },
+	size = 16,
+	className = ""
+}) => {
 	const [isFollowing, setIsFollowing] = useState(initialFollowing);
 	const [isHovered, setIsHovered] = useState(false);
 

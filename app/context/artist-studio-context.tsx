@@ -12,16 +12,16 @@ interface ArtistStudioContextType {
   collectionsLoading: boolean;
   addCollection: (collection: any) => void;
   refreshCollections: () => void;
-  
+
   // Artworks
   artworks: any[];
   artworksLoading: boolean;
   addArtwork: (artwork: any) => void;
   refreshArtworks: () => void;
-  
+
   // Profile updates
   refreshProfile: () => Promise<void>;
-  
+
   // Analytics (calculated from data)
   analytics: {
     totalViews: number;
@@ -64,10 +64,10 @@ export function ArtistStudioProvider({ children }: ArtistStudioProviderProps) {
   const refreshProfile = useCallback(async () => {
     try {
       console.log('ArtistStudioProvider: Refreshing profile and related data...');
-      
+
       // Refresh user data first
       await refreshUserWithValidation();
-      
+
       // Refresh all related queries using React Query
       await Promise.all([
         refreshUserProfile(),
@@ -75,7 +75,7 @@ export function ArtistStudioProvider({ children }: ArtistStudioProviderProps) {
         refreshCollections(),
         refreshArtworks()
       ]);
-      
+
       console.log('ArtistStudioProvider: All data refreshed successfully');
     } catch (error) {
       console.error('ArtistStudioProvider: Failed to refresh profile data:', error);
@@ -88,14 +88,11 @@ export function ArtistStudioProvider({ children }: ArtistStudioProviderProps) {
     collectionsLoading,
     addCollection,
     refreshCollections,
-    
     artworks,
     artworksLoading,
     addArtwork,
     refreshArtworks,
-    
     refreshProfile,
-    
     analytics
   };
 

@@ -4,10 +4,11 @@ import type {
 	CreateCollectionResponse,
 	MyArtworksResponse,
 	MyCollection,
-	MyCollectionsResponse
+	MyCollectionsResponse,
+	PaginatedCollectionsResponse
 } from "../types/collection";
 
-class CollectionService extends BaseService{
+class CollectionService extends BaseService {
 
 	// Helper method to get collection cover image URL
 	getCollectionImageUrl(collectionImageFileId: string): string {
@@ -28,10 +29,12 @@ class CollectionService extends BaseService{
 		}
 	}
 
-	async getMyCollections(): Promise<MyCollection[]> {
+	async getMyCollections(page = 1, limit = 10): Promise<PaginatedCollectionsResponse> {
 		try {
-			const { data } = await this._axios.get<MyCollectionsResponse>('/art-collections/my/collections');
-			return data.data; // Return just the data array, not the full response
+			const response = await this._axios.get<PaginatedCollectionsResponse>(`/art-collections/my/collections`, {
+				params: { page, limit }
+			});
+			return response.data;
 		} catch (error: any) {
 			throw new Error(error.response?.data?.message || 'Failed to get my collections');
 		}
@@ -51,7 +54,7 @@ class CollectionService extends BaseService{
 		try {
 			const formData = new FormData();
 			formData.append('collectionName', request.collectionName);
-			
+
 			if (request.file) {
 				formData.append('file', request.file);
 			}
