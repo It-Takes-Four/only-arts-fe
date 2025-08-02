@@ -227,7 +227,7 @@ export function AnimatedShareButton({
             size={size}
             onClick={handleDropdownToggle}
             className={cn(
-              "px-2 rounded-l-none border-l-0 transition-all duration-300",
+              "px-2 rounded-l-none border-l transition-all duration-300",
               className
             )}
           >
