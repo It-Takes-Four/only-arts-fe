@@ -40,9 +40,11 @@ class CollectionService extends BaseService {
 		}
 	}
 
-	async getMyArtworks(): Promise<MyArtworksResponse> {
+	async getMyArtworks(page = 1, limit = 10): Promise<MyArtworksResponse> {
 		try {
-			const { data } = await this._axios.get('/art-collections/my/arts');
+			const { data } = await this._axios.get('/art-collections/my/arts', {
+				params: { page, limit }
+			});
 			return data;
 		} catch (error: any) {
 			throw new Error(error.response?.data?.message || 'Failed to get my artworks');

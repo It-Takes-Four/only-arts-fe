@@ -2,6 +2,7 @@ import { useState } from "react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { toast } from "sonner";
 import { Button } from "../../common/button";
+import { Pagination, type PaginationData, type PaginationDataAlt } from "../../common/pagination";
 import { CollectionManagementCard } from "./collection-management-card";
 import { EditCollectionContentModal } from "./edit-collection-content-modal";
 import { EditCollectionCoverModal } from "./edit-collection-cover-modal";
@@ -13,15 +14,19 @@ import type { MyCollection } from "../../../types/collection";
 interface CollectionsGridProps {
   collections: MyCollection[];
   collectionsLoading: boolean;
+  pagination?: PaginationData | PaginationDataAlt;
   onCreateCollection: () => void;
   onCollectionUpdated: (updatedCollection: MyCollection) => void;
+  onPageChange?: (page: number) => void;
 }
 
 export function CollectionsGrid({ 
   collections, 
   collectionsLoading, 
+  pagination,
   onCreateCollection,
-  onCollectionUpdated
+  onCollectionUpdated,
+  onPageChange
 }: CollectionsGridProps) {
   const [editingCollection, setEditingCollection] = useState<MyCollection | null>(null);
   const [editingCoverCollection, setEditingCoverCollection] = useState<MyCollection | null>(null);
@@ -152,6 +157,15 @@ export function CollectionsGrid({
             />
           ))}
         </div>
+
+        {/* Pagination */}
+        {pagination && onPageChange && (
+          <Pagination
+            pagination={pagination}
+            onPageChange={onPageChange}
+            className="mt-8"
+          />
+        )}
       </div>
 
       {/* Modals */}
