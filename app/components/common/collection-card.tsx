@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ImageIcon, Images, ShoppingBag } from "lucide-react"
+import { ImageIcon, Images } from "lucide-react"
 import { TableCell, TableRow } from "@/components/ui/table"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator";
@@ -28,18 +28,18 @@ interface CollectionCardProps {
 }
 
 export function CollectionCard({
-	id,
-	name,
-	description,
-	artworkCount,
-	previewImage,
-	createdBy,
-	createdByAvatar,
-	price,
-	viewMode = "grid",
-	collection,
-	showBuyButton = true,
-}: CollectionCardProps) {
+																 id,
+																 name,
+																 description,
+																 artworkCount,
+																 previewImage,
+																 createdBy,
+																 createdByAvatar,
+																 price,
+																 viewMode = "grid",
+																 collection,
+																 showBuyButton = true,
+															 }: CollectionCardProps) {
 	const navigate = useNavigate();
 
 	if (viewMode === "table") {
@@ -56,7 +56,7 @@ export function CollectionCard({
 								/>
 							) : (
 								<div className="flex items-center justify-center h-full">
-									<ImageIcon className="h-4 w-4 text-muted-foreground" />
+									<ImageIcon className="h-4 w-4 text-muted-foreground"/>
 								</div>
 							)}
 						</div>
@@ -69,7 +69,7 @@ export function CollectionCard({
 				<TableCell>
 					<div className="flex items-center gap-2">
 						<Avatar className="h-6 w-6">
-							<AvatarImage src={createdByAvatar} />
+							<AvatarImage src={createdByAvatar}/>
 							<AvatarFallback className="text-xs">{getUserInitials(createdBy)}</AvatarFallback>
 						</Avatar>
 						<span className="text-sm">{createdBy}</span>
@@ -77,8 +77,8 @@ export function CollectionCard({
 				</TableCell>
 				<TableCell>
 					<Badge variant="secondary"
-						className="text-foreground text-sm font-semibold border-border gap-x-1.5">
-						<Images />
+								 className="text-foreground text-sm font-semibold border-border gap-x-1.5">
+						<Images/>
 						{artworkCount}
 					</Badge>
 				</TableCell>
@@ -96,7 +96,7 @@ export function CollectionCard({
 	if (viewMode === "row") {
 		return (
 			<Card className="group overflow-hidden hover:shadow-lg transition-all duration-300"
-				onClick={() => navigate(`/collection/${id}`)}>
+						onClick={() => navigate(`/collection/${id}`)}>
 				<div className="flex justify-center items-center">
 					<div className="relative w-35 h-35 overflow-hidden bg-muted flex-shrink-0">
 						{previewImage ? (
@@ -107,7 +107,7 @@ export function CollectionCard({
 							/>
 						) : (
 							<div className="flex items-center justify-center h-full">
-								<ImageIcon className="h-6 w-6 text-muted-foreground" />
+								<ImageIcon className="h-6 w-6 text-muted-foreground"/>
 							</div>
 						)}
 					</div>
@@ -115,8 +115,8 @@ export function CollectionCard({
 						<div className="flex items-start justify-between mb-2">
 							<h3 className="font-semibold text-xl line-clamp-1">{name}</h3>
 							<Badge variant="secondary"
-								className="text-foreground text-sm font-semibold border-border gap-x-1.5">
-								<Images />
+										 className="text-foreground text-sm font-semibold border-border gap-x-1.5">
+								<Images/>
 								{artworkCount} items
 							</Badge>
 						</div>
@@ -127,7 +127,7 @@ export function CollectionCard({
 									className="flex px-2 py-1.5 glass rounded-full font-medium border-border text-foreground items-center gap-x-1.5"
 								>
 
-									<img src={"https://placehold.co/50x50"} alt="Artist Avatar" className="h-5 w-5 rounded-full" />
+									<img src={"https://placehold.co/50x50"} alt="Artist Avatar" className="h-5 w-5 rounded-full"/>
 									{createdBy}
 								</span>
 
@@ -144,10 +144,10 @@ export function CollectionCard({
 	return (
 		// On click redirect to collection details page
 		<Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer relative"
-			onClick={() => navigate(`/collection/${id}`)}>
+					onClick={() => navigate(`/collection/${id}`)}>
 			{/* Buy button overlay */}
 			{showBuyButton && collection && (
-				<AbsoluteBuyCollectionButton 
+				<AbsoluteBuyCollectionButton
 					collection={collection}
 					position="top-right"
 					onPurchaseSuccess={() => {
@@ -168,14 +168,14 @@ export function CollectionCard({
 								/>
 							) : (
 								<div className="h-full w-full flex items-center justify-center">
-									<ImageIcon className="h-4 w-4 text-muted-foreground" />
+									<ImageIcon className="h-4 w-4 text-muted-foreground"/>
 								</div>
 							)}
 							<span
 								className="absolute top-3 left-3 flex px-2 py-1.5 glass rounded-full text-sm font-medium border-border text-white items-center gap-x-1.5"
 							>
 								<Avatar className="h-5 w-5">
-									<AvatarImage src={createdByAvatar} />
+									<AvatarImage src={createdByAvatar}/>
 									<AvatarFallback className="text-xs text-foreground">{getUserInitials(createdBy)}</AvatarFallback>
 								</Avatar>
 								{createdBy}
@@ -184,10 +184,10 @@ export function CollectionCard({
 					</div>
 				) : (
 					<div className="flex items-center justify-center h-full">
-						<ImageIcon className="h-12 w-12 text-muted-foreground" />
+						<ImageIcon className="h-12 w-12 text-muted-foreground"/>
 					</div>
 				)}
-				<div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+				<div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"/>
 			</div>
 			<CardContent className="p-4">
 				<div className="flex items-start justify-between mb-1">
@@ -195,24 +195,22 @@ export function CollectionCard({
 					<Tooltip>
 						<TooltipTrigger asChild>
 							<Badge variant="secondary"
-								className="text-foreground font-semibold border-border gap-x-1.5">
-								<Images />
+										 className="text-foreground font-semibold border-border gap-x-1.5">
+								<Images/>
 								{artworkCount ?? "0"}
 							</Badge>
 						</TooltipTrigger>
 						<TooltipContent className="bg-popover text-popover-foreground py-2 ">
-							<p className="font-mono">{artworkCount ?? "0"} ITEMS</p>
+							<p className="font-mono uppercase">{artworkCount ?? "0"} artworks</p>
 						</TooltipContent>
 					</Tooltip>
 				</div>
 				<p className="text-sm text-muted-foreground mb-3 line-clamp-1">{description}</p>
-				<>
-					<Separator className="my-3" />
-					<div className="flex items-center justify-between">
-						<span className="text-sm text-muted-foreground">Price</span>
-						<span className="font-semibold text-lg">{price ? formatPriceDisplay(price) : "Free"}</span>
-					</div>
-				</>
+				<Separator className="my-3"/>
+				<div className="flex items-center justify-between">
+					<span className="text-sm text-muted-foreground">Price</span>
+					<span className="font-semibold text-lg">{price ? formatPriceDisplay(price) : "Free"}</span>
+				</div>
 			</CardContent>
 		</Card>
 	)

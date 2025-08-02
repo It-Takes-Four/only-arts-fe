@@ -167,7 +167,7 @@ export function WalletManagementModal({ isOpen, onClose, currentWalletAddress }:
               <div className="space-y-6">
                 {/* Current Wallet Address */}
                 {currentWalletAddress && (
-                  <div className="space-y-3">
+                  <div className="flex flex-col space-y-1">
                     <Label className="text-sm font-medium">Current Wallet Address</Label>
                     <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg border">
                       <div className="flex-1 min-w-0 font-mono text-sm break-all">
@@ -199,7 +199,7 @@ export function WalletManagementModal({ isOpen, onClose, currentWalletAddress }:
                 )}
 
                 {/* Wallet Connection Section */}
-                <div className="space-y-3">
+                <div className="flex flex-col space-y-1">
                   <Label className="text-sm font-medium">Connect Wallet (Recommended)</Label>
                   
                   {isConnected && address ? (
@@ -268,7 +268,7 @@ export function WalletManagementModal({ isOpen, onClose, currentWalletAddress }:
 
                 {/* Update Form */}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                  <div className="space-y-2">
+                  <div className="flex flex-col space-y-1">
                     <Label htmlFor="walletAddress" className="text-sm font-medium">
                       {currentWalletAddress ? 'New Wallet Address' : 'Wallet Address'}
                     </Label>
