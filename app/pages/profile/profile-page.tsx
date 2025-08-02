@@ -32,7 +32,6 @@ interface ProfilePageProps {
 }
 
 export function ProfilePage({ artistId }: ProfilePageProps) {
-	const { user: authUser } = useAuthContext();
 	const { artist, isLoading, error } = useArtistProfileQuery(artistId);
 	const { user: currentUser } = useUserProfileQuery();
 	const [tabValue, setTabValue] = useState("explore");
@@ -60,13 +59,13 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 		collections: myCollectionsData, 
 		isLoading: myCollectionsLoading,
 		error: myCollectionsError 
-	} = useMyCollectionsQuery();
+	} = useMyCollectionsQuery(isOwnProfile);
 
 	const { 
 		artworks: myArtworksData, 
 		isLoading: myArtworksLoading,
 		error: myArtworksError 
-	} = useMyArtworksQuery();
+	} = useMyArtworksQuery(isOwnProfile);
 
 	// Use currentUser for joined date if it's own profile, otherwise use artist data
 	const userForJoinedDate = isOwnProfile ? currentUser : artist?.user;
