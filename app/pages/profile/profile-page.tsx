@@ -96,6 +96,8 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 		return "/placeholder-avatar.png";
 	};
 
+	console.log(userForJoinedDate);
+
 	const tabs = [
 		{
 			value: "explore",

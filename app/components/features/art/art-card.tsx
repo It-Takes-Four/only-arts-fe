@@ -19,8 +19,6 @@ export function ArtCard({ art }: ArtCardProps) {
 		return null;
 	};
 
-	console.log("art tags", art.tags)
-
 	return (
 		<motion.div
 			key={"id"}
