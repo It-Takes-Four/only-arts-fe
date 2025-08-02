@@ -38,12 +38,7 @@ export function SearchResultsAll({ searchResults }: SearchResultsAllProps) {
           transition={{ duration: 0.5 }}
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold">Arts ({arts.length})</h2>
-            {arts.length > 8 && (
-              <Button variant="outline" size="sm">
-                View All Arts
-              </Button>
-            )}
+            <h2 className="text-xl font-semibold">Arts</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {arts.slice(0, 8).map((art) => (
@@ -88,12 +83,7 @@ export function SearchResultsAll({ searchResults }: SearchResultsAllProps) {
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold">Collections ({collections.length})</h2>
-            {collections.length > 8 && (
-              <Button variant="outline" size="sm">
-                View All Collections
-              </Button>
-            )}
+            <h2 className="text-xl font-semibold">Collections</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {collections.slice(0, 8).map((collection) => (
@@ -138,12 +128,7 @@ export function SearchResultsAll({ searchResults }: SearchResultsAllProps) {
           transition={{ duration: 0.5, delay: 0.2 }}
         >
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold">Artists ({artists.length})</h2>
-            {artists.length > 8 && (
-              <Button variant="outline" size="sm">
-                View All Artists
-              </Button>
-            )}
+            <h2 className="text-xl font-semibold">Artists</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {artists.slice(0, 8).map((artist) => (
