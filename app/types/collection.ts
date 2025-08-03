@@ -127,6 +127,7 @@ export interface MyCollection {
 	createdAt: string;
 	updatedAt: string;
 	artistId: string;
+	artsCount: number;
 	artist: {
 		id: string;
 		userId: string;
@@ -220,5 +221,6 @@ export interface PaginatedCollectionsResponse {
 		totalPages: number;
 		hasNextPage: boolean;
 		hasPrevPage: boolean;
+		limit: number;
 	};
 }

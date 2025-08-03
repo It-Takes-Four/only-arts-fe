@@ -248,7 +248,7 @@ export function ArtistStudioPage() {
 													{collection.description || "No description"}
 												</p>
 												<div className="flex gap-4 mt-2">
-													<Badge variant="outline">{collection.arts?.length || 0} Artworks</Badge>
+													<Badge variant="outline">{collection.artsCount || 0} Artworks</Badge>
 													<Badge variant="outline">
 														{collection.isPublished ? "Published" : "Draft"}
 													</Badge>

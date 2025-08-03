@@ -105,11 +105,11 @@ export function PublishCollectionModal({
                 </p>
               )}
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span>{collection.arts?.length || 0} artworks</span>
+                <span>{collection.artsCount || 0} artworks</span>
                 {collection.price && (
                   <>
                     <span>•</span>
-                    <span>{parseFloat(collection.price).toFixed(3)} ETH</span>
+                    <span>{parseFloat(collection.price).toFixed(4)} ETH</span>
                   </>
                 )}
               </div>
@@ -137,9 +137,9 @@ export function PublishCollectionModal({
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${(collection.arts?.length || 0) > 0 ? 'bg-green-500' : 'bg-yellow-500'}`} />
-                  <span className={(collection.arts?.length || 0) > 0 ? 'text-green-600 dark:text-green-400' : 'text-yellow-600 dark:text-yellow-400'}>
-                    {collection.arts?.length || 0} artworks included
+                  <div className={`w-2 h-2 rounded-full ${(collection.artsCount || 0) > 0 ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                  <span className={(collection.artsCount || 0) > 0 ? 'text-green-600 dark:text-green-400' : 'text-yellow-600 dark:text-yellow-400'}>
+                    {collection.artsCount || 0} artworks included
                   </span>
                 </div>
                 <div className="flex items-center gap-2">

@@ -143,6 +143,7 @@ export function CollectionsGrid({
               onEditCover={handleCoverEdit}
               onPublish={handlePublish}
               onManageArts={handleManageArts}
+              publishCollection={publishCollection}
             />
           ))}
         </div>
