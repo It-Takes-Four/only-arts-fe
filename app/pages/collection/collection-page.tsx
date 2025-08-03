@@ -124,12 +124,10 @@ export function CollectionPage() {
 				<GlassCard className="relative z-10 py-6 px-8">
 					<div className="absolute top-2 right-2">
 						{
-							!isArtist && (
+							!isArtist && !collection.isPurchased && (
 								<BuyCollectionButton
 									collection={collection as any}
 									onPurchaseSuccess={() => {
-										// Handle successful purchase - maybe refetch collection data
-										console.log('Collection purchased successfully');
 									}}
 								/>
 							)
