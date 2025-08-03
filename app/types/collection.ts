@@ -143,6 +143,7 @@ export interface MyCollection {
 		createdAt: string;
 		updatedAt: string;
 		user: {
+			username: string;
 			profilePictureFileId?: string | null;
 		};
 	};

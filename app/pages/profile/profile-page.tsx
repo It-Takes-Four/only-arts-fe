@@ -24,6 +24,8 @@ import type { ArtistArtwork, ArtworkTag } from "../../types/artwork";
 import { FollowButton } from "app/components/common/follow-button";
 import { fromSecondsToUnixTimestamp } from "app/utils/dates/DateFormatter";
 import { CollectionCard } from "../../components/features/collection/collection-card";
+import { useMyArtworksWithPaginationQuery } from "app/components/hooks/useMyArtworksWithPaginationQuery";
+import { useMyCollectionsWithPaginationQuery } from "app/components/hooks/useMyCollectionsWithPaginationQuery";
 
 interface ProfilePageProps {
 	artistId?: string;
@@ -33,35 +35,53 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 	const { artist, isLoading, error } = useArtistProfileQuery(artistId);
 	const { user: currentUser } = useUserProfileQuery();
 	const [tabValue, setTabValue] = useState("explore");
+
+	// Pagination states
 	const [collectionsPage, setCollectionsPage] = useState(1);
+	const [artworksPage, setArtworksPage] = useState(1);
+	const collectionsLimit = 7;
+	const artworksLimit = 7;
+
 
 	const isOwnProfile = !artistId; // If no artistId, it's the current user's profile
 
 	// Fetch data based on whether its own profile or another artist's profile
 	const {
-		data: collectionsData,
-		isLoading: collectionsLoading,
-		error: collectionsError
+		collectionsData: artistCollections,
+		collectionsLoading: artistCollectionsLoading,
+		collectionsError: artistCollectionsError
 	} = useArtistCollectionsQuery(artistId || '', collectionsPage, 10);
+	const artistCollectionsData = artistCollections;
 
 	const {
-		data: artworksData,
-		isLoading: artworksLoading,
-		error: artworksError
+		artworksData,
+		artworksLoading,
+		artworksError
 	} = useArtistArtworksQuery(artistId || '');
 
 	// Fetch own collections and artworks when viewing own profile
 	const {
-		collections: myCollectionsData,
-		isLoading: myCollectionsLoading,
-		error: myCollectionsError
-	} = useMyCollectionsQuery(isOwnProfile);
+		collectionsData: myCollections,
+		collectionsLoading: myCollectionsLoading,
+		collectionsError: myCollectionsError
+	} = useMyCollectionsWithPaginationQuery(collectionsPage, collectionsLimit, isOwnProfile);
+
+	const myCollectionsData = myCollections?.data
+
+
+	// const {
+	// 	artworks: myArtworksData,
+	// 	isLoading: myArtworksLoading,
+	// 	error: myArtworksError
+	// } = useMyArtworksQuery(isOwnProfile);
 
 	const {
-		artworks: myArtworksData,
-		isLoading: myArtworksLoading,
-		error: myArtworksError 
-	} = useMyArtworksQuery();
+		artworksData: myArtworks,
+		artworksLoading: myArtworksLoading,
+		artworksError: myArtworksError,
+	} = useMyArtworksWithPaginationQuery(artworksPage, artworksLimit, isOwnProfile)
+
+	const myArtworksData = myArtworks?.data;
 
 	// Use currentUser for joined date if its own profile, otherwise use artist data
 	const userForJoinedDate = isOwnProfile ? currentUser : artist?.user;
@@ -94,19 +114,19 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 							{/* Show View All button based on data availability */}
 							{(isOwnProfile ?
 								(myCollectionsData && myCollectionsData.length > 4) :
-								(collectionsData?.data && collectionsData.data.length > 4)
+								(artistCollectionsData && artistCollectionsData.length > 4)
 							) && (
 									<Button
 										variant="outline"
 										size="sm"
 										onClick={() => setTabValue("collections")}
 									>
-										View All ({isOwnProfile ? myCollectionsData?.length || 0 : collectionsData?.pagination?.total || 0})
+										View All ({isOwnProfile ? myCollectionsData?.length || 0 : artistCollectionsData?.pagination?.total || 0})
 									</Button>
 								)}
 						</div>
 						{/* Loading state */}
-						{(isOwnProfile ? myCollectionsLoading : collectionsLoading) ? (
+						{(isOwnProfile ? myCollectionsLoading : artistCollectionsLoading) ? (
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 								{Array.from({ length: 4 }).map((_, index) => (
 									<div key={index} className="animate-pulse">
@@ -116,24 +136,23 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 									</div>
 								))}
 							</div>
-						) : /* Error state */ (isOwnProfile ? myCollectionsError : collectionsError) ? (
+						) : /* Error state */ (isOwnProfile ? myCollectionsError : artistCollectionsError) ? (
 							<div className="text-center py-4">
 								<p className="text-muted-foreground text-sm">Failed to load collections</p>
 							</div>
 						) : /* Success state with data */ (isOwnProfile ?
 							(myCollectionsData && myCollectionsData.length > 0) :
-							(collectionsData?.data && Array.isArray(collectionsData.data) && collectionsData.data.length > 0)
+							(artistCollectionsData?.data && Array.isArray(artistCollectionsData.data) && artistCollectionsData.data.length > 0)
 						) ? (
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-								{(isOwnProfile ? myCollectionsData : collectionsData?.data)?.slice(0, 4).map((collection) => (
+								{(isOwnProfile ? myCollectionsData : artistCollectionsData?.data)?.slice(0, 4).map((collection:any) => (
 									<CollectionCard
 										key={collection.id}
 										id={collection.id}
 										name={collection.collectionName}
 										description={collection.description || "No description"}
-										artworkCount={isOwnProfile ?
-											(collection as any).arts?.length :
-											(collection as any).artsCount
+										artworkCount={
+											(collection as any).artsCount ? (collection as any).artsCount : 0
 										}
 										previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
 										createdBy={collection.artist.artistName}
@@ -154,18 +173,18 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 					<div>
 						<div className="flex items-center justify-between mb-4">
 							<h3 className="text-xl font-semibold">Artworks</h3>
-							{(isOwnProfile ? 
-								(myArtworksData && myArtworksData.length > 8) : 
+							{(isOwnProfile ?
+								(myArtworksData && myArtworksData.length > 8) :
 								(artworksData && artworksData.data && artworksData.data.length > 8)
 							) && (
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={() => setTabValue("artworks")}
-								>
-									View All ({isOwnProfile ? myArtworksData?.length || 0 : artworksData?.data.length || 0})
-								</Button>
-							)}
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => setTabValue("artworks")}
+									>
+										View All ({isOwnProfile ? myArtworksData?.length || 0 : artworksData?.data.length || 0})
+									</Button>
+								)}
 						</div>
 						{/* Loading state */}
 						{(isOwnProfile ? myArtworksLoading : artworksLoading) ? (
@@ -182,8 +201,8 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 							<div className="text-center py-4">
 								<p className="text-muted-foreground text-sm">Failed to load artworks</p>
 							</div>
-						) : /* Success state with data */ (isOwnProfile ? 
-							(myArtworksData && myArtworksData.length > 0) : 
+						) : /* Success state with data */ (isOwnProfile ?
+							(myArtworksData && myArtworksData.length > 0) :
 							(artworksData && artworksData.data && artworksData.data.length > 0)
 						) ? (
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
@@ -239,7 +258,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 			content: (
 				<div className="space-y-6">
 					{/* Loading state */}
-					{(isOwnProfile ? myCollectionsLoading : collectionsLoading) ? (
+					{(isOwnProfile ? myCollectionsLoading : artistCollectionsLoading) ? (
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
 							{Array.from({ length: 8 }).map((_, index) => (
 								<div key={index} className="animate-pulse">
@@ -249,25 +268,24 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 								</div>
 							))}
 						</div>
-					) : /* Error state */ (isOwnProfile ? myCollectionsError : collectionsError) ? (
+					) : /* Error state */ (isOwnProfile ? myCollectionsError : artistCollectionsError) ? (
 						<div className="text-center py-8">
 							<p className="text-muted-foreground">Failed to load collections</p>
 						</div>
 					) : /* Success state with data */ (isOwnProfile ?
 						(myCollectionsData && myCollectionsData.length > 0) :
-						(collectionsData?.data && Array.isArray(collectionsData.data) && collectionsData.data.length > 0)
+						(artistCollectionsData?.data && Array.isArray(artistCollectionsData.data) && artistCollectionsData.data.length > 0)
 					) ? (
 						<>
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-								{(isOwnProfile ? myCollectionsData : collectionsData?.data)?.map((collection) => (
+								{(isOwnProfile ? myCollectionsData : artistCollectionsData?.data)?.map((collection:any) => (
 									<CollectionCard
 										key={collection.id}
 										id={collection.id}
 										name={collection.collectionName}
 										description={collection.description || "No description"}
-										artworkCount={isOwnProfile ?
-											(collection as any).arts?.length || 0 :
-											(collection as any).artsCount || 0
+										artworkCount={
+											(collection as any).artsCount ? (collection as any).artsCount : 0
 										}
 										previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
 										createdBy={collection.artist.artistName}
@@ -279,25 +297,25 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 							</div>
 
 							{/* Pagination - only for other artists' profiles */}
-							{!isOwnProfile && collectionsData?.pagination && collectionsData.pagination.totalPages > 1 && (
+							{!isOwnProfile && artistCollectionsData?.pagination && artistCollectionsData.pagination.totalPages > 1 && (
 								<div className="flex justify-center items-center gap-2">
 									<Button
 										variant="outline"
 										size="sm"
 										onClick={() => setCollectionsPage(p => Math.max(1, p - 1))}
-										disabled={!collectionsData.pagination.hasPrevPage}
+										disabled={!artistCollectionsData.pagination.hasPrevPage}
 									>
 										<ChevronLeft className="h-4 w-4" />
 										Previous
 									</Button>
 									<span className="text-sm text-muted-foreground px-2">
-										Page {collectionsData.pagination.currentPage} of {collectionsData.pagination.totalPages}
+										Page {artistCollectionsData.pagination.currentPage} of {artistCollectionsData.pagination.totalPages}
 									</span>
 									<Button
 										variant="outline"
 										size="sm"
 										onClick={() => setCollectionsPage(p => p + 1)}
-										disabled={!collectionsData.pagination.hasNextPage}
+										disabled={!artistCollectionsData.pagination.hasNextPage}
 									>
 										Next
 										<ChevronRight className="h-4 w-4" />
@@ -333,8 +351,8 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 						<div className="text-center py-8">
 							<p className="text-muted-foreground">Failed to load artworks</p>
 						</div>
-					) : /* Success state with data */ (isOwnProfile ? 
-						(myArtworksData && myArtworksData.length > 0) : 
+					) : /* Success state with data */ (isOwnProfile ?
+						(myArtworksData && myArtworksData.length > 0) :
 						(artworksData && artworksData.data && artworksData.data.length > 0)
 					) ? (
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

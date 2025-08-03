@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useNavigate } from "react-router";
 import { AbsoluteBuyCollectionButton } from "./buy-collection-button";
-import type { ArtistCollection } from "../../../types/collection";
+import type { ArtistCollection, MyCollection } from "../../../types/collection";
 import { getUserInitials } from "../../../utils/UtilityFunction";
 import { formatPriceDisplay } from "../../../utils/currency";
 
@@ -126,7 +126,6 @@ export function CollectionCard({
 								<span
 									className="flex px-2 py-1.5 glass rounded-full font-medium border-border text-foreground items-center gap-x-1.5"
 								>
-
 									<img src={"https://placehold.co/50x50"} alt="Artist Avatar" className="h-5 w-5 rounded-full"/>
 									{createdBy}
 								</span>

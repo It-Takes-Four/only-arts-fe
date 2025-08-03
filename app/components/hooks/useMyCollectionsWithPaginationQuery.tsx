@@ -63,8 +63,9 @@ export function useMyCollectionsWithPaginationQuery(page: number = 1, limit: num
   };
 
   return {
-    collectionsLoading: query.isLoading,
     collectionsData: query.data,
+    collectionsLoading: query.isLoading,
+    collectionsError: query.error,
     addCollection: addCollectionMutation.mutate,
     addCollectionStatus: {
       addCollectionIsPending: addCollectionMutation.isPending,
