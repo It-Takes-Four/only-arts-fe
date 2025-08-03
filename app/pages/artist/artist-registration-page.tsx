@@ -19,12 +19,12 @@ export function ArtistRegistrationPage() {
   const handleRefreshUser = async () => {
     setIsRefreshing(true);
     try {
-      console.log('Refreshing user state...');
+      //console.log('Refreshing user state...');
       const result = await refreshUserWithValidation();
       
       if (result) {
         toast.success('User state refreshed successfully!');
-        console.log('User state refreshed:', result);
+        //console.log('User state refreshed:', result);
       } else {
         toast.info('No authentication found, redirecting to login...');
       }

@@ -122,7 +122,7 @@ export function CreateArtworkModal({ isOpen, onClose, createArtwork, isPending, 
 
       const response = await createArtwork(request);
 
-      console.log("CreateArtWorkModal createArtworkAsync response:", response);
+      //console.log("CreateArtWorkModal createArtworkAsync response:", response);
     } catch (error: any) {
       console.error('Artwork creation error:', error);
       toast.error(error.message || "Failed to upload artwork");

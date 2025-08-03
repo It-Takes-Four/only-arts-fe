@@ -36,7 +36,7 @@ export function usePayment() {
                     }],
                 });
 
-                console.log(`Switched to chainId ${TARGET_CHAIN_ID}`);
+                //console.log(`Switched to chainId ${TARGET_CHAIN_ID}`);
             } catch (switchError) {
                 await addNetworkToWallet();
             }
@@ -110,7 +110,7 @@ export function usePayment() {
             setpaymentStatus(PaymentStatus.PURCHASED)
             toast.success("Purchase Successful!")
         } catch (error: any) {
-            console.log(error);
+            //console.log(error);
             toast.error("Purchase failed:", error.message)
         }
     }

@@ -17,7 +17,7 @@ export function setCookie(name: string, value: string, days = 7) {
     // Verify the cookie was set
     setTimeout(() => {
       const verification = getCookie(name);
-      console.log('Cookie verification for', name, ':', verification ? 'Success' : 'Failed');
+      //console.log('Cookie verification for', name, ':', verification ? 'Success' : 'Failed');
     }, 10);
   } catch (error) {
     console.error('Error setting cookie with js-cookie:', error);
@@ -44,12 +44,12 @@ export function deleteCookie(name: string) {
   
   try {
     Cookies.remove(name, { path: '/' });
-    console.log('Cookie deleted with js-cookie:', name);
+    //console.log('Cookie deleted with js-cookie:', name);
     
     // Verify the cookie was deleted
     setTimeout(() => {
       const verification = getCookie(name);
-      console.log('Cookie deletion verification for', name, ':', verification ? 'Failed - still exists' : 'Success - deleted');
+      //console.log('Cookie deletion verification for', name, ':', verification ? 'Failed - still exists' : 'Success - deleted');
     }, 50);
   } catch (error) {
     console.error('Error deleting cookie with js-cookie:', error);
@@ -59,15 +59,15 @@ export function deleteCookie(name: string) {
 // Debug function to check cookie operations
 export function debugCookies() {
   if (typeof window === 'undefined') {
-    console.log('Cookies: Server-side environment');
+    //console.log('Cookies: Server-side environment');
     return;
   }
   
   try {
-    console.log('=== COOKIE DEBUG ===');
-    console.log('All cookies:', document.cookie);
-    console.log('Auth token:', getCookie('auth_token'));
-    console.log('js-cookie available:', !!Cookies);
+    //console.log('=== COOKIE DEBUG ===');
+    //console.log('All cookies:', document.cookie);
+    //console.log('Auth token:', getCookie('auth_token'));
+    //console.log('js-cookie available:', !!Cookies);
   } catch (error) {
     console.error('Error debugging cookies:', error);
   }

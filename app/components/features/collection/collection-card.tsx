@@ -151,7 +151,7 @@ export function CollectionCard({
 					position="top-right"
 					onPurchaseSuccess={() => {
 						// Handle successful purchase - maybe trigger a refetch
-						console.log('Collection purchased successfully');
+						//console.log('Collection purchased successfully');
 					}}
 				/>
 			)}

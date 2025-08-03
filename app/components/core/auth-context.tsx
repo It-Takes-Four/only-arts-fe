@@ -37,14 +37,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Remove the useEffect that was causing conflicts - let ProtectedRoute handle redirects
 
   const handleLogout = () => {
-    console.log('AuthProvider: handleLogout called');
+    //console.log('AuthProvider: handleLogout called');
     setIsLoggingOut(true);
     
     // Clear auth state first
     auth.logout();
     
     // Force navigate to landing page, clearing any navigation state
-    console.log('AuthProvider: Navigating to landing');
+    //console.log('AuthProvider: Navigating to landing');
     navigate('/landing', { 
       replace: true,
       state: {} // Clear any previous state
@@ -52,7 +52,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     
     // Keep logout state longer to prevent redirect conflicts
     setTimeout(() => {
-      console.log('AuthProvider: Resetting isLoggingOut state');
+      //console.log('AuthProvider: Resetting isLoggingOut state');
       setIsLoggingOut(false);
     }, 2000); // Increased from 500ms to 2 seconds
   };
@@ -63,7 +63,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
       // If result is null, it means no token was found and user should be redirected
       if (result === null) {
-        console.log('AuthProvider: No auth token found, redirecting to landing');
+        //console.log('AuthProvider: No auth token found, redirecting to landing');
         navigate('/landing', { 
           replace: true,
           state: {} 
@@ -73,7 +73,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       
       return result;
     } catch (error) {
-      console.log('AuthProvider: Refresh failed, redirecting to landing');
+      //console.log('AuthProvider: Refresh failed, redirecting to landing');
       navigate('/landing', { 
         replace: true,
         state: {} 

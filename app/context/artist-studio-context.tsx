@@ -95,7 +95,7 @@ export function ArtistStudioProvider({ children }: ArtistStudioProviderProps) {
 
   const refreshProfile = useCallback(async () => {
     try {
-      console.log('ArtistStudioProvider: Refreshing profile and related data...');
+      //console.log('ArtistStudioProvider: Refreshing profile and related data...');
 
       // Refresh user data first
       await refreshUserWithValidation();
@@ -108,7 +108,7 @@ export function ArtistStudioProvider({ children }: ArtistStudioProviderProps) {
         refreshArtworks()
       ]);
 
-      console.log('ArtistStudioProvider: All data refreshed successfully');
+      //console.log('ArtistStudioProvider: All data refreshed successfully');
     } catch (error) {
       console.error('ArtistStudioProvider: Failed to refresh profile data:', error);
       throw error;

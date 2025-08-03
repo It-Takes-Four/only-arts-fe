@@ -59,11 +59,11 @@ export function ArtistRegistrationForm({ onSuccess, onCancel }: ArtistRegistrati
       const response = await artistService.registerAsArtist(registrationData);
       
       // Refresh user data to include the new artist information using enhanced validation
-      console.log('Artist registration successful, refreshing user data...');
+      //console.log('Artist registration successful, refreshing user data...');
       const refreshedUser = await refreshUserWithValidation();
       
       if (refreshedUser) {
-        console.log('User data refreshed after artist registration:', refreshedUser);
+        //console.log('User data refreshed after artist registration:', refreshedUser);
         toast.success("Congratulations! You're now an OnlyArts artist!");
         onSuccess(response.artist);
       } else {

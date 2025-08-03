@@ -261,14 +261,14 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = React.memo(({
         // Adaptive quality adjustment
         if (perf.currentFPS < targetFPS * 0.8 && perf.adaptiveQuality !== 'low') {
           perf.adaptiveQuality = perf.adaptiveQuality === 'high' ? 'medium' : 'low';
-          console.log(`LiquidChrome: Adapting quality to ${perf.adaptiveQuality} (FPS: ${perf.currentFPS})`);
+          //console.log(`LiquidChrome: Adapting quality to ${perf.adaptiveQuality} (FPS: ${perf.currentFPS})`);
         } else if (perf.currentFPS > targetFPS * 1.2 && perf.adaptiveQuality !== quality) {
           const qualityLevels: ('low' | 'medium' | 'high')[] = ['low', 'medium', 'high'];
           const currentIndex = qualityLevels.indexOf(perf.adaptiveQuality);
           const targetIndex = qualityLevels.indexOf(quality);
           if (currentIndex < targetIndex) {
             perf.adaptiveQuality = qualityLevels[Math.min(currentIndex + 1, targetIndex)];
-            console.log(`LiquidChrome: Improving quality to ${perf.adaptiveQuality} (FPS: ${perf.currentFPS})`);
+            //console.log(`LiquidChrome: Improving quality to ${perf.adaptiveQuality} (FPS: ${perf.currentFPS})`);
           }
         }
       }

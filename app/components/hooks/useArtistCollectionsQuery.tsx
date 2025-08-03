@@ -7,9 +7,9 @@ export function useArtistCollectionsQuery(artistId: string, page: number = 1, li
 	const query = useQuery({
 		queryKey: ['artist-collections', artistId, page, limit],
 		queryFn: async () => {
-			console.log('Fetching artist collections for:', artistId, 'page:', page);
+			//console.log('Fetching artist collections for:', artistId, 'page:', page);
 			const result = await artistService.getArtistPublishedCollections(artistId, page, limit);
-			console.log('Artist collections result:', result);
+			//console.log('Artist collections result:', result);
 			return result;
 		},
 		staleTime: 5 * 60 * 1000, // 5 minutes

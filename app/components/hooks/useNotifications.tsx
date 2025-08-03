@@ -20,7 +20,7 @@ export function useNotifications(initialPage = 1, initialLimit = 10) {
       setNotifications(res.data);
       setMeta(res.pagination);
 
-      console.log("notifications", notifications);
+      //console.log("notifications", notifications);
       
     } catch (err) {
       setError(err as Error);

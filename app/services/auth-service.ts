@@ -39,17 +39,17 @@ class AuthService extends BaseService {
     try {
       const { data } = await this._axios.post<RegisterResponse>('/auth/register', userData);
       
-      console.log('Register response received:', data);
+      //console.log('Register response received:', data);
       
       // Store token in cookie
       if (data.accessToken) {
-        console.log('Setting auth token cookie after registration:', data.accessToken.substring(0, 20) + '...');
+        //console.log('Setting auth token cookie after registration:', data.accessToken.substring(0, 20) + '...');
         setCookie(this.TOKEN_KEY, data.accessToken, 7);
         
         // Debug: Check if cookie was set
         setTimeout(() => {
           const savedToken = getCookie(this.TOKEN_KEY);
-          console.log('Cookie verification after register - Saved token:', savedToken ? 'Found' : 'Not found');
+          //console.log('Cookie verification after register - Saved token:', savedToken ? 'Found' : 'Not found');
           debugCookies();
         }, 100);
       } else {
@@ -78,7 +78,7 @@ class AuthService extends BaseService {
   }
 
   logout(): void {
-    console.log('AuthService logout called');
+    //console.log('AuthService logout called');
     
     // Clear the auth token cookie
     this.clearToken();
@@ -87,7 +87,7 @@ class AuthService extends BaseService {
     try {
       Object.keys(localStorage).forEach(key => {
         if (key.startsWith('auth_')) {
-          console.log('Clearing localStorage key:', key);
+          //console.log('Clearing localStorage key:', key);
           localStorage.removeItem(key);
         }
       });
@@ -95,7 +95,7 @@ class AuthService extends BaseService {
       console.warn('Failed to clear localStorage:', error);
     }
     
-    console.log('AuthService logout completed');
+    //console.log('AuthService logout completed');
   }
 
   getToken(): string | undefined {

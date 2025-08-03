@@ -203,7 +203,7 @@ export function ArtPage() {
 						size="lg"
 						showSocialOptions={true}
 						onShare={(method) => {
-							console.log(`Shared artwork via ${method}`);
+							//console.log(`Shared artwork via ${method}`);
 						}}
 					/>
 				</div>

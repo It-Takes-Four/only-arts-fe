@@ -73,12 +73,12 @@ export function EditArtistProfileModal({ isOpen, onClose, onSuccess }: EditArtis
       };
 
       const updatedArtist = await artistService.updateArtistProfile(updateData);
-      console.log('Artist profile updated successfully:', updatedArtist);
+      //console.log('Artist profile updated successfully:', updatedArtist);
       
       // Use the studio context to refresh all data
       try {
         await refreshProfile();
-        console.log('All artist studio data refreshed successfully');
+        //console.log('All artist studio data refreshed successfully');
       } catch (refreshError) {
         console.warn('Background refresh failed:', refreshError);
         

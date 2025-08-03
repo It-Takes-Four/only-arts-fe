@@ -9,9 +9,9 @@ export function useMyArtworksQuery(enabled = true) {
   const query = useQuery<MyArtworksResponse>({
     queryKey: ['my-artworks'],
     queryFn: async () => {
-      console.log('🔄 Fetching my artworks...'); // Add this to see if refetch happens
+      //console.log('🔄 Fetching my artworks...'); // Add this to see if refetch happens
       const result = await artService.getMyArtworks();
-      console.log('✅ Fetched artworks:', result); // Log the result
+      //console.log('✅ Fetched artworks:', result); // Log the result
       return result;
     },
     enabled,
@@ -31,7 +31,7 @@ export function useMyArtworksQuery(enabled = true) {
   const createArtworkMutation = useMutation({
     mutationFn: async (artworkData: any) => {
       // Pass the artwork data to your service
-      console.log("createArtworkMutation called");
+      //console.log("createArtworkMutation called");
 
       return await artService.createArtwork(artworkData);
     },
