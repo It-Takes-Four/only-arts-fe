@@ -284,16 +284,6 @@ export function LandingPage() {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
-            <Link to="/explore">
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-lg px-8 py-6 bg-background/50 backdrop-blur-sm hover:bg-background/80 border-2 hover:border-primary/50 transition-all duration-300 cursor-pointer"
-              >
-                Explore Gallery
-                <Eye className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
           </motion.div>
 
           {/* Hero Stats */}
