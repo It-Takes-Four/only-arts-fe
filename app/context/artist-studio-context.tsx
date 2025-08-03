@@ -78,9 +78,8 @@ export function ArtistStudioProvider({ children }: ArtistStudioProviderProps) {
     deleteArtworkAsync,
     isDeletingArtwork
   } = useMyArtworksQuery();
-  const { refresh: refreshArtistProfile } = useArtistProfileQuery();
+  const { refresh: refreshArtistProfile, artist } = useArtistProfileQuery();
   const { refresh: refreshUserProfile } = useUserProfileQuery();
-  const queryClient = useQueryClient();
 
   // Calculate analytics from real data
   const analytics = {
@@ -89,9 +88,9 @@ export function ArtistStudioProvider({ children }: ArtistStudioProviderProps) {
     totalShares: 0, // This would need a separate API call to get share counts
     totalSales: 0, // Sales data not available in current API response
     revenue: 0, // Revenue data not available in current API response
-    totalArtworks: artworks.length,
-    publishedCollections: collections.filter((collection: any) => collection.isPublished).length,
-    totalCollections: collections.length
+    totalArtworks: artist?.totalArts,
+    publishedCollections: artist?.totalPublishedCollections,
+    totalCollections: artist?.totalCollections
   };
 
   const refreshProfile = useCallback(async () => {
