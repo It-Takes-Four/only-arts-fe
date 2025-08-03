@@ -17,7 +17,9 @@ import type { CreateArtworkRequest } from "../../../types/artwork";
 interface CreateArtworkModalProps {
   isOpen: boolean;
   onClose: () => void;
-  createArtworkAsync: (artwork: any) => void
+  createArtwork: (artwork: any) => void;
+  isPending: boolean;
+  isSuccess: boolean;
 }
 
 interface FormData {
@@ -26,7 +28,7 @@ interface FormData {
   image: FileList;
 }
 
-export function CreateArtworkModal({ isOpen, onClose, createArtworkAsync }: CreateArtworkModalProps) {
+export function CreateArtworkModal({ isOpen, onClose, createArtwork, isPending, isSuccess }: CreateArtworkModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -71,6 +73,23 @@ export function CreateArtworkModal({ isOpen, onClose, createArtworkAsync }: Crea
     }
   }, [tagSearch, searchTags]);
 
+  useEffect(() => {
+    if(isPending) setIsSubmitting(true);
+  }, [isPending])
+
+  useEffect(() => {
+    if(isSuccess){
+      toast.success("Artwork uploaded successfully!");
+      reset();
+      setPreviewImage(null);
+      setSelectedTags([]);
+      setTagSearch("");
+      onClose();
+      setIsSubmitting(false);
+    }
+  }, [isSuccess])
+  
+
   const handleTagSelect = (tagId: string) => {
     if (!selectedTags.includes(tagId)) {
       setSelectedTags([...selectedTags, tagId]);
@@ -101,22 +120,12 @@ export function CreateArtworkModal({ isOpen, onClose, createArtworkAsync }: Crea
         tagIds: selectedTags.length > 0 ? selectedTags : undefined,
       };
 
-      const response = await createArtworkAsync(request);
+      const response = await createArtwork(request);
 
       console.log("CreateArtWorkModal createArtworkAsync response:", response);
-
-
-      toast.success("Artwork uploaded successfully!");
-      reset();
-      setPreviewImage(null);
-      setSelectedTags([]);
-      setTagSearch("");
-      onClose();
     } catch (error: any) {
       console.error('Artwork creation error:', error);
       toast.error(error.message || "Failed to upload artwork");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

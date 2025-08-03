@@ -1,9 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { artService } from '../../services/art-service';
-import type { MyArtworksResponse } from '../../types/artwork';
 
 export function useMyArtworksWithPaginationQuery(page: number = 1, limit: number = 10, enabled = true) {
-  return useQuery<MyArtworksResponse>({
+  const queryClient = useQueryClient();
+
+  const query = useQuery({
     queryKey: ['my-artworks-paginated', page, limit],
     queryFn: async () => {
       console.log('🔄 Fetching my artworks...', 'page:', page, 'limit:', limit);
@@ -22,5 +23,32 @@ export function useMyArtworksWithPaginationQuery(page: number = 1, limit: number
     },
     refetchOnWindowFocus: false,
     refetchOnMount: true,
-  });
+  })
+
+  const refreshArtworks = async () => {
+    await queryClient.invalidateQueries({ queryKey: ['my-artworks-paginated', page, limit] });
+    await query.refetch()
+  };
+
+  const createArtworkMutation = useMutation({
+    mutationFn: async (request: any) => {
+      return await artService.createArtwork(request)
+    },
+    onSuccess: async () => {
+      await refreshArtworks()
+    },
+    onError: (error) => {
+      console.error('Failed to create artwork:', error);
+      // Optionally invalidate to refetch and get correct state
+      queryClient.invalidateQueries({ queryKey: ['my-artworks-paginated', page, limit] });
+    }
+  })
+
+  return {
+    artworksData: query.data,
+    artworksLoading: query.isLoading,
+    createArtwork: createArtworkMutation.mutate,
+    createArtworkIsPending: createArtworkMutation.isPending,
+    createArtworkIsSuccess: createArtworkMutation.isSuccess,
+  }
 }

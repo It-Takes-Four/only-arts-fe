@@ -38,9 +38,6 @@ export function ArtistStudioPage() {
 	const {
 		analytics,
 		refreshProfile,
-		createArtworkAsync,
-		isCreatingCollection,
-		isDoneCreatingCollection
 	} = useArtistStudio();
 
 	// Pagination states
@@ -53,20 +50,18 @@ export function ArtistStudioPage() {
 		collectionsLoading,
 		collectionsData,
 		addCollection,
-		addCollectionStatus:{
+		addCollectionStatus: {
 			addCollectionIsPending,
 			addCollectionIsSuccess
 		},
 		publishCollection,
-		publishCollectionStatus:{
+		publishCollectionStatus: {
 			publishCollectionIsPending,
 			publishCollectionIsSuccess
 		},
 	} = useMyCollectionsWithPaginationQuery(collectionsPage, collectionsLimit);
 
-	const artworksQuery = useMyArtworksWithPaginationQuery(artworksPage, artworksLimit);
-	const artworksLoading = artworksQuery.isLoading;
-	const artworksData = artworksQuery.data;
+	const { artworksData, artworksLoading, createArtwork, createArtworkIsPending, createArtworkIsSuccess } = useMyArtworksWithPaginationQuery(artworksPage, artworksLimit);
 
 	const [tabValue, setTabValue] = useState("collections");
 	const [showCreateCollectionModal, setShowCreateCollectionModal] = useState(false);
@@ -416,7 +411,9 @@ export function ArtistStudioPage() {
 			<CreateArtworkModal
 				isOpen={showCreateArtworkModal}
 				onClose={() => setShowCreateArtworkModal(false)}
-				createArtworkAsync={createArtworkAsync}
+				createArtwork={createArtwork}
+				isPending={createArtworkIsPending}
+				isSuccess={createArtworkIsSuccess}
 			/>
 
 			<EditArtistProfileModal
