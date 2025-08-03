@@ -57,12 +57,12 @@ export function useCollection(collectionId: string | undefined) {
 		} catch (err) {
 			setError(err instanceof Error ? err.message : 'Failed to fetch artworks');
 		}
-	}, [collectionId]);
+	}, [collectionId, collection?.isPurchased]);
 
 	useEffect(() => {
 		fetchCollection();
 		fetchCollectionArtworks();
 	}, [collectionId]);
 
-	return { collection, collectionImageUrl, loading, error, collectionArtworks, isArtist : user?.artist?.id === collection?.artistId || false };
+	return { collection, setCollection, collectionImageUrl, loading, error, collectionArtworks, isArtist : user?.artist?.id === collection?.artistId || false };
 }

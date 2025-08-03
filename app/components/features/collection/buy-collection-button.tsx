@@ -58,7 +58,7 @@ export function BuyCollectionButton({
         onClick={() => setShowBuyModal(true)}
         className={`cursor-pointer hover:scale-105 transition-all duration-200 ${className}`}
       >
-        Buy {formatPriceDisplay(collection.price)}
+        Buy Collection
       </Button>
 
       <BuyCollectionModal

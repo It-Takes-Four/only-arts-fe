@@ -17,7 +17,7 @@ import { FancyLoading } from "../../components/common/fancy-loading";
 
 export function CollectionPage() {
 	const { collectionId } = useParams<{ collectionId: string }>();
-	const { collection, collectionImageUrl, error, collectionArtworks, isArtist, loading } = useCollection(collectionId);
+	const { collection, setCollection, collectionImageUrl, error, collectionArtworks, isArtist, loading } = useCollection(collectionId);
 
 	const formatDate = (dateString: string) => {
 		const date = new Date(dateString);
@@ -125,19 +125,25 @@ export function CollectionPage() {
 				{/* Subtle gradient overlay for better text readability */}
 				<div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent rounded-lg" />
 
+				<div className="absolute top-[1rem] right-[1rem]">
+					{
+						!isArtist && !collection.isPurchased && (
+							<BuyCollectionButton
+								collection={collection as any}
+								onPurchaseSuccess={() => {
+									setCollection((prevCollection: any) => ({
+										...prevCollection,
+										isPurchased: true,
+									}));
+								}}
+								className="px-5 py-5 text-md"
+							/>
+						)
+					}
+				</div>
+
 				{/* Collection Info Glass Card */}
-				<GlassCard className="relative z-10 py-6 px-8">
-					<div className="absolute top-2 right-2">
-						{
-							!isArtist && !collection.isPurchased && (
-								<BuyCollectionButton
-									collection={collection as any}
-									onPurchaseSuccess={() => {
-									}}
-								/>
-							)
-						}
-					</div>
+				<GlassCard className="z-10 py-6 px-8">
 					<div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-2">
 						<div className="flex items-start lg:items-end space-x-4 flex-1">
 							<div className="flex flex-col flex-1">
@@ -173,7 +179,7 @@ export function CollectionPage() {
 						<Separator className="bg-white/15 my-4 lg:hidden" />
 
 						{/* Stats Section */}
-						<div className="flex items-end space-x-6">
+						<div className="flex items-end justify-center w-full lg:justify-end lg:w-fit space-x-6">
 							<div className="flex flex-col items-center lg:items-end">
 								<span className="text-xs text-white/75 font-mono uppercase">
 									Artworks
