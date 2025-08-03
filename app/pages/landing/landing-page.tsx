@@ -198,7 +198,7 @@ export function LandingPage() {
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-50 flex items-center justify-between p-6 bg-background/80 backdrop-blur-sm border-b border-border/50">
+      <nav className="relative z-50 flex items-center justify-between py-3 px-4 md:px-6 bg-background/80 backdrop-blur-sm border-b border-border/50">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
