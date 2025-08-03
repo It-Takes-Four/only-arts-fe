@@ -65,13 +65,6 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 
 	const myCollectionsData = myCollections?.data
 
-
-	// const {
-	// 	artworks: myArtworksData,
-	// 	isLoading: myArtworksLoading,
-	// 	error: myArtworksError
-	// } = useMyArtworksQuery(isOwnProfile);
-
 	const {
 		artworksData: myArtworks,
 		artworksLoading: myArtworksLoading,
