@@ -15,8 +15,11 @@ import type { MyCollection } from "../../../types/collection";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router";
+import type { User } from "app/components/core/_models";
+import { toast } from "sonner";
 
 interface CollectionManagementCardProps {
+	user: User;
 	collection: MyCollection;
 	onCollectionUpdated: (updatedCollection: MyCollection) => void;
 	onEditContent?: (collection: MyCollection) => void;
@@ -27,6 +30,7 @@ interface CollectionManagementCardProps {
 }
 
 export function CollectionManagementCard({
+	user,
 	collection,
 	onCollectionUpdated,
 	onEditContent,
@@ -53,6 +57,10 @@ export function CollectionManagementCard({
 	};
 
 	const handlePublishClick = async () => {
+		if (user.artist?.walletAddress == undefined || user.artist?.walletAddress === "") {
+			toast.error("You need to connect your wallet to publish collections.");
+			return;
+		}
 		if (onPublish) {
 			onPublish(collection);
 		}
