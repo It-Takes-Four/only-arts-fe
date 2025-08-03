@@ -24,6 +24,8 @@ import type { ArtistArtwork, ArtworkTag } from "../../types/artwork";
 import { FollowButton } from "app/components/common/follow-button";
 import { fromSecondsToUnixTimestamp } from "app/utils/dates/DateFormatter";
 import { CollectionCard } from "../../components/features/collection/collection-card";
+import { useMyArtworksWithPaginationQuery } from "app/components/hooks/useMyArtworksWithPaginationQuery";
+import { useMyCollectionsWithPaginationQuery } from "app/components/hooks/useMyCollectionsWithPaginationQuery";
 
 interface ProfilePageProps {
 	artistId?: string;
@@ -33,7 +35,13 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 	const { artist, isLoading, error } = useArtistProfileQuery(artistId);
 	const { user: currentUser } = useUserProfileQuery();
 	const [tabValue, setTabValue] = useState("explore");
+
+	// Pagination states
 	const [collectionsPage, setCollectionsPage] = useState(1);
+	const [artworksPage, setArtworksPage] = useState(1);
+	const collectionsLimit = 7;
+	const artworksLimit = 7;
+
 
 	const isOwnProfile = !artistId; // If no artistId, it's the current user's profile
 
@@ -52,16 +60,21 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 
 	// Fetch own collections and artworks when viewing own profile
 	const {
-		collections: myCollectionsData,
-		isLoading: myCollectionsLoading,
-		error: myCollectionsError
-	} = useMyCollectionsQuery(isOwnProfile);
+		collectionsData: myCollections,
+		collectionsLoading: myCollectionsLoading,
+		collectionsError: myCollectionsError
+	} = useMyCollectionsWithPaginationQuery(collectionsPage, collectionsLimit, isOwnProfile);
+
+	const myCollectionsData = myCollections?.data
+
+	console.log("myCollectionsData", myCollectionsData);
+	
 
 	const {
 		artworks: myArtworksData,
 		isLoading: myArtworksLoading,
-		error: myArtworksError 
-	} = useMyArtworksQuery();
+		error: myArtworksError
+	} = useMyArtworksQuery(isOwnProfile);
 
 	// Use currentUser for joined date if its own profile, otherwise use artist data
 	const userForJoinedDate = isOwnProfile ? currentUser : artist?.user;
@@ -125,15 +138,15 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 							(collectionsData?.data && Array.isArray(collectionsData.data) && collectionsData.data.length > 0)
 						) ? (
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-								{(isOwnProfile ? myCollectionsData : collectionsData?.data)?.slice(0, 4).map((collection) => (
+								{(isOwnProfile ? myCollectionsData : collectionsData?.data)?.slice(0, 4).map((collection:any) => (
 									<CollectionCard
 										key={collection.id}
 										id={collection.id}
 										name={collection.collectionName}
 										description={collection.description || "No description"}
 										artworkCount={isOwnProfile ?
-											(collection as any).arts?.length || 0 :
-											(collection as any).artsCount || 0
+											(collection as any).artsCount || 0 :
+											(collection as any).arts?.length || 0
 										}
 										previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
 										createdBy={collection.artist.artistName}
@@ -154,18 +167,18 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 					<div>
 						<div className="flex items-center justify-between mb-4">
 							<h3 className="text-xl font-semibold">Artworks</h3>
-							{(isOwnProfile ? 
-								(myArtworksData && myArtworksData.length > 8) : 
+							{(isOwnProfile ?
+								(myArtworksData && myArtworksData.length > 8) :
 								(artworksData && artworksData.data && artworksData.data.length > 8)
 							) && (
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={() => setTabValue("artworks")}
-								>
-									View All ({isOwnProfile ? myArtworksData?.length || 0 : artworksData?.data.length || 0})
-								</Button>
-							)}
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={() => setTabValue("artworks")}
+									>
+										View All ({isOwnProfile ? myArtworksData?.length || 0 : artworksData?.data.length || 0})
+									</Button>
+								)}
 						</div>
 						{/* Loading state */}
 						{(isOwnProfile ? myArtworksLoading : artworksLoading) ? (
@@ -182,8 +195,8 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 							<div className="text-center py-4">
 								<p className="text-muted-foreground text-sm">Failed to load artworks</p>
 							</div>
-						) : /* Success state with data */ (isOwnProfile ? 
-							(myArtworksData && myArtworksData.length > 0) : 
+						) : /* Success state with data */ (isOwnProfile ?
+							(myArtworksData && myArtworksData.length > 0) :
 							(artworksData && artworksData.data && artworksData.data.length > 0)
 						) ? (
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
@@ -259,15 +272,15 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 					) ? (
 						<>
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-								{(isOwnProfile ? myCollectionsData : collectionsData?.data)?.map((collection) => (
+								{(isOwnProfile ? myCollectionsData : collectionsData?.data)?.map((collection:any) => (
 									<CollectionCard
 										key={collection.id}
 										id={collection.id}
 										name={collection.collectionName}
 										description={collection.description || "No description"}
 										artworkCount={isOwnProfile ?
-											(collection as any).arts?.length || 0 :
-											(collection as any).artsCount || 0
+											(collection as any).artsCount || 0 :
+											(collection as any).arts?.length || 0
 										}
 										previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
 										createdBy={collection.artist.artistName}
@@ -333,8 +346,8 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 						<div className="text-center py-8">
 							<p className="text-muted-foreground">Failed to load artworks</p>
 						</div>
-					) : /* Success state with data */ (isOwnProfile ? 
-						(myArtworksData && myArtworksData.length > 0) : 
+					) : /* Success state with data */ (isOwnProfile ?
+						(myArtworksData && myArtworksData.length > 0) :
 						(artworksData && artworksData.data && artworksData.data.length > 0)
 					) ? (
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
