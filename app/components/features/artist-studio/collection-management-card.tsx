@@ -23,6 +23,7 @@ interface CollectionManagementCardProps {
 	onEditCover?: (collection: MyCollection) => void;
 	onPublish?: (collection: MyCollection) => void;
 	onManageArts?: (collection: MyCollection) => void;
+	publishCollection: (collectionId: string) => void;
 }
 
 export function CollectionManagementCard({
@@ -31,7 +32,8 @@ export function CollectionManagementCard({
 	onEditContent,
 	onEditCover,
 	onPublish,
-	onManageArts
+	onManageArts,
+	publishCollection
 }: CollectionManagementCardProps) {
 	const [showEditContentModal, setShowEditContentModal] = useState(false);
 	const [showEditCoverModal, setShowEditCoverModal] = useState(false);
@@ -50,7 +52,7 @@ export function CollectionManagementCard({
 		}
 	};
 
-	const handlePublishClick = () => {
+	const handlePublishClick = async () => {
 		if (onPublish) {
 			onPublish(collection);
 		}
