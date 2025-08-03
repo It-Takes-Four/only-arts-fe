@@ -10,8 +10,6 @@ import { useArtistProfileQuery } from "../../components/hooks/useArtistProfileQu
 import { useUserProfileQuery } from "../../components/hooks/useUserProfileQuery";
 import { useArtistCollectionsQuery } from "../../components/hooks/useArtistCollectionsQuery";
 import { useArtistArtworksQuery } from "../../components/hooks/useArtistArtworksQuery";
-import { useMyCollectionsQuery } from "../../components/hooks/useMyCollectionsQuery";
-import { useMyArtworksQuery } from "../../components/hooks/useMyArtworksQuery";
 import { artistService } from "../../services/artist-service";
 import { collectionService } from "../../services/collection-service";
 import { formatDistanceToNow } from 'date-fns';
@@ -20,7 +18,7 @@ import { Button } from "../../components/common/button";
 import { ChevronLeft, ChevronRight, FolderIcon, LucideHeart } from "lucide-react";
 import type { ArtistCollection } from "../../types/collection";
 import { transformArtworkTagsForArtCard } from "../../utils/tag-helpers";
-import type { ArtistArtwork, ArtworkTag } from "../../types/artwork";
+import type { ArtistArtwork } from "../../types/artwork";
 import { FollowButton } from "app/components/common/follow-button";
 import { fromSecondsToUnixTimestamp } from "app/utils/dates/DateFormatter";
 import { CollectionCard } from "../../components/features/collection/collection-card";
@@ -41,7 +39,6 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 	const [artworksPage, setArtworksPage] = useState(1);
 	const collectionsLimit = 7;
 	const artworksLimit = 7;
-
 
 	const isOwnProfile = !artistId; // If no artistId, it's the current user's profile
 
