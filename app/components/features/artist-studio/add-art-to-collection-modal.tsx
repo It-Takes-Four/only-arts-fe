@@ -266,7 +266,7 @@ export function AddArtToCollectionModal({
               </div>
 
               {/* Description */}
-              <div className="space-y-2">
+              <div className="flex flex-col space-y-2">
                 <Label htmlFor="description">Description *</Label>
                 <Textarea
                   id="description"
@@ -292,7 +292,7 @@ export function AddArtToCollectionModal({
               </div>
 
               {/* Tags */}
-              <div className="space-y-3">
+              <div className="flex flex-col space-y-2">
                 <Label>Tags (Optional)</Label>
 
                 {/* Selected Tags */}

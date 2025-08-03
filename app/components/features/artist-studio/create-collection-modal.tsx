@@ -63,6 +63,7 @@ export function CreateCollectionModal({ isOpen, onClose, addCollection, isPendin
     if (isSuccess) {
       reset();
       setPreviewImage(null);
+      setIsSubmitting(false);
       onClose();
     }
   }, [isSuccess])
