@@ -124,7 +124,7 @@ export function RegisterPage() {
 					</div>
 				</CardHeader>
 				<CardContent>
-					<form onSubmit={handleSubmit(onSubmit)} className="space-y-4 min-w-md">
+					<form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-md">
 						<div className="flex flex-col space-y-2">
 							<Label htmlFor="username">Username</Label>
 							<Input

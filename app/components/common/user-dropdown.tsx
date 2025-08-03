@@ -41,6 +41,8 @@ export function UserDropdown({ user, onLogout }: UserDropdownProps) {
     onLogout();
   };
 
+  console.log("This is user's artist", user?.artist)
+
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger>
@@ -71,18 +73,22 @@ export function UserDropdown({ user, onLogout }: UserDropdownProps) {
         <DropdownMenuSeparator />
         
         {/* Fancy Theme Toggle - Always visible */}
-        <div className="px-2 py-1">
+        <DropdownMenuItem className="px-2 py-1">
           <FancyThemeToggle variant="minimal" />
-        </div>
-        <DropdownMenuSeparator />
-        
-        {/* Profile Link */}
-        <DropdownMenuItem>
-          <Link to="/profile" className="flex items-center gap-2 w-full">
-            <User className="h-4 w-4" />
-            <span>Profile</span>
-          </Link>
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
+
+        {/* Profile Link */}
+        {
+          user?.artist && (
+            <DropdownMenuItem>
+              <Link to="/profile" className="flex items-center gap-2 w-full">
+                <User className="h-4 w-4"/>
+                <span>Profile</span>
+              </Link>
+            </DropdownMenuItem>
+          )
+        }
         
         {/* Artist Registration */}
         {!user?.artist && (

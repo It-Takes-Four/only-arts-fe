@@ -13,10 +13,11 @@ import { motion } from "framer-motion";
 import { getUserInitials } from "../../utils/UtilityFunction";
 import { formatPriceDisplay } from "../../utils/currency";
 import { BuyCollectionButton } from "../../components/features/collection/buy-collection-button";
+import { FancyLoading } from "../../components/common/fancy-loading";
 
 export function CollectionPage() {
 	const { collectionId } = useParams<{ collectionId: string }>();
-	const { collection, collectionImageUrl, error, collectionArtworks, isArtist } = useCollection(collectionId);
+	const { collection, collectionImageUrl, error, collectionArtworks, isArtist, loading } = useCollection(collectionId);
 
 	const formatDate = (dateString: string) => {
 		const date = new Date(dateString);
@@ -29,6 +30,10 @@ export function CollectionPage() {
 		if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`;
 		return date.toLocaleDateString();
 	};
+
+	if (loading || !collection) {
+		return <FancyLoading message="Loading collection..."/>;
+	}
 
 	// Handle error state
 	if (error || !collection) {

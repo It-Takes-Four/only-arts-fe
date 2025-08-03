@@ -165,13 +165,6 @@ export function ExploreArtCard({
 							whileHover={{ scale: 1.1 }}
 							whileTap={{ scale: 0.95 }}
 						>
-							<MessageCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-						</motion.button>
-						<motion.button
-							className="p-2 sm:p-3 rounded-full bg-background/90 backdrop-blur-sm border border-border/50 hover:bg-primary hover:text-primary-foreground transition-colors"
-							whileHover={{ scale: 1.1 }}
-							whileTap={{ scale: 0.95 }}
-						>
 							<Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
 						</motion.button>
 					</motion.div>
