@@ -73,6 +73,7 @@ export function useMyCollectionsWithPaginationQuery(page: number = 1, limit: num
     publishCollectionStatus: {
       publishCollectionIsPending: publishCollectionMutation.isPending,
       publishCollectionIsSuccess: publishCollectionMutation.isSuccess,
+      publishCollectionIsError: publishCollectionMutation.isError,
     }
   }
 }

@@ -10,8 +10,10 @@ import { PublishCollectionModal } from "./publish-collection-modal";
 import { ManageCollectionArtsModal } from "./manage-collection-arts-modal";
 import { collectionService } from "../../../services/collection-service";
 import type { MyCollection } from "../../../types/collection";
+import type { User } from "app/components/core/_models";
 
 interface CollectionsGridProps {
+  user: User;
   collections: MyCollection[];
   collectionsLoading: boolean;
   pagination?: PaginationData | PaginationDataAlt;
@@ -21,9 +23,11 @@ interface CollectionsGridProps {
   publishCollection: (collectionId: string) => void;
   publishCollectionIsPending: boolean;
   publishCollectionIsSuccess: boolean;
+  publishCollectionIsError: boolean;
 }
 
 export function CollectionsGrid({
+  user,
   collections,
   collectionsLoading,
   pagination,
@@ -32,7 +36,8 @@ export function CollectionsGrid({
   onPageChange,
   publishCollection,
   publishCollectionIsPending,
-  publishCollectionIsSuccess
+  publishCollectionIsSuccess,
+  publishCollectionIsError,
 }: CollectionsGridProps) {
   const [editingCollection, setEditingCollection] = useState<MyCollection | null>(null);
   const [editingCoverCollection, setEditingCoverCollection] = useState<MyCollection | null>(null);
@@ -136,6 +141,7 @@ export function CollectionsGrid({
           {/* Collection Cards */}
           {!collectionsLoading && collections.map((collection) => (
             <CollectionManagementCard
+              user={user}
               key={collection.id}
               collection={collection}
               onCollectionUpdated={onCollectionUpdated}
