@@ -8,7 +8,7 @@ export function useArtistCollectionsQuery(artistId: string, page: number = 1, li
 		queryKey: ['artist-collections', artistId, page, limit],
 		queryFn: async () => {
 			console.log('Fetching artist collections for:', artistId, 'page:', page);
-			const result = await artistService.getArtistCollections(artistId, page, limit);
+			const result = await artistService.getArtistPublishedCollections(artistId, page, limit);
 			console.log('Artist collections result:', result);
 			return result;
 		},

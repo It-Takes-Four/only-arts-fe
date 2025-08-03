@@ -50,11 +50,24 @@ class ArtistService extends BaseService {
     }
   }
 
+  async getArtistPublishedCollections(artistId: string, page: number = 1, limit: number = 10) {
+    try {
+      const { data } = await this._axios.get(`/art-collections/artist/${artistId}/published`, {
+        params: { page, limit }
+      });
+
+      return data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to get artist collections');
+    }
+  }
+
   async getArtistCollections(artistId: string, page: number = 1, limit: number = 10) {
     try {
       const { data } = await this._axios.get(`/art-collections/artist/${artistId}`, {
         params: { page, limit }
       });
+
       return data;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || 'Failed to get artist collections');

@@ -126,7 +126,6 @@ export function CollectionCard({
 								<span
 									className="flex px-2 py-1.5 glass rounded-full font-medium border-border text-foreground items-center gap-x-1.5"
 								>
-
 									<img src={"https://placehold.co/50x50"} alt="Artist Avatar" className="h-5 w-5 rounded-full"/>
 									{createdBy}
 								</span>
