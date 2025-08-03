@@ -36,12 +36,12 @@ export function UserDropdown({ user, onLogout }: UserDropdownProps) {
   };
 
   const handleLogout = () => {
-    console.log('UserDropdown logout clicked');
+    //console.log('UserDropdown logout clicked');
     setIsOpen(false); // Close dropdown immediately
     onLogout();
   };
 
-  console.log("This is user's artist", user?.artist)
+  //console.log("This is user's artist", user?.artist)
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>

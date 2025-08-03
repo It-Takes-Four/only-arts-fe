@@ -30,7 +30,7 @@ export function RegisterPage() {
 	useEffect(() => {
 		if (!isLoading && isAuthenticated && user) {
 			const intendedDestination = location.state?.from || '/';
-			console.log('RegisterPage: User already authenticated, redirecting to', intendedDestination);
+			//console.log('RegisterPage: User already authenticated, redirecting to', intendedDestination);
 			navigate(intendedDestination, { replace: true });
 		}
 	}, [isLoading, isAuthenticated, user, navigate, location]);

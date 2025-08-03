@@ -33,7 +33,7 @@ export function ProtectedRoute({
       // If not authenticated and not on a public route, redirect to landing
       // But add a small delay to ensure authentication state is fully resolved
       if (!isAuthenticated || !user) {
-        console.log('ProtectedRoute: Redirecting unauthenticated user to', redirectTo);
+        //console.log('ProtectedRoute: Redirecting unauthenticated user to', redirectTo);
         const returnTo = location.pathname + location.search;
         
         // Use setTimeout to avoid redirect during React render cycle
@@ -90,14 +90,14 @@ export function PublicOnlyRoute({
   const location = useLocation();
 
   useEffect(() => {
-    console.log('PublicOnlyRoute Debug:', {
-      isLoading,
-      isAuthenticated,
-      user: !!user,
-      redirectTo,
-      locationState: location.state,
-      pathname: location.pathname
-    });
+    //console.log('PublicOnlyRoute Debug:', {
+    //   isLoading,
+    //   isAuthenticated,
+    //   user: !!user,
+    //   redirectTo,
+    //   locationState: location.state,
+    //   pathname: location.pathname
+    // });
 
     // Only redirect if user is authenticated and we're on a public-only route
     // But don't redirect if we're already in the process of navigating
@@ -107,7 +107,7 @@ export function PublicOnlyRoute({
       
       // Don't redirect if we're already where we need to be
       if (location.pathname !== intendedDestination) {
-        console.log('PublicOnlyRoute: Redirecting authenticated user from', location.pathname, 'to', intendedDestination);
+        //console.log('PublicOnlyRoute: Redirecting authenticated user from', location.pathname, 'to', intendedDestination);
         navigate(intendedDestination, { replace: true, state: {} });
       }
     }

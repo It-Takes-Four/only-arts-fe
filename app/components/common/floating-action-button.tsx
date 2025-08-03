@@ -28,7 +28,7 @@ export function FloatingActionButton() {
           className="h-14 w-14 rounded-full shadow-xl bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 border-0"
           onClick={() => {
             // TODO: Navigate to create post page
-            console.log('Create new post');
+            //console.log('Create new post');
           }}
         >
           <motion.div

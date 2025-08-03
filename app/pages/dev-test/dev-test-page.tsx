@@ -52,7 +52,7 @@ export default function DevTestPage() {
 
   const testLogin = async () => {
     try {
-      console.log('Starting login test...');
+      //console.log('Starting login test...');
       debugCookies(); // Check before login
       
       await loginAsync({
@@ -64,7 +64,7 @@ export default function DevTestPage() {
       
       // Check cookies after login
       setTimeout(() => {
-        console.log('Checking cookies after login...');
+        //console.log('Checking cookies after login...');
         debugCookies();
         const token = getCookie('auth_token');
         toast.info(`Token saved: ${token ? 'Yes' : 'No'}`);
@@ -76,19 +76,19 @@ export default function DevTestPage() {
   };
 
   const debugAuth = () => {
-    console.log('=== AUTH DEBUG ===');
-    console.log('isAuthenticated:', isAuthenticated);
-    console.log('user:', user);
-    console.log('isLoading:', isLoggingIn);
+    //console.log('=== AUTH DEBUG ===');
+    //console.log('isAuthenticated:', isAuthenticated);
+    //console.log('user:', user);
+    //console.log('isLoading:', isLoggingIn);
     debugCookies();
     const token = getCookie('auth_token');
     toast.info(`Debug: Token ${token ? 'exists' : 'missing'}`);
   };
 
   const testLogout = () => {
-    console.log('testLogout called from dev-test');
-    console.log('Current user before logout:', user);
-    console.log('Current isAuthenticated before logout:', isAuthenticated);
+    //console.log('testLogout called from dev-test');
+    //console.log('Current user before logout:', user);
+    //console.log('Current isAuthenticated before logout:', isAuthenticated);
     
     logout();
     
@@ -96,8 +96,8 @@ export default function DevTestPage() {
     
     // Check state after logout
     setTimeout(() => {
-      console.log('User after logout:', user);
-      console.log('isAuthenticated after logout:', isAuthenticated);
+      //console.log('User after logout:', user);
+      //console.log('isAuthenticated after logout:', isAuthenticated);
       debugCookies();
     }, 500);
   };
@@ -107,7 +107,7 @@ export default function DevTestPage() {
       toast.loading("Testing direct user service call...");
       const userData = await userService.getCurrentUser();
       toast.success("Direct user service call successful!");
-      console.log("User data from direct service call:", userData);
+      //console.log("User data from direct service call:", userData);
     } catch (error) {
       toast.error("Direct user service call failed");
       console.error("Direct user service error:", error);
@@ -119,7 +119,7 @@ export default function DevTestPage() {
       toast.loading("Testing direct auth service call...");
       const userData = await authService.getCurrentUser();
       toast.success("Direct auth service call successful!");
-      console.log("User data from direct auth service call:", userData);
+      //console.log("User data from direct auth service call:", userData);
     } catch (error) {
       toast.error("Direct auth service call failed");
       console.error("Direct auth service error:", error);
@@ -138,7 +138,7 @@ export default function DevTestPage() {
       
       const response = await artistService.registerAsArtist(artistData);
       toast.success("Artist registration successful!");
-      console.log("Artist registration response:", response);
+      //console.log("Artist registration response:", response);
     } catch (error: any) {
       toast.error(error.message || "Artist registration failed");
       console.error("Artist registration error:", error);
@@ -150,7 +150,7 @@ export default function DevTestPage() {
       toast.loading("Testing get artist profile...");
       const profile = await artistService.getMyArtistProfile();
       toast.success("Get artist profile successful!");
-      console.log("Artist profile:", profile);
+      //console.log("Artist profile:", profile);
     } catch (error: any) {
       toast.error(error.message || "Get artist profile failed");
       console.error("Get artist profile error:", error);
@@ -158,11 +158,11 @@ export default function DevTestPage() {
   };
 
   const checkArtistStatus = () => {
-    console.log('=== ARTIST STATUS DEBUG ===');
-    console.log('User:', user);
-    console.log('User artist:', user?.artist);
-    console.log('Can become artist:', isAuthenticated && user && !user.artist);
-    console.log('Is already artist:', user?.artist !== null);
+    //console.log('=== ARTIST STATUS DEBUG ===');
+    //console.log('User:', user);
+    //console.log('User artist:', user?.artist);
+    //console.log('Can become artist:', isAuthenticated && user && !user.artist);
+    //console.log('Is already artist:', user?.artist !== null);
     
     if (user?.artist) {
       toast.info(`Already an artist: ${user.artist.artistName || 'No name set'}`);
@@ -186,11 +186,11 @@ export default function DevTestPage() {
   };
 
   const debugWalletConnection = () => {
-    console.log('=== WALLET DEBUG (Local Mode) ===');
-    console.log('Note: Wallet connection works via wagmi/RainbowKit but no backend persistence');
+    //console.log('=== WALLET DEBUG (Local Mode) ===');
+    //console.log('Note: Wallet connection works via wagmi/RainbowKit but no backend persistence');
     try {
       toast.info("Check console for wallet debug info (local mode active)");
-      console.log("Wallet debugging - backend disabled, using local session storage");
+      //console.log("Wallet debugging - backend disabled, using local session storage");
     } catch (error) {
       console.error("Wallet debug error:", error);
       toast.error("Wallet debugging failed - check console");
@@ -478,7 +478,7 @@ function TestArtistArtworksButton() {
       const { artistService } = await import("app/services/artist-service");
       const artworks = await artistService.getArtistArtworks(testArtistId);
       toast.success(`Successfully loaded ${artworks.length} artworks!`);
-      console.log("Artist artworks:", artworks);
+      //console.log("Artist artworks:", artworks);
     } catch (error: any) {
       toast.error(error.message || "Failed to load artist artworks");
       console.error("Artist artworks error:", error);
@@ -537,7 +537,7 @@ function TestBuyCollectionButton() {
         onClose={() => setShowModal(false)}
         collection={sampleCollection}
         onSuccess={() => {
-          console.log('Test purchase successful');
+          //console.log('Test purchase successful');
           toast.success('Test purchase completed!');
         }}
       />

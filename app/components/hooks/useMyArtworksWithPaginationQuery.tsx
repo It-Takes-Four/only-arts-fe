@@ -7,9 +7,9 @@ export function useMyArtworksWithPaginationQuery(page: number = 1, limit: number
   const query = useQuery({
     queryKey: ['my-artworks-paginated', page, limit],
     queryFn: async () => {
-      console.log('🔄 Fetching my artworks...', 'page:', page, 'limit:', limit);
+      //console.log('🔄 Fetching my artworks...', 'page:', page, 'limit:', limit);
       const result = await artService.getMyArtworks(page, limit);
-      console.log('✅ Fetched artworks:', result);
+      //console.log('✅ Fetched artworks:', result);
       return result;
     },
     enabled,

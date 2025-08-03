@@ -70,25 +70,25 @@ export function FeedArtCard({ post, index, isSingleColumn = false }: FeedArtCard
 
   const handleClick = () => {
     // TODO: Navigate to post detail page or open modal
-    console.log('Clicked post:', post.id);
+    //console.log('Clicked post:', post.id);
   };
 
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
     // TODO: Handle like functionality
-    console.log('Liked post:', post.id);
+    //console.log('Liked post:', post.id);
   };
 
   const handleComment = (e: React.MouseEvent) => {
     e.stopPropagation();
     // TODO: Handle comment functionality
-    console.log('Comment on post:', post.id);
+    //console.log('Comment on post:', post.id);
   };
 
   const handleShare = (e: React.MouseEvent) => {
     e.stopPropagation();
     // TODO: Handle share functionality
-    console.log('Share post:', post.id);
+    //console.log('Share post:', post.id);
   };
 
   return (

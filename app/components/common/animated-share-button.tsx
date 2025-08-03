@@ -87,7 +87,7 @@ export function AnimatedShareButton({
   const handleDropdownToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Toggle dropdown, current state:', dropdownOpen);
+    //console.log('Toggle dropdown, current state:', dropdownOpen);
     setDropdownOpen(!dropdownOpen);
   };
 

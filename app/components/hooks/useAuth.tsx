@@ -41,23 +41,23 @@ export function useAuth() {
   // Log auth state for debugging
   useEffect(() => {
     if (isClient) {
-      console.log('Auth Debug:', {
-        user: query.data,
-        isLoading: query.isLoading,
-        isInitialLoading,
-        error: query.error,
-        hasToken: !!getToken(),
-        isAuthenticated: !!query.data,
-        isLoggedOut,
-        forceDisableQuery,
-        queryEnabled: isClient && !!getToken() && !forceDisableQuery && !isLoggedOut
-      });
+      //console.log('Auth Debug:', {
+      //   user: query.data,
+      //   isLoading: query.isLoading,
+      //   isInitialLoading,
+      //   error: query.error,
+      //   hasToken: !!getToken(),
+      //   isAuthenticated: !!query.data,
+      //   isLoggedOut,
+      //   forceDisableQuery,
+      //   queryEnabled: isClient && !!getToken() && !forceDisableQuery && !isLoggedOut
+      // });
     }
   }, [query.data, query.isLoading, isInitialLoading, query.error, isClient, isLoggedOut, forceDisableQuery]);
 
   // Reset logout state (for when user tries to login again)
   const resetLogoutState = () => {
-    console.log('Resetting logout state for fresh authentication');
+    //console.log('Resetting logout state for fresh authentication');
     setIsLoggedOut(false);
     setForceDisableQuery(false);
     queryClient.invalidateQueries({ queryKey: ['auth', 'user'] });
@@ -69,12 +69,12 @@ export function useAuth() {
     mutationFn: loginService,
     onSuccess: async (data) => {
       try {
-        console.log('Login successful, refreshing user data with enhanced validation...');
+        //console.log('Login successful, refreshing user data with enhanced validation...');
         // Reset logout state before refreshing user data
         resetLogoutState();
         // Use the internal helper for user refresh
         await performUserRefresh();
-        console.log('User data successfully refreshed after login');
+        //console.log('User data successfully refreshed after login');
       } catch (error) {
         console.error('Failed to refresh user data after login:', error);
       }
@@ -94,15 +94,15 @@ export function useAuth() {
   const registerMutation = useMutation({
     mutationFn: registerService,
     onSuccess: async (data) => {
-      console.log('Register mutation successful, data:', data);
+      //console.log('Register mutation successful, data:', data);
 
       try {
-        console.log('Registration successful, refreshing user data with enhanced validation...');
+        //console.log('Registration successful, refreshing user data with enhanced validation...');
         // Reset logout state before refreshing user data
         resetLogoutState();
         // Use the internal helper for user refresh
         await performUserRefresh();
-        console.log('User data successfully refreshed after registration');
+        //console.log('User data successfully refreshed after registration');
       } catch (error) {
         console.error('Failed to refresh user data after registration:', error);
       }
@@ -121,9 +121,9 @@ export function useAuth() {
   // Refresh user data function
   const refreshUser = async () => {
     try {
-      console.log('Refreshing user data...');
+      //console.log('Refreshing user data...');
       const userData = await validateToken();
-      console.log('User data refreshed:', userData);
+      //console.log('User data refreshed:', userData);
       queryClient.setQueryData(['auth', 'user'], userData);
       queryClient.invalidateQueries({ queryKey: ['auth', 'user'] });
       queryClient.refetchQueries({ queryKey: ['auth', 'user'] });
@@ -138,14 +138,14 @@ export function useAuth() {
   // Enhanced refresh user with cookie validation and redirect
   const refreshUserWithValidation = async () => {
     try {
-      console.log('Starting enhanced user refresh with validation...');
+      //console.log('Starting enhanced user refresh with validation...');
 
       // First, check if auth token exists in cookies
       const token = getToken();
-      console.log('Auth token check:', token ? 'Found' : 'Not found');
+      //console.log('Auth token check:', token ? 'Found' : 'Not found');
 
       if (!token) {
-        console.log('No auth token found, clearing user state and redirecting to login');
+        //console.log('No auth token found, clearing user state and redirecting to login');
 
         // Clear user state immediately
         setIsLoggedOut(true);
@@ -158,9 +158,9 @@ export function useAuth() {
       }
 
       // Token exists, try to fetch user data
-      console.log('Token found, fetching user data from /me endpoint...');
+      //console.log('Token found, fetching user data from /me endpoint...');
       const userData = await validateToken();
-      console.log('User data successfully fetched:', userData);
+      //console.log('User data successfully fetched:', userData);
 
       // Reset any logout states since we have valid data
       resetLogoutState();
@@ -174,7 +174,7 @@ export function useAuth() {
       console.error('Failed to refresh user data:', error);
 
       // If the API call failed (likely due to invalid token), clear everything
-      console.log('API call failed, clearing user state');
+      //console.log('API call failed, clearing user state');
       setIsLoggedOut(true);
       setForceDisableQuery(true);
       queryClient.setQueryData(['auth', 'user'], null);
@@ -191,7 +191,7 @@ export function useAuth() {
   // Internal helper function for login/register success
   const performUserRefresh = async () => {
     try {
-      console.log('Performing internal user refresh...');
+      //console.log('Performing internal user refresh...');
 
       // Check if auth token exists in cookies first
       const token = getToken();
@@ -212,7 +212,7 @@ export function useAuth() {
 
       // FOURTH: Fetch fresh user data
       const userData = await validateToken();
-      console.log('User data refreshed internally:', userData);
+      //console.log('User data refreshed internally:', userData);
 
       // FIFTH: Set the new user data
       queryClient.setQueryData(['auth', 'user'], userData);
@@ -234,7 +234,7 @@ export function useAuth() {
 
   // Logout function
   const logout = () => {
-    console.log('Logout called - clearing auth state');
+    //console.log('Logout called - clearing auth state');
 
     // Set logged out state immediately to prevent query from running
     setIsLoggedOut(true);
@@ -261,11 +261,11 @@ export function useAuth() {
     // Clear all cached data to prevent any state persistence
     queryClient.clear();
 
-    console.log('Auth state cleared after logout');
+    //console.log('Auth state cleared after logout');
 
     // Keep logged out state permanently until manual reset
     // Don't automatically re-enable queries to prevent logout bounce-back
-    console.log('Logout state will remain disabled to prevent re-authentication');
+    //console.log('Logout state will remain disabled to prevent re-authentication');
   };
 
   return {

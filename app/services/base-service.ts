@@ -20,7 +20,7 @@ export default abstract class BaseService {
 				if (authToken) {
 					config.headers.Authorization = `Bearer ${authToken}`;
 				} else {
-					console.log("No token available for request");
+					//console.log("No token available for request");
 				}
 
 				return config;
@@ -40,7 +40,7 @@ export default abstract class BaseService {
 						Cookies.remove("auth_token", { path: "/" });
 						// Don't automatically redirect here as it interferes with React Router
 						// Let the auth context handle redirection
-						console.log("401 received - token cleared");
+						//console.log("401 received - token cleared");
 					}
 				}
 				return Promise.reject(error);

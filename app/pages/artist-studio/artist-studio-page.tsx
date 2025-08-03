@@ -79,7 +79,7 @@ export function ArtistStudioPage() {
 
 	// Handle collection update
 	const handleCollectionUpdated = async (updatedCollection: any) => {
-		console.log('Collection updated:', updatedCollection);
+		//console.log('Collection updated:', updatedCollection);
 	};
 
 	// Handle page changes
@@ -88,18 +88,18 @@ export function ArtistStudioPage() {
 	};
 
 	const handleArtworksPageChange = (page: number) => {
-		console.log('🎨 Artworks page changed to:', page);
+		//console.log('🎨 Artworks page changed to:', page);
 		setArtworksPage(page);
 	};
 
 	// Handle artist profile update success
 	const handleProfileUpdated = async (artist: any) => {
-		console.log('Artist profile updated:', artist);
+		//console.log('Artist profile updated:', artist);
 		// Use the provider's refresh method to update all data
 		try {
-			console.log('Triggering profile refresh from artist studio page...');
+			//console.log('Triggering profile refresh from artist studio page...');
 			await refreshProfile();
-			console.log('Profile and related data refreshed successfully from artist studio page');
+			//console.log('Profile and related data refreshed successfully from artist studio page');
 		} catch (error) {
 			console.error('Failed to refresh profile data from artist studio page:', error);
 		}
