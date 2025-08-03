@@ -69,8 +69,8 @@ export function CollectionManagementCard({
 	return (
 		<>
 			<motion.div
-				className="group relative bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg transition-all duration-200"
-				whileHover={{ y: -2 }}
+				className="group relative bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg transition-shadow duration-200"
+				whileHover={{ y: -5 }}
 				layout
 			>
 				{/* Cover Image */}
@@ -79,7 +79,7 @@ export function CollectionManagementCard({
 						<img
 							src={coverImageUrl}
 							alt={`${collection.collectionName} cover`}
-							className="w-full h-full object-cover group-hover:opacity-75 transition-opacity duration-200"
+							className="w-full h-full object-cover transition-opacity duration-200"
 						/>
 					) : (
 						<div className="w-full h-full flex items-center justify-center">
@@ -99,7 +99,11 @@ export function CollectionManagementCard({
 									<MoreHorizontal className="h-4 w-4" />
 								</Button>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end">
+							<DropdownMenuContent align="end" className="w-48">
+								<DropdownMenuItem onClick={() => navigate(`/collection/${collection.id}`)}>
+									<Eye className="h-4 w-4 mr-2" />
+									View Collection
+								</DropdownMenuItem>
 								<DropdownMenuItem onClick={handleManageArts}>
 									<Images className="h-4 w-4 mr-2" />
 									Manage Arts
@@ -138,7 +142,7 @@ export function CollectionManagementCard({
 					<div className="absolute top-2 left-2 flex gap-1">
 						<Badge
 							variant={collection.isPublished ? "default" : "secondary"}
-							className="text-xs"
+							className="text-xs font-mono uppercase"
 						>
 							{collection.isPublished ? "Published" : "Draft"}
 						</Badge>
@@ -169,15 +173,6 @@ export function CollectionManagementCard({
 							<p className="text-sm text-muted-foreground mb-3 line-clamp-2">
 								{collection.description || "No description provided"}
 							</p>
-						</div>
-						<div className="flex-shrink-0">
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={() => navigate(`/collection/${collection.id}`)}
-							>
-								<Eye className="h-4 w-4" />
-							</Button>
 						</div>
 					</div>
 
