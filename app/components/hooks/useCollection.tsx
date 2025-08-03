@@ -2,8 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import type { DetailedCollection, MyArtwork } from "../../types/collection";
 import { collectionService } from "../../services/collection-service";
 import { artCollectionsService } from "../../services/art-collections-service";
+import { useAuthContext } from "../core/auth-context";
 
 export function useCollection(collectionId: string | undefined) {
+	const {user} = useAuthContext();
 	const [collection, setCollection] = useState<DetailedCollection | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -57,5 +59,5 @@ export function useCollection(collectionId: string | undefined) {
 		fetchCollectionArtworks();
 	}, [collectionId]);
 
-	return { collection, collectionImageUrl, loading, error, collectionArtworks };
+	return { collection, collectionImageUrl, loading, error, collectionArtworks, isArtist : user?.artist?.id === collection?.artistId || false };
 }
