@@ -95,9 +95,9 @@ export function SearchResultsArtists({ artists, loading }: SearchResultsArtistsP
           )}
           
           <div className="flex justify-between text-sm text-muted-foreground mb-4">
-            <span>{artist.totalFollowers} followers</span>
-            <span>{artist.totalArts} artworks</span>
-            <span>{artist.totalCollections} collections</span>
+            <span><span className="font-semibold text-foreground">{artist.totalFollowers}</span> followers</span>
+            <span><span className="font-semibold text-foreground">{artist.totalArts}</span> artworks</span>
+            <span><span className="font-semibold text-foreground">{artist.totalCollections}</span> collections</span>
           </div>
 
           <div className="absolute top-4 right-4" onClick={(e) => e.stopPropagation()}>

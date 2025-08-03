@@ -69,11 +69,6 @@ export function SearchResultsArts({ arts, loading }: SearchResultsArtsProps) {
               createdAt: art.datePosted
             }}
           />
-          <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-white text-xs flex items-center gap-2">
-            <span className="flex items-center gap-1">
-              ♥ {art.likesCount}
-            </span>
-          </div>
         </motion.div>
       ))}
     </motion.div>

@@ -47,6 +47,7 @@ export function SearchResultsAll({ searchResults }: SearchResultsAllProps) {
                   art={{
                     id: art.id,
                     title: art.title,
+                    likes: art.likesCount,
                     description: art.description,
                     imageUrl: collectionService.getArtworkImageUrl(art.imageFileId),
                     artist: {
@@ -64,11 +65,6 @@ export function SearchResultsAll({ searchResults }: SearchResultsAllProps) {
                     createdAt: art.datePosted
                   }}
                 />
-                <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-white text-xs flex items-center gap-2">
-                  <span className="flex items-center gap-1">
-                    ♥ {art.likesCount}
-                  </span>
-                </div>
               </div>
             ))}
           </div>
@@ -100,20 +96,6 @@ export function SearchResultsAll({ searchResults }: SearchResultsAllProps) {
                   createdBy={collection.artist.artistName}
                   price={collection.price || '0'}
                 />
-                {collection.isPublished && parseFloat(collection.price || '0') > 0 && (
-                  <div className="absolute top-2 right-2">
-                    <Button
-                      size="sm"
-                      className="bg-primary/90 hover:bg-primary shadow-lg"
-                      onClick={() => {
-                        // Handle collection purchase
-                        console.log('Buy collection:', collection.id);
-                      }}
-                    >
-                      Buy {formatPriceDisplay(collection.price || '0')}
-                    </Button>
-                  </div>
-                )}
               </div>
             ))}
           </div>
@@ -170,9 +152,9 @@ export function SearchResultsAll({ searchResults }: SearchResultsAllProps) {
                 )}
                 
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>{artist.totalFollowers} followers</span>
-                  <span>{artist.totalArts} artworks</span>
-                  <span>{artist.totalCollections} collections</span>
+                  <span><span className="font-semibold text-foreground">{artist.totalFollowers}</span> followers</span>
+                  <span><span className="font-semibold text-foreground">{artist.totalArts}</span> artworks</span>
+                  <span><span className="font-semibold text-foreground">{artist.totalCollections}</span> collections</span>
                 </div>
               </motion.div>
             ))}

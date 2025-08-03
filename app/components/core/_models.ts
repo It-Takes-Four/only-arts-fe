@@ -66,6 +66,7 @@ interface ArtCardProps {
   art: {
     id: string;
     title: string;
+    likes?: number;
     description: string;
     artist: {
       id?: string;

@@ -61,20 +61,6 @@ export function SearchResultsCollections({ collections, loading }: SearchResults
             createdBy={collection.artist.artistName}
             price={collection.price || '0'}
           />
-          {collection.isPublished && parseFloat(collection.price || '0') > 0 && (
-            <div className="absolute top-2 right-2">
-              <Button
-                size="sm"
-                className="bg-primary/90 hover:bg-primary shadow-lg"
-                onClick={() => {
-                  // Handle collection purchase
-                  console.log('Buy collection:', collection.id);
-                }}
-              >
-                Buy {formatPriceDisplay(collection.price || '0')}
-              </Button>
-            </div>
-          )}
           {collection.isPurchased && (
             <div className="absolute top-2 left-2">
               <div className="bg-green-500 text-white px-2 py-1 rounded-md text-xs font-medium">

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ImageIcon } from "lucide-react";
+import { Heart, ImageIcon } from "lucide-react";
 import type { ArtCardProps } from "../../core/_models";
 import { useNavigate } from "react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -72,6 +72,22 @@ export function ArtCard({ art }: ArtCardProps) {
 					{art.artist.name}
 				</motion.span>
 
+				<motion.span
+					className="absolute top-3 right-3 px-3 py-2 bg-black/60 backdrop-blur-sm rounded-full text-sm font-medium text-white items-center gap-x-2"
+					initial={{ y: -50, opacity: 0 }}
+					animate={{
+						y: isHovered ? 0 : -50,
+						opacity: isHovered ? 1 : 0,
+					}}
+					transition={{
+						duration: 0.3,
+						ease: "easeOut",
+					}}>
+            <span className="flex items-center gap-1">
+              <Heart className="w-4 h-4"/> {art.likes}
+            </span>
+				</motion.span>
+
 				<motion.div
 					className="absolute bottom-0 left-0 right-0 p-4 text-white"
 					initial={{ y: 24, opacity: 0 }}
@@ -86,6 +102,7 @@ export function ArtCard({ art }: ArtCardProps) {
 					}}
 				>
 					<h3 className="text-xl font-semibold mb-1">{art.title}</h3>
+
 					<p className="text-sm text-white/90 mb-2">
 						{art.description}
 					</p>
