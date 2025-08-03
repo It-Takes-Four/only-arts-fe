@@ -154,12 +154,12 @@ export function CollectionManagementCard({
 								<Badge variant="secondary"
 									className="text-foreground font-semibold border-border gap-x-1.5">
 									<Images />
-									{collection.arts?.length || 0}
+									{collection.artsCount || 0}
 								</Badge>
 							</TooltipTrigger>
 							<TooltipContent className="bg-popover text-popover-foreground py-2 ">
 								<p
-									className="font-mono uppercase"> {collection.arts?.length || 0} artwork{collection.arts?.length !== 1 ? 's' : ''}</p>
+									className="font-mono uppercase"> {collection.artsCount || 0} artwork{collection.artsCount !== 1 ? 's' : ''}</p>
 							</TooltipContent>
 						</Tooltip>
 					</div>

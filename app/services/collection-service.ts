@@ -49,6 +49,7 @@ class CollectionService extends BaseService {
 						totalPages: data.pagination.totalPages,
 						hasNextPage: data.pagination.hasNextPage,
 						hasPrevPage: data.pagination.hasPrevPage,
+						limit: data.pagination.limit
 					}
 				};
 			}
