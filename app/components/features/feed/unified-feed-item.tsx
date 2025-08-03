@@ -1,13 +1,13 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router";
 import { Heart, MessageCircle, Share2, Eye, Calendar } from "lucide-react";
-import { Button } from "./button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { AuthenticatedImage } from "./authenticated-image";
 import { useNavigate } from "react-router";
-import type { UnifiedFeedItem } from "../../types/feed";
-import { getUserInitials } from "../../utils/UtilityFunction";
+import type { UnifiedFeedItem } from "../../../types/feed";
+import { AuthenticatedImage } from "../../common/authenticated-image";
+import { getUserInitials } from "../../../utils/UtilityFunction";
+import { Button } from "../../common/button";
 
 interface UnifiedFeedItemProps {
 	item: UnifiedFeedItem;
