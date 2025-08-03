@@ -12,11 +12,11 @@ import { useCollection } from "../../components/hooks/useCollection";
 import { motion } from "framer-motion";
 import { getUserInitials } from "../../utils/UtilityFunction";
 import { formatPriceDisplay } from "../../utils/currency";
-import { BuyCollectionButton } from "../../components/common/buy-collection-button";
+import { BuyCollectionButton } from "../../components/features/collection/buy-collection-button";
 
 export function CollectionPage() {
 	const { collectionId } = useParams<{ collectionId: string }>();
-	const { collection, collectionImageUrl, error } = useCollection(collectionId);
+	const { collection, collectionImageUrl, error, collectionArtworks } = useCollection(collectionId);
 
 	const formatDate = (dateString: string) => {
 		const date = new Date(dateString);
@@ -121,7 +121,7 @@ export function CollectionPage() {
 									Artworks
 								</span>
 								<span className="text-2xl font-semibold text-white">
-									{collection.arts?.length || 0}
+									{collectionArtworks.length || 0}
 								</span>
 							</div>
 							<div className="flex flex-col items-center lg:items-end">
@@ -201,14 +201,13 @@ export function CollectionPage() {
 				<div className="flex items-center gap-2 mb-6">
 					<h2 className="text-2xl font-bold">Collection Artworks</h2>
 					<Badge variant="outline" className="text-md uppercase font-mono px-2.5 rounded-full">
-						{collection.arts?.length || 0}
-						{/*{collection.arts?.length === 1 ? ' Artwork' : ' Artworks'}*/}
+						{collectionArtworks.length || 0}
 					</Badge>
 				</div>
 
-				{collection.arts && collection.arts.length > 0 ? (
+				{collectionArtworks && collectionArtworks.length > 0 ? (
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-						{collection.arts.map((art: any) => (
+						{collectionArtworks.map((art: any) => (
 							<ArtCard
 								key={art.id || art.artId}
 								art={{

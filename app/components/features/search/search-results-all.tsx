@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import type { SearchResponse } from "../../../types/search";
-import { ArtCard } from "../../features/art/art-card";
-import { CollectionCard } from "../../common/collection-card";
+import { ArtCard } from "../art/art-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "../../common/button";
 import { collectionService } from "../../../services/collection-service";
@@ -9,6 +8,7 @@ import { artistService } from "../../../services/artist-service";
 import { transformArtworkTagsForArtCard } from "../../../utils/tag-helpers";
 import { useNavigate } from "react-router";
 import { formatPriceDisplay } from "../../../utils/currency";
+import { CollectionCard } from "../collection/collection-card";
 
 interface SearchResultsAllProps {
   searchResults: SearchResponse;

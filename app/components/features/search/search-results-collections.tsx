@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 import type { SearchCollection } from "../../../types/search";
-import { CollectionCard } from "../../common/collection-card";
 import { Button } from "../../common/button";
 import { collectionService } from "../../../services/collection-service";
 import { formatPriceDisplay } from "../../../utils/currency";
+import { CollectionCard } from "../collection/collection-card";
 
 interface SearchResultsCollectionsProps {
   collections: SearchCollection[];

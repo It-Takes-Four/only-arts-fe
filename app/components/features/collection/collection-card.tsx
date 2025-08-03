@@ -6,10 +6,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useNavigate } from "react-router";
-import { getUserInitials } from "../../utils/UtilityFunction";
-import { formatPriceDisplay } from "../../utils/currency";
 import { AbsoluteBuyCollectionButton } from "./buy-collection-button";
-import type { ArtistCollection } from "../../types/collection";
+import type { ArtistCollection } from "../../../types/collection";
+import { getUserInitials } from "../../../utils/UtilityFunction";
+import { formatPriceDisplay } from "../../../utils/currency";
 
 interface CollectionCardProps {
 	id: string

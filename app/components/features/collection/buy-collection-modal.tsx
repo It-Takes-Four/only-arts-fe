@@ -11,12 +11,12 @@ import {
 } from "@/components/ui/dialog";
 import { Loader2, AlertTriangle, Wallet, Image, User, Calendar, Sparkles, Check } from "lucide-react";
 import { toast } from "sonner";
-import { collectionService } from "../../services/collection-service";
-import { usePayment } from "../hooks/usePayment";
-import { formatPriceDisplay } from "../../utils/currency";
-import type { ArtistCollection } from "../../types/collection";
 import { formatDistanceToNow } from "date-fns";
 import { CheckBadgeIcon } from "@heroicons/react/24/solid";
+import { collectionService } from "../../../services/collection-service";
+import { formatPriceDisplay } from "../../../utils/currency";
+import type { ArtistCollection } from "../../../types/collection";
+import { usePayment } from "../../hooks/usePayment";
 
 interface BuyCollectionModalProps {
 	isOpen: boolean;

@@ -9,8 +9,8 @@ import { debugCookies, getCookie } from "app/utils/cookie";
 import { FancyThemeToggle } from "app/components/common/fancy-theme-toggle";
 import { useNavigate } from "react-router";
 import { PaymentButton } from "app/components/common/payment-button";
-import { BuyCollectionModal } from "app/components/common/buy-collection-modal";
 import { useState } from "react";
+import { BuyCollectionModal } from "../../components/features/collection/buy-collection-modal";
 
 export default function DevTestPage() {
   const { user, isAuthenticated, login, loginAsync, logout, isLoggingIn } = useAuthContext();

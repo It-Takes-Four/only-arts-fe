@@ -1,7 +1,7 @@
 import BaseService from "./base-service";
 import type {
 	CreateCollectionRequest,
-	CreateCollectionResponse,
+	CreateCollectionResponse, MyArtwork,
 	MyArtworksResponse,
 	MyCollection,
 	MyCollectionsResponse,
@@ -222,6 +222,16 @@ class CollectionService extends BaseService {
 			return data;
 		} catch (error: any) {
 			throw new Error(error.response?.data?.message || 'Failed to delete art from collection');
+		}
+	}
+
+	// Get artworks in a collection
+	async getCollectionArtworks(collectionId: string): Promise<MyArtwork[]> {
+		try {
+			const { data } = await this._axios.get<MyArtwork[]>(`/art-collections/${collectionId}/arts`);
+			return data;
+		} catch (error: any) {
+			throw new Error(error.response?.data?.message || 'Failed to get artworks in collection');
 		}
 	}
 }

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import type { DetailedCollection } from "../../types/collection";
+import type { DetailedCollection, MyArtwork } from "../../types/collection";
 import { collectionService } from "../../services/collection-service";
 import { artCollectionsService } from "../../services/art-collections-service";
 
@@ -8,6 +8,7 @@ export function useCollection(collectionId: string | undefined) {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [collectionImageUrl, setCollectionImageUrl] = useState<string | null>(null);
+	const [collectionArtworks, setCollectionArtworks] = useState<MyArtwork[]>([]);
 
 	const fetchCollection = useCallback(async () => {
 		if (!collectionId) {
@@ -38,9 +39,23 @@ export function useCollection(collectionId: string | undefined) {
 		}
 	}, [collectionId]);
 
-	useEffect(() => {
-		fetchCollection();
+	const fetchCollectionArtworks = useCallback(async () => {
+		if (!collectionId) {
+			setError('Collection ID is required to fetch artworks');
+			return;
+		}
+		try {
+			const artworks: MyArtwork[] = await collectionService.getCollectionArtworks(collectionId);
+			setCollectionArtworks(artworks);
+		} catch (err) {
+			setError(err instanceof Error ? err.message : 'Failed to fetch artworks');
+		}
 	}, [collectionId]);
 
-	return { collection, collectionImageUrl, loading, error };
+	useEffect(() => {
+		fetchCollection();
+		fetchCollectionArtworks();
+	}, [collectionId]);
+
+	return { collection, collectionImageUrl, loading, error, collectionArtworks };
 }

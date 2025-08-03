@@ -6,8 +6,6 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { CheckBadgeIcon } from "@heroicons/react/16/solid";
 import { Separator } from "@/components/ui/separator";
-import { CollectionCard } from "../../components/common/collection-card";
-import { AbsoluteBuyCollectionButton } from "../../components/common/buy-collection-button";
 import { useArtistProfileQuery } from "../../components/hooks/useArtistProfileQuery";
 import { useUserProfileQuery } from "../../components/hooks/useUserProfileQuery";
 import { useArtistCollectionsQuery } from "../../components/hooks/useArtistCollectionsQuery";
@@ -19,15 +17,13 @@ import { collectionService } from "../../services/collection-service";
 import { formatDistanceToNow } from 'date-fns';
 import { FancyLoading } from "../../components/common/fancy-loading";
 import { Button } from "../../components/common/button";
-import { ChevronLeft, ChevronRight, FolderArchiveIcon, FolderIcon, LucideHeart } from "lucide-react";
-import { formatPriceDisplay, parsePrice } from "../../utils/currency";
+import { ChevronLeft, ChevronRight, FolderIcon, LucideHeart } from "lucide-react";
 import type { ArtistCollection } from "../../types/collection";
-import type { ArtistProfile } from "../../types/artist";
 import { transformArtworkTagsForArtCard } from "../../utils/tag-helpers";
 import type { ArtistArtwork, ArtworkTag } from "../../types/artwork";
 import { FollowButton } from "app/components/common/follow-button";
-import { toast } from "sonner";
 import { fromSecondsToUnixTimestamp } from "app/utils/dates/DateFormatter";
+import { CollectionCard } from "../../components/features/collection/collection-card";
 
 interface ProfilePageProps {
 	artistId?: string;
@@ -41,7 +37,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 
 	const isOwnProfile = !artistId; // If no artistId, it's the current user's profile
 
-	// Fetch data based on whether it's own profile or another artist's profile
+	// Fetch data based on whether its own profile or another artist's profile
 	const {
 		data: collectionsData,
 		isLoading: collectionsLoading,
@@ -67,7 +63,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 		error: myArtworksError 
 	} = useMyArtworksQuery();
 
-	// Use currentUser for joined date if it's own profile, otherwise use artist data
+	// Use currentUser for joined date if its own profile, otherwise use artist data
 	const userForJoinedDate = isOwnProfile ? currentUser : artist?.user;
 
 	const formatDate = (dateString: number) => {
