@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Edit, Eye, Image, Images, Lock, MoreHorizontal, Upload } from "lucide-react";
 import { Button } from "../../common/button";
@@ -40,29 +40,38 @@ export function CollectionManagementCard({
 	const [showPublishModal, setShowPublishModal] = useState(false);
 	const navigate = useNavigate();
 
-	const handleContentEdit = () => {
+	const handleContentEdit = (e: React.MouseEvent) => {
+		e.stopPropagation();
 		if (onEditContent) {
 			onEditContent(collection);
 		}
 	};
 
-	const handleCoverEdit = () => {
+	const handleCoverEdit = (e: React.MouseEvent) => {
+		e.stopPropagation();
 		if (onEditCover) {
 			onEditCover(collection);
 		}
 	};
 
-	const handlePublishClick = async () => {
+	const handlePublishClick = async (e: React.MouseEvent) => {
+		e.stopPropagation();
 		if (onPublish) {
 			onPublish(collection);
 		}
 	};
 
-	const handleManageArts = () => {
+	const handleManageArts = (e: React.MouseEvent) => {
+		e.stopPropagation();
 		if (onManageArts) {
 			onManageArts(collection);
 		}
 	};
+
+	const handleNavigateToCollectionPage = (e:React.MouseEvent) => {
+		e.stopPropagation();
+		navigate(`/collection/${collection.id}`);
+	}
 
 	const coverImageUrl = collection.coverImageFileId
 		? collectionService.getCollectionImageUrl(collection.coverImageFileId)
@@ -71,9 +80,10 @@ export function CollectionManagementCard({
 	return (
 		<>
 			<motion.div
-				className="group relative bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg transition-all duration-200"
+				className="group relative bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg transition-all duration-200 hover:cursor-pointer"
 				whileHover={{ y: -2 }}
 				layout
+				onClick={(e: React.MouseEvent) => handleNavigateToCollectionPage(e)}
 			>
 				{/* Cover Image */}
 				<div className="aspect-[4/3] bg-muted relative overflow-hidden rounded-t-lg">
@@ -171,15 +181,6 @@ export function CollectionManagementCard({
 							<p className="text-sm text-muted-foreground mb-3 line-clamp-2">
 								{collection.description || "No description provided"}
 							</p>
-						</div>
-						<div className="flex-shrink-0">
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={() => navigate(`/collection/${collection.id}`)}
-							>
-								<Eye className="h-4 w-4" />
-							</Button>
 						</div>
 					</div>
 

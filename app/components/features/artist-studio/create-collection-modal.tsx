@@ -22,11 +22,11 @@ interface CreateCollectionModalProps {
 interface FormData {
   collectionName: string;
   description?: string;
-  price?: number;
-  coverImage?: FileList;
+  price: number;
+  coverImage: FileList;
 }
 
-export function CreateCollectionModal({ isOpen, onClose, addCollection, isPending, isSuccess}: CreateCollectionModalProps) {
+export function CreateCollectionModal({ isOpen, onClose, addCollection, isPending, isSuccess }: CreateCollectionModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
@@ -39,9 +39,7 @@ export function CreateCollectionModal({ isOpen, onClose, addCollection, isPendin
   } = useForm<FormData>({
     mode: "onTouched",
     defaultValues: {
-      collectionName: "",
       description: "",
-      price: undefined,
     },
   });
 
@@ -74,23 +72,19 @@ export function CreateCollectionModal({ isOpen, onClose, addCollection, isPendin
       setIsSubmitting(true)
     }
   }, [isPending])
-  
+
 
   const onSubmit = async (data: FormData) => {
-    setIsSubmitting(true);
     try {
       const request: CreateCollectionRequest = {
         collectionName: data.collectionName,
         description: data.description,
         price: data.price,
-        file: data.coverImage?.[0],
+        file: data.coverImage[0],
       };
 
+      setIsSubmitting(true);
       const response = await addCollection(request);
-
-      // reset();
-      // setPreviewImage(null);
-      // onClose();
     } catch (error: any) {
       console.error('Collection creation error:', error);
       toast.error(error.message || "Failed to create collection");
@@ -189,8 +183,8 @@ export function CreateCollectionModal({ isOpen, onClose, addCollection, isPendin
                       message: "Price must be a positive number",
                     },
                     validate: (value) => {
-                      if (value !== undefined && value !== null && value < 0) {
-                        return "Price must be a positive number";
+                      if (value === undefined || value === null){
+                        return "Price is required";
                       }
                       return true;
                     },
@@ -226,7 +220,7 @@ export function CreateCollectionModal({ isOpen, onClose, addCollection, isPendin
 
               {/* Cover Image */}
               <div className="flex flex-col space-y-2">
-                <Label htmlFor="coverImage">Cover Image (Optional)</Label>
+                <Label htmlFor="coverImage">Cover Image *</Label>
                 <div className="space-y-3">
                   {previewImage ? (
                     <div className="relative">
@@ -271,11 +265,23 @@ export function CreateCollectionModal({ isOpen, onClose, addCollection, isPendin
                     id="coverImage"
                     type="file"
                     accept="image/*"
-                    {...register("coverImage")}
+                    {...register("coverImage", {
+                      required: "Cover image is required",
+                      validate: (files) => {
+                        if (!files) return "Please upload a cover image";
+                        if (files.length === 0) return "Please upload a cover image";
+                        if (files[0].size > 10 * 1024 * 1024) return "Cover image must be less than 10MB";
+                        if (!files[0].type.startsWith("image/")) return "Please upload a valid image file";
+                        return true
+                      }
+                    })}
                     className="hidden"
                     disabled={isSubmitting}
                   />
                 </div>
+                {errors.coverImage && (
+                  <p className="text-sm text-destructive">{errors.coverImage.message}</p>
+                )}
               </div>
 
               {/* Submit Buttons */}
@@ -291,7 +297,7 @@ export function CreateCollectionModal({ isOpen, onClose, addCollection, isPendin
                 </Button>
                 <Button
                   type="submit"
-                  disabled={isSubmitting || !watch("collectionName")}
+                  disabled={isSubmitting || !watch("collectionName") || !watch("coverImage") || !watch("price")}
                   className="flex-1"
                 >
                   {isSubmitting ? (
