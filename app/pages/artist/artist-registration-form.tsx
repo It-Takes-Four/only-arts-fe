@@ -153,7 +153,7 @@ export function ArtistRegistrationForm({ onSuccess, onCancel }: ArtistRegistrati
                   />
                 </div>
                 {isNsfw && (
-                  <Alert>
+                  <Alert variant="destructive">
                     <AlertDescription>
                       Your NSFW content will be properly marked and filtered for users who prefer not to see such content.
                     </AlertDescription>

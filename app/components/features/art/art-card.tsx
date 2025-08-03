@@ -38,7 +38,7 @@ export function ArtCard({ art }: ArtCardProps) {
 					/>
 				) : (
 					<div className="flex items-center justify-center h-full">
-						<ImageIcon className="h-4 w-4 text-muted-foreground" />
+						<ImageIcon className="h-4 w-4 text-muted-foreground"/>
 					</div>
 				)}
 			</div>
@@ -64,7 +64,7 @@ export function ArtCard({ art }: ArtCardProps) {
 					}}
 				>
 					<Avatar className="h-5 w-5">
-						<AvatarImage src={getArtistProfileImageUrl() || ""} />
+						<AvatarImage src={getArtistProfileImageUrl() || ""}/>
 						<AvatarFallback className="text-xs">
 							{getUserInitials(art.artist.name)}
 						</AvatarFallback>
@@ -89,9 +89,9 @@ export function ArtCard({ art }: ArtCardProps) {
 					<p className="text-sm text-white/90 mb-2">
 						{art.description}
 					</p>
-					{art.tags && art.tags.length > 0 ? (
+					{art.tags && art.tags.length > 0 && (
 						<div className="flex flex-wrap gap-1">
-							{art.tags.map((tag, index) => (
+							{art.tags.slice(0, 3).map((tag, index) => (
 								<span
 									key={index}
 									className="text-xs text-white/80 bg-white/20 px-2 py-1 rounded-full"
@@ -99,8 +99,15 @@ export function ArtCard({ art }: ArtCardProps) {
 									{tag.name || ('tag' in tag && tag.tag?.tagName) || 'Unknown'}
 								</span>
 							))}
+							{art.tags.length > 3 && (
+								<span
+									className="text-xs text-white/80 bg-white/20 px-2 py-1 rounded-full"
+								>
+									+{art.tags.length - 3}
+								</span>
+							)}
 						</div>
-					) : null}
+					)}
 				</motion.div>
 			</motion.div>
 		</motion.div>

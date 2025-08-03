@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MessageCircle, Share2, Folder } from "lucide-react";
+import { Eye, Folder, Heart, Share2 } from "lucide-react";
 import { AuthenticatedImage } from "../../common/authenticated-image";
 import type { ExploreArtwork } from "../../../pages/explore/core/explore-models";
 
@@ -15,12 +15,13 @@ interface ExploreArtCardProps {
 }
 
 export function ExploreArtCard({
-	artwork,
-	index,
-	isSingleColumn = false,
-}: ExploreArtCardProps) {
+																 artwork,
+																 index,
+																 isSingleColumn = false,
+															 }: ExploreArtCardProps) {
 	const [isHovered, setIsHovered] = useState(false);
 	const [isMobile, setIsMobile] = useState(false);
+	const navigate = useNavigate();
 
 	// Check for mobile screen size
 	useEffect(() => {
@@ -130,7 +131,7 @@ export function ExploreArtCard({
 							transition={{ delay: 0.3 }}
 							className="p-1.5 sm:p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border/50"
 						>
-							<Folder className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+							<Folder className="w-3 h-3 sm:w-4 sm:h-4 text-primary"/>
 						</motion.div>
 					</div>
 				)}
@@ -158,14 +159,22 @@ export function ExploreArtCard({
 							whileHover={{ scale: 1.1 }}
 							whileTap={{ scale: 0.95 }}
 						>
-							<Heart className="w-4 h-4 sm:w-5 sm:h-5" />
+							<Heart className="w-4 h-4 sm:w-5 sm:h-5"/>
+						</motion.button>
+						<motion.button
+							className="p-2 sm:p-3 rounded-full bg-background/90 backdrop-blur-sm border border-border/50 hover:bg-primary hover:text-primary-foreground transition-colors"
+							whileHover={{ scale: 1.1 }}
+							whileTap={{ scale: 0.95 }}
+							onClick={() => navigate(`/art/${artwork.id}`)}
+						>
+							<Eye className="w-4 h-4 sm:w-5 sm:h-5"/>
 						</motion.button>
 						<motion.button
 							className="p-2 sm:p-3 rounded-full bg-background/90 backdrop-blur-sm border border-border/50 hover:bg-primary hover:text-primary-foreground transition-colors"
 							whileHover={{ scale: 1.1 }}
 							whileTap={{ scale: 0.95 }}
 						>
-							<Share2 className="w-4 h-4 sm:w-5 sm:h-5" />
+							<Share2 className="w-4 h-4 sm:w-5 sm:h-5"/>
 						</motion.button>
 					</motion.div>
 				</motion.div>
@@ -179,7 +188,8 @@ export function ExploreArtCard({
 						to={`/artist/${artwork.artistId}`}
 						className="shrink-0"
 					>
-						<Avatar className="w-7 h-7 sm:w-8 sm:h-8 ring-2 ring-primary/20 hover:ring-primary/40 transition-all duration-200">
+						<Avatar
+							className="w-7 h-7 sm:w-8 sm:h-8 ring-2 ring-primary/20 hover:ring-primary/40 transition-all duration-200">
 							<AvatarImage
 								src={getArtistProfileImageUrl() || undefined}
 								alt={artwork.artistName}
@@ -238,7 +248,7 @@ export function ExploreArtCard({
 				{/* Stats */}
 				<div className="flex items-center justify-between pt-1.5 sm:pt-2 border-t border-border/50">
 					<div className="flex items-center space-x-1 text-muted-foreground">
-						<Heart className="w-3 h-3 sm:w-4 sm:h-4" />
+						<Heart className="w-3 h-3 sm:w-4 sm:h-4"/>
 						<span className="text-xs sm:text-sm font-medium">
 							{artwork.likesCount}
 						</span>

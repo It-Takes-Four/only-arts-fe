@@ -99,7 +99,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 				<div className="space-y-8">
 					{/* Collections Preview */}
 					<div>
-						<div className="flex items-center justify-between mb-4">
+						<div className="flex items-center justify-between my-4">
 							<h3 className="text-xl font-semibold">Collections</h3>
 							{/* Show View All button based on data availability */}
 							{(isOwnProfile ?
@@ -178,7 +178,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 						</div>
 						{/* Loading state */}
 						{(isOwnProfile ? myArtworksLoading : artworksLoading) ? (
-							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 								{Array.from({ length: 8 }).map((_, index) => (
 									<div key={index} className="animate-pulse">
 										<div className="bg-muted rounded-lg aspect-square mb-2"></div>
@@ -195,7 +195,7 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 							(myArtworksData && myArtworksData.length > 0) :
 							(artworksData && artworksData.data && artworksData.data.length > 0)
 						) ? (
-							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
+							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 								{(isOwnProfile ? myArtworksData : artworksData?.data)?.slice(0, 8).map((artwork: ArtistArtwork) => (
 									<div key={artwork.id} className="relative">
 										<ArtCard

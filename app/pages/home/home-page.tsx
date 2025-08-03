@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import { UnifiedFeedList } from "app/components/common/unified-feed-list";
 import StaticGradient from "@/components/blocks/Backgrounds/StaticGradient/StaticGradient";
+import { UnifiedFeedList } from "../../components/features/feed/unified-feed-list";
 
 export function HomePage() {
   return (

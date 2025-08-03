@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
-import { useUnifiedFeed } from '../hooks/useUnifiedFeed';
-import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import { UnifiedFeedItemComponent } from './unified-feed-item';
-import { FancyLoading } from './fancy-loading';
-import { Button } from './button';
+import { useUnifiedFeed } from "../../hooks/useUnifiedFeed";
+import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
+import { FancyLoading } from "../../common/fancy-loading";
+import { Button } from "../../common/button";
 
 interface UnifiedFeedListProps {
   tagId?: string;

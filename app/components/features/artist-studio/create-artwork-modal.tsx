@@ -240,7 +240,7 @@ export function CreateArtworkModal({ isOpen, onClose, createArtwork, isPending, 
 
 
               {/* Title */}
-              <div className="space-y-2">
+              <div className="flex flex-col space-y-2">
                 <Label htmlFor="title">Title *</Label>
                 <Input
                   id="title"
@@ -265,7 +265,7 @@ export function CreateArtworkModal({ isOpen, onClose, createArtwork, isPending, 
               </div>
 
               {/* Description */}
-              <div className="space-y-2">
+              <div className="flex flex-col space-y-2">
                 <Label htmlFor="description">Description *</Label>
                 <Textarea
                   id="description"
@@ -291,7 +291,7 @@ export function CreateArtworkModal({ isOpen, onClose, createArtwork, isPending, 
               </div>
 
               {/* Tags */}
-              <div className="space-y-3">
+              <div className="flex flex-col space-y-3">
                 <Label>Tags (Optional)</Label>
 
                 {/* Selected Tags */}
