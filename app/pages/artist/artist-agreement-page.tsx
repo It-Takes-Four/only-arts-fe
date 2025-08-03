@@ -33,10 +33,10 @@ export function ArtistAgreementPage({ onAccept, onDecline }: ArtistAgreementPage
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <div className="space-y-6">
+    <div className="container mx-auto p-4 max-w-4xl h-screen items-center">
+      <div className="space-y-6  flex flex-col items-center justify-center">
         {/* Header */}
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-4 mt-12">
           <h1 className="text-3xl font-bold">Become an OnlyArts Artist</h1>
           <p className="text-muted-foreground">
             Join our community of creators and start sharing your artistic vision
