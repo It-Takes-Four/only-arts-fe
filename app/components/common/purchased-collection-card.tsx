@@ -84,7 +84,7 @@ export function PurchasedCollectionCard({
 					<CardContent className="p-6">
 						<div className="space-y-4">
 							{/* Collection Title and Status */}
-							<div className="space-y-2">
+							<div className="">
 								<div className="flex items-start justify-between">
 									<h3 className="text-lg font-semibold text-foreground line-clamp-1 group-hover:text-primary transition-colors duration-200">
 										{collection.collectionName}
@@ -99,7 +99,6 @@ export function PurchasedCollectionCard({
 									>
 										{collection.isPublished ? (
 											<>
-												<CheckCircle className="w-3 h-3 mr-1" />
 												Published
 											</>
 										) : (
@@ -155,7 +154,7 @@ export function PurchasedCollectionCard({
 							</div>
 
 							{/* Collection Stats */}
-							<div className="flex justify-between items-center pt-2 border-t border-border/50">
+							<div className="flex justify-between items-center pt-2 border-t border-border/50 pt-4">
 								<div className="flex items-center gap-1 text-sm text-muted-foreground">
 									<DollarSign className="w-4 h-4" />
 									<span className="font-medium">
