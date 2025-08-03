@@ -83,7 +83,6 @@ export function ArtistStudioPage() {
 
 	// Handle page changes
 	const handleCollectionsPageChange = (page: number) => {
-		console.log('📄 Collections page changed to:', page);
 		setCollectionsPage(page);
 	};
 

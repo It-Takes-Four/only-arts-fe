@@ -8,9 +8,7 @@ export function useMyCollectionsWithPaginationQuery(page: number = 1, limit: num
   const query = useQuery({
     queryKey: ['my-collections-paginated', page, limit],
     queryFn: async () => {
-      console.log('🔄 Fetching my collections...', 'page:', page, 'limit:', limit);
       const result = await collectionService.getMyCollections(page, limit);
-      console.log('✅ Fetched collections:', result);
       return result;
     },
     enabled,

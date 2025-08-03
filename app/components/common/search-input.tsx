@@ -10,12 +10,22 @@ interface SearchProps extends React.ComponentProps<typeof Input> {
 export function SearchInput({ className, onSearch, ...props }: SearchProps) {
   const [value, setValue] = useState("");
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && value.trim() !== "") {
+      if (onSearch && value.trim() !== "") {
+        onSearch(value.trim());
+        setValue("")
+      }
+    }
+  };
+
   useEffect(() => {
     const delay = setTimeout(() => {
-      if (onSearch && value.trim()) {
+      if (onSearch && value.trim() !== "") {
         onSearch(value.trim());
+        setValue("")
       }
-    }, 400);
+    }, 1000);
 
     return () => clearTimeout(delay);
   }, [value, onSearch]);
@@ -28,6 +38,7 @@ export function SearchInput({ className, onSearch, ...props }: SearchProps) {
         className="pl-10 h-10 bg-background/50 border-border/50 focus:bg-background focus:border-border"
         value={value}
         onChange={(e) => setValue(e.target.value)}
+        onKeyDown={handleKeyDown} // Add the keydown handler here
         {...props}
       />
     </div>
