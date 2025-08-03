@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Heart, User, Bookmark } from "lucide-react";
+import { Heart, User, Bookmark, Lock } from "lucide-react";
 import { useParams, Link } from "react-router";
 import { collectionService } from "../../services/collection-service";
 import { artCollectionsService } from "../../services/art-collections-service";
@@ -17,7 +17,6 @@ import { BuyCollectionButton } from "../../components/features/collection/buy-co
 export function CollectionPage() {
 	const { collectionId } = useParams<{ collectionId: string }>();
 	const { collection, collectionImageUrl, error, collectionArtworks, isArtist } = useCollection(collectionId);
-
 
 	const formatDate = (dateString: string) => {
 		const date = new Date(dateString);
@@ -60,6 +59,57 @@ export function CollectionPage() {
 		);
 	}
 
+	const renderArtworkContent = () => {
+		if (!collectionArtworks || collectionArtworks.length === 0) {
+			return (
+				<GlassCard className="p-12 text-center">
+					<Bookmark className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+					<h3 className="text-xl font-semibold mb-2">No Artworks Yet</h3>
+					<p className="text-muted-foreground">
+						This collection is empty. Check back later for amazing artworks!
+					</p>
+				</GlassCard>
+			);
+		} else if (!collection.isPurchased && !isArtist) {
+			return (
+				<GlassCard className="p-12 text-center">
+					<Lock className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+					<h3 className="text-xl font-semibold mb-2">Collection Not Purchased</h3>
+					<p className="text-muted-foreground">
+						This collection is not purchased yet. Please purchase it to view artworks.
+					</p>
+				</GlassCard>
+			)
+		} else {
+			return (
+				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+					{collectionArtworks.map((art: any) => (
+						<ArtCard
+							key={art.id || art.artId}
+							art={{
+								id: art.artId || art.id,
+								title: art.art?.title || art.title || 'Untitled',
+								description: art.art?.description || art.description || '',
+								artist: {
+									id: art.art?.artistId || collection.artist.id,
+									name: art.art?.artist?.artistName || collection.artist.artistName,
+									profilePicture: art.art?.artist?.user?.profilePictureFileId || collection.artist.user.profilePictureFileId,
+								},
+								createdAt: art.addedAt || art.createdAt,
+								imageUrl: art.art?.imageFileId
+									? collectionService.getArtworkImageUrl(art.art.imageFileId)
+									: art.imageFileId
+										? collectionService.getArtworkImageUrl(art.imageFileId)
+										: '/placeholder.svg',
+								tags: art.art?.tags || art.tags || [],
+							}}
+						/>
+					))}
+				</div>
+			);
+		}
+	}
+
 	return (
 		<div className="container mx-auto px-4 py-8">
 			{/* Collection Header with Main Image */}
@@ -80,7 +130,7 @@ export function CollectionPage() {
 									onPurchaseSuccess={() => {
 										// Handle successful purchase - maybe refetch collection data
 										console.log('Collection purchased successfully');
-									}}	
+									}}
 								/>
 							)
 						}
@@ -210,40 +260,7 @@ export function CollectionPage() {
 					</Badge>
 				</div>
 
-				{collectionArtworks && collectionArtworks.length > 0 ? (
-					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-						{collectionArtworks.map((art: any) => (
-							<ArtCard
-								key={art.id || art.artId}
-								art={{
-									id: art.artId || art.id,
-									title: art.art?.title || art.title || 'Untitled',
-									description: art.art?.description || art.description || '',
-									artist: {
-										id: art.art?.artistId || collection.artist.id,
-										name: art.art?.artist?.artistName || collection.artist.artistName,
-										profilePicture: art.art?.artist?.user?.profilePictureFileId || collection.artist.user.profilePictureFileId,
-									},
-									createdAt: art.addedAt || art.createdAt,
-									imageUrl: art.art?.imageFileId
-										? collectionService.getArtworkImageUrl(art.art.imageFileId)
-										: art.imageFileId
-											? collectionService.getArtworkImageUrl(art.imageFileId)
-											: '/placeholder.svg',
-									tags: art.art?.tags || art.tags || [],
-								}}
-							/>
-						))}
-					</div>
-				) : (
-					<GlassCard className="p-12 text-center">
-						<Bookmark className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-						<h3 className="text-xl font-semibold mb-2">No Artworks Yet</h3>
-						<p className="text-muted-foreground">
-							This collection is empty. Check back later for amazing artworks!
-						</p>
-					</GlassCard>
-				)}
+				{renderArtworkContent()}
 			</div>
 		</div>
 	);

@@ -46,6 +46,12 @@ export function useCollection(collectionId: string | undefined) {
 			setError('Collection ID is required to fetch artworks');
 			return;
 		}
+
+		if (collection?.isPurchased === false) {
+			// setError('This collection is not purchased yet. Please purchase it to view artworks.');
+			return;
+		}
+
 		try {
 			const artworks: MyArtwork[] = await collectionService.getCollectionArtworks(collectionId);
 			setCollectionArtworks(artworks);
