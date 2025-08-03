@@ -48,7 +48,6 @@ export function useCollection(collectionId: string | undefined) {
 		}
 
 		if (collection?.isPurchased === false) {
-			// setError('This collection is not purchased yet. Please purchase it to view artworks.');
 			return;
 		}
 
