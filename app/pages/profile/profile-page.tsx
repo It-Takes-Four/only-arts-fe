@@ -218,18 +218,6 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 												createdAt: artwork.datePosted
 											}}
 										/>
-										<div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-white text-xs flex items-center gap-2">
-											<span className="flex items-center gap-1">
-												<LucideHeart className="h-4 w-4" />
-												0
-											</span>
-											{artwork.collections && artwork.collections.length > 0 && (
-												<span className="flex items-center gap-1">
-													<FolderIcon className="h-4 w-4" />
-													{artwork.collections.length}
-												</span>
-											)}
-										</div>
 									</div>
 								))}
 							</div>
@@ -368,18 +356,6 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 											createdAt: artwork.datePosted
 										}}
 									/>
-									<div className="absolute top-2 right-2 bg-black/70 backdrop-blur-sm rounded-lg px-2 py-1 text-white text-xs flex items-center gap-2">
-										<span className="flex items-center gap-1">
-											<LucideHeart className="h-4 w-4" />
-											0
-										</span>
-										{artwork.collections && artwork.collections.length > 0 && (
-											<span className="flex items-center gap-1">
-												<FolderIcon className="h-4 w-4" />
-												{artwork.collections.length}
-											</span>
-										)}
-									</div>
 								</div>
 							))}
 						</div>
