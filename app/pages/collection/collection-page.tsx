@@ -16,7 +16,8 @@ import { BuyCollectionButton } from "../../components/features/collection/buy-co
 
 export function CollectionPage() {
 	const { collectionId } = useParams<{ collectionId: string }>();
-	const { collection, collectionImageUrl, error, collectionArtworks } = useCollection(collectionId);
+	const { collection, collectionImageUrl, error, collectionArtworks, isArtist } = useCollection(collectionId);
+
 
 	const formatDate = (dateString: string) => {
 		const date = new Date(dateString);
@@ -72,13 +73,17 @@ export function CollectionPage() {
 				{/* Collection Info Glass Card */}
 				<GlassCard className="relative z-10 py-6 px-8">
 					<div className="absolute top-2 right-2">
-						<BuyCollectionButton 
-							collection={collection as any}
-							onPurchaseSuccess={() => {
-								// Handle successful purchase - maybe refetch collection data
-								console.log('Collection purchased successfully');
-							}}
-						/>
+						{
+							!isArtist && (
+								<BuyCollectionButton
+									collection={collection as any}
+									onPurchaseSuccess={() => {
+										// Handle successful purchase - maybe refetch collection data
+										console.log('Collection purchased successfully');
+									}}	
+								/>
+							)
+						}
 					</div>
 					<div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-2">
 						<div className="flex items-start lg:items-end space-x-4 flex-1">
