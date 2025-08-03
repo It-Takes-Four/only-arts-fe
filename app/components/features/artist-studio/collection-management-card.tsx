@@ -40,36 +40,31 @@ export function CollectionManagementCard({
 	const [showPublishModal, setShowPublishModal] = useState(false);
 	const navigate = useNavigate();
 
-	const handleContentEdit = (e: React.MouseEvent) => {
-		e.stopPropagation();
+	const handleContentEdit = () => {
 		if (onEditContent) {
 			onEditContent(collection);
 		}
 	};
 
-	const handleCoverEdit = (e: React.MouseEvent) => {
-		e.stopPropagation();
+	const handleCoverEdit = () => {
 		if (onEditCover) {
 			onEditCover(collection);
 		}
 	};
 
-	const handlePublishClick = async (e: React.MouseEvent) => {
-		e.stopPropagation();
+	const handlePublishClick = async () => {
 		if (onPublish) {
 			onPublish(collection);
 		}
 	};
 
-	const handleManageArts = (e: React.MouseEvent) => {
-		e.stopPropagation();
+	const handleManageArts = () => {
 		if (onManageArts) {
 			onManageArts(collection);
 		}
 	};
 
-	const handleNavigateToCollectionPage = (e:React.MouseEvent) => {
-		e.stopPropagation();
+	const handleNavigateToCollectionPage = () => {
 		navigate(`/collection/${collection.id}`);
 	}
 
@@ -80,10 +75,9 @@ export function CollectionManagementCard({
 	return (
 		<>
 			<motion.div
-				className="group relative bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg transition-shadow duration-200 hover:cursor-pointer"
+				className="group relative bg-card rounded-lg overflow-hidden border border-border hover:shadow-lg transition-shadow duration-200"
 				whileHover={{ y: -5 }}
 				layout
-				onClick={(e: React.MouseEvent) => handleNavigateToCollectionPage(e)}
 			>
 				{/* Cover Image */}
 				<div className="aspect-[4/3] bg-muted relative overflow-hidden rounded-t-lg">
@@ -112,7 +106,7 @@ export function CollectionManagementCard({
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end" className="w-48">
-								<DropdownMenuItem onClick={() => navigate(`/collection/${collection.id}`)}>
+								<DropdownMenuItem onClick={() => handleNavigateToCollectionPage()}>
 									<Eye className="h-4 w-4 mr-2" />
 									View Collection
 								</DropdownMenuItem>
