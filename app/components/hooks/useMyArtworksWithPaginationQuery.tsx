@@ -47,6 +47,7 @@ export function useMyArtworksWithPaginationQuery(page: number = 1, limit: number
   return {
     artworksData: query.data,
     artworksLoading: query.isLoading,
+    artworksError: query.isError,
     createArtwork: createArtworkMutation.mutate,
     createArtworkIsPending: createArtworkMutation.isPending,
     createArtworkIsSuccess: createArtworkMutation.isSuccess,

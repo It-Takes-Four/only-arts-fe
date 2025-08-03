@@ -66,18 +66,22 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 		collectionsError: myCollectionsError
 	} = useMyCollectionsWithPaginationQuery(collectionsPage, collectionsLimit, isOwnProfile);
 
-	console.log(myCollections);
-	
 	const myCollectionsData = myCollections?.data
 
-	console.log("myCollectionsData", myCollectionsData);
-	
+
+	// const {
+	// 	artworks: myArtworksData,
+	// 	isLoading: myArtworksLoading,
+	// 	error: myArtworksError
+	// } = useMyArtworksQuery(isOwnProfile);
 
 	const {
-		artworks: myArtworksData,
-		isLoading: myArtworksLoading,
-		error: myArtworksError
-	} = useMyArtworksQuery(isOwnProfile);
+		artworksData: myArtworks,
+		artworksLoading: myArtworksLoading,
+		artworksError: myArtworksError,
+	} = useMyArtworksWithPaginationQuery(artworksPage, artworksLimit, isOwnProfile)
+
+	const myArtworksData = myArtworks?.data;
 
 	// Use currentUser for joined date if its own profile, otherwise use artist data
 	const userForJoinedDate = isOwnProfile ? currentUser : artist?.user;
