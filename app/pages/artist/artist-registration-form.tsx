@@ -114,7 +114,7 @@ export function ArtistRegistrationForm({ onSuccess, onCancel }: ArtistRegistrati
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Artist Name */}
-              <div className="space-y-2">
+              <div className="flex flex-col space-y-2">
                 <Label htmlFor="artistName">Artist Name *</Label>
                 <Input
                   id="artistName"
@@ -162,7 +162,7 @@ export function ArtistRegistrationForm({ onSuccess, onCancel }: ArtistRegistrati
               </div>
 
               {/* Bio */}
-              <div className="space-y-2">
+              <div className="flex flex-col space-y-2">
                 <Label htmlFor="bio">Artist Bio</Label>
                 <textarea
                   id="bio"

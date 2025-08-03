@@ -38,11 +38,11 @@ export function HeaderActions({ onSearchClick }: HeaderActionsProps) {
       </Button>
 
       {/* Notification Bell */}
-      <Button variant="ghost" size="icon" className="h-9 w-9 relative" onClick={() => { toggleNotificationDropdown() }} >
+      <Button variant="ghost" size="icon" className="h-9 w-9 relative gap-0" onClick={() => { toggleNotificationDropdown() }} >
         <Bell className="h-5 w-5" />
         {/* Notification dot */}
         {!loading && notifications.length > 0 && (
-          <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+          <span className="absolute top-1 right-1 h-2 w-2 ml-2 bg-red-500 rounded-full"></span>
         )}
 
         {/* Notification dropdown */}

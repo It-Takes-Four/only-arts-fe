@@ -25,7 +25,7 @@ export function FancyThemeToggle({
           <motion.div
             className="absolute w-4 h-4 bg-white rounded-full shadow-lg flex items-center justify-center"
             animate={{
-              x: theme === 'dark' ? 10 : -10,
+              x: theme === 'dark' ? 6 : -6,
             }}
             transition={{ type: "spring", stiffness: 500, damping: 25 }}
           >
@@ -173,7 +173,7 @@ export function FancyThemeToggle({
           <motion.div
             className="absolute w-6 h-6 bg-white rounded-full shadow-xl flex items-center justify-center border border-slate-200/20"
             animate={{
-              x: theme === 'dark' ? 18 : -18,
+              x: theme === 'dark' ? 10 : -10,
             }}
             transition={{ 
               type: "spring", 
