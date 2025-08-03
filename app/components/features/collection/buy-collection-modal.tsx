@@ -31,22 +31,28 @@ export function BuyCollectionModal({ isOpen, onClose, collection, onSuccess }: B
 
 	const handlePurchase = async () => {
 		if (!collection) return;
+		
+		const toastId = toast.loading("Purchasing collection...");
 
 		try {
 			setIsPurchasing(true);
-			toast.loading("Purchasing collection...");
 
 			// Use the payment hook with the artist's wallet address
 			// Fall back to a test wallet address if not available
 			const artistWalletAddress = collection.artist.walletAddress || "0xe39a19f4339A808B0Cd4e60CB98aC565698467FB";
 			await purchaseCollection(collection.id, artistWalletAddress);
 			
-			toast.success(`Successfully purchased "${collection.collectionName}"!`);
+			toast.success(`Successfully purchased "${collection.collectionName}"!`, {
+				id: toastId,
+			});
+
 			onSuccess?.();
 			onClose();
 		} catch (error: any) {
 			console.error("Purchase failed:", error);
-			toast.error(error.message || "Failed to purchase collection");
+			toast.error(error.message || "Failed to purchase collection", {
+				id: toastId,
+			});
 		} finally {
 			setIsPurchasing(false);
 		}

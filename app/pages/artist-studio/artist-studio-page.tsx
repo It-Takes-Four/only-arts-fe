@@ -57,7 +57,8 @@ export function ArtistStudioPage() {
 		publishCollection,
 		publishCollectionStatus: {
 			publishCollectionIsPending,
-			publishCollectionIsSuccess
+			publishCollectionIsSuccess,
+			publishCollectionIsError
 		},
 	} = useMyCollectionsWithPaginationQuery(collectionsPage, collectionsLimit);
 
@@ -110,6 +111,7 @@ export function ArtistStudioPage() {
 			label: "Collections",
 			content: (
 				<CollectionsGrid
+				user={user}
 					collections={collectionsData?.data || []}
 					collectionsLoading={collectionsLoading}
 					pagination={collectionsData?.pagination}
@@ -119,6 +121,7 @@ export function ArtistStudioPage() {
 					publishCollection={publishCollection}
 					publishCollectionIsPending={publishCollectionIsPending}
 					publishCollectionIsSuccess={publishCollectionIsSuccess}
+					publishCollectionIsError={publishCollectionIsError}
 				/>
 			),
 		},

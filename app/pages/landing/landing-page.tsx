@@ -1,5 +1,14 @@
 import { motion, useInView } from "framer-motion";
-import { ArrowRight, Palette, Users, Shield, Sparkles, Eye, Heart, TrendingUp } from "lucide-react";
+import {
+  ArrowRight,
+  Palette,
+  Users,
+  Shield,
+  Sparkles,
+  Eye,
+  Heart,
+  TrendingUp,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,38 +22,48 @@ import StaticGradient from "@/components/blocks/Backgrounds/StaticGradient/Stati
 const features = [
   {
     icon: Palette,
-    title: "Create & Showcase",
-    description: "Upload and showcase your digital artworks with professional presentation tools and customizable galleries.",
-    color: "from-purple-400 to-pink-400"
+    title: "Mint & Showcase",
+    description:
+      "Easily mint your artwork as NFTs and present them in immersive, customizable galleries.",
+    color: "from-purple-400 to-pink-400",
   },
   {
     icon: Users,
-    title: "Artist Community",
-    description: "Connect with fellow artists, collaborate on projects, and build meaningful relationships in our vibrant community.",
-    color: "from-blue-400 to-cyan-400"
+    title: "Decentralized Community",
+    description:
+      "Engage with a global network of artists and collectors through Web3-powered social and collaborative tools.",
+    color: "from-blue-400 to-cyan-400",
   },
   {
     icon: Shield,
-    title: "Secure & Protected",
-    description: "Your artworks are protected with advanced security measures and blockchain technology for authenticity.",
-    color: "from-green-400 to-emerald-400"
+    title: "Blockchain Security",
+    description:
+      "Ensure authenticity and ownership with smart contracts, on-chain provenance, and decentralized storage.",
+    color: "from-green-400 to-emerald-400",
   },
   {
     icon: TrendingUp,
-    title: "Grow Your Reach",
-    description: "Discover new audiences, gain followers, and grow your artistic presence with our powerful discovery tools.",
-    color: "from-orange-400 to-red-400"
-  }
+    title: "Monetize with Web3",
+    description:
+      "Connect your wallet, create tokenized art, and generate income securely through decentralized sales and royalties.",
+    color: "from-orange-400 to-red-400",
+  },
 ];
 
 const stats = [
   { number: "10K+", label: "Active Artists", icon: Users },
   { number: "50K+", label: "Artworks", icon: Palette },
   { number: "100K+", label: "Art Lovers", icon: Heart },
-  { number: "1M+", label: "Views Daily", icon: Eye }
+  { number: "1M+", label: "Views Daily", icon: Eye },
 ];
 
-const AnimatedCounter = ({ end, duration = 2 }: { end: string; duration?: number }) => {
+const AnimatedCounter = ({
+  end,
+  duration = 2,
+}: {
+  end: string;
+  duration?: number;
+}) => {
   const [count, setCount] = useState("0");
   const [isInView, setIsInView] = useState(false);
   const ref = useRef<HTMLSpanElement>(null);
@@ -53,25 +72,28 @@ const AnimatedCounter = ({ end, duration = 2 }: { end: string; duration?: number
   useEffect(() => {
     if (inView && !isInView) {
       setIsInView(true);
-      
+
       // Extract number from string like "10K+" -> 10
-      const numericValue = parseInt(end.replace(/[^0-9]/g, ''));
-      const suffix = end.replace(/[0-9]/g, '');
-      
+      const numericValue = parseInt(end.replace(/[^0-9]/g, ""));
+      const suffix = end.replace(/[0-9]/g, "");
+
       let startTime: number;
-      
+
       const animate = (currentTime: number) => {
         if (!startTime) startTime = currentTime;
-        const progress = Math.min((currentTime - startTime) / (duration * 1000), 1);
-        
+        const progress = Math.min(
+          (currentTime - startTime) / (duration * 1000),
+          1
+        );
+
         const currentCount = Math.floor(progress * numericValue);
         setCount(currentCount + suffix);
-        
+
         if (progress < 1) {
           requestAnimationFrame(animate);
         }
       };
-      
+
       requestAnimationFrame(animate);
     }
   }, [inView, end, duration, isInView]);
@@ -79,7 +101,13 @@ const AnimatedCounter = ({ end, duration = 2 }: { end: string; duration?: number
   return <span ref={ref}>{count}</span>;
 };
 
-const FeatureCard = ({ feature, index }: { feature: typeof features[0]; index: number }) => {
+const FeatureCard = ({
+  feature,
+  index,
+}: {
+  feature: (typeof features)[0];
+  index: number;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -93,8 +121,10 @@ const FeatureCard = ({ feature, index }: { feature: typeof features[0]; index: n
       <Card className="group relative overflow-hidden border-0 bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-all duration-500 h-full">
         <CardContent className="p-8">
           {/* Animated gradient background */}
-          <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
-          
+          <div
+            className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
+          />
+
           {/* Icon with animated background */}
           <div className="relative mb-6">
             <motion.div
@@ -108,15 +138,25 @@ const FeatureCard = ({ feature, index }: { feature: typeof features[0]; index: n
             </motion.div>
           </div>
 
-          <h3 className="text-xl font-bold mb-4 text-foreground">{feature.title}</h3>
-          <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+          <h3 className="text-xl font-bold mb-4 text-foreground">
+            {feature.title}
+          </h3>
+          <p className="text-muted-foreground leading-relaxed">
+            {feature.description}
+          </p>
         </CardContent>
       </Card>
     </motion.div>
   );
 };
 
-const StatCard = ({ stat, index }: { stat: typeof stats[0]; index: number }) => {
+const StatCard = ({
+  stat,
+  index,
+}: {
+  stat: (typeof stats)[0];
+  index: number;
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
 
@@ -138,7 +178,9 @@ const StatCard = ({ stat, index }: { stat: typeof stats[0]; index: number }) => 
         <div className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-2">
           <AnimatedCounter end={stat.number} />
         </div>
-        <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
+        <p className="text-sm text-muted-foreground font-medium">
+          {stat.label}
+        </p>
       </motion.div>
     </motion.div>
   );
@@ -194,45 +236,60 @@ export function LandingPage() {
         <div className="container mx-auto text-center max-w-5xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            animate={isHeroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            animate={
+              isHeroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
+            }
             transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
             className="mb-8"
           >
-            <Badge variant="outline" className="mb-6 px-4 py-2 bg-background/50 backdrop-blur-sm">
+            <Badge
+              variant="outline"
+              className="mb-6 px-4 py-2 bg-background/50 backdrop-blur-sm"
+            >
               <Sparkles className="w-4 h-4 mr-2" />
-              Welcome to the Future of Digital Art
+              The Web3 Platform for Digital Artists
             </Badge>
-            
+
             <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
               <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-                Where Artists
+                Empowering Artists
               </span>
               <br />
               <span className="bg-gradient-to-r from-primary via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Create Magic
+                Through Web3
               </span>
             </h1>
-            
+
             <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto leading-relaxed">
-              Join a vibrant community of digital artists. Showcase your creativity, 
-              connect with art lovers, and turn your passion into success.
+              OnlyArts is a Web3-native platform where digital artists mint,
+              manage, and monetize their work using blockchain, smart contracts,
+              and decentralized identity.
             </p>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={isHeroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            animate={
+              isHeroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+            }
             transition={{ duration: 0.6, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
           >
             <Link to="/register">
-              <Button size="lg" className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 cursor-pointer">
+              <Button
+                size="lg"
+                className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
+              >
                 Start Creating Today
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </Link>
             <Link to="/explore">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-background/50 backdrop-blur-sm hover:bg-background/80 border-2 hover:border-primary/50 transition-all duration-300 cursor-pointer">
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-lg px-8 py-6 bg-background/50 backdrop-blur-sm hover:bg-background/80 border-2 hover:border-primary/50 transition-all duration-300 cursor-pointer"
+              >
                 Explore Gallery
                 <Eye className="ml-2 h-5 w-5" />
               </Button>
@@ -242,7 +299,9 @@ export function LandingPage() {
           {/* Hero Stats */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            animate={isHeroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+            animate={
+              isHeroInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
+            }
             transition={{ duration: 0.8, delay: 0.6, ease: [0.4, 0, 0.2, 1] }}
             className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
           >
@@ -263,23 +322,34 @@ export function LandingPage() {
             viewport={{ once: true, margin: "-100px" }}
             className="text-center mb-16"
           >
-            <Badge variant="outline" className="mb-6 px-4 py-2 bg-background/50 backdrop-blur-sm">
+            <Badge
+              variant="outline"
+              className="mb-6 px-4 py-2 bg-background/50 backdrop-blur-sm"
+            >
               <Palette className="w-4 h-4 mr-2" />
-              Platform Features
+              Built for Web3 Creators
             </Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Everything You Need to
-              <span className="bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent"> Succeed</span>
+              The Tools You Need to
+              <span className="bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
+                {" "}
+                Thrive on Chain
+              </span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Our platform provides all the tools and features you need to showcase, 
-              share, and monetize your digital artwork.
+              From minting NFTs to managing royalties, OnlyArts gives you full
+              creative control and ownership through secure blockchain
+              integrations.
             </p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
-              <FeatureCard key={feature.title} feature={feature} index={index} />
+              <FeatureCard
+                key={feature.title}
+                feature={feature}
+                index={index}
+              />
             ))}
           </div>
         </div>
@@ -296,22 +366,34 @@ export function LandingPage() {
             className="bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10 rounded-3xl p-12 border border-primary/20 backdrop-blur-sm"
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Ready to Share Your
-              <span className="bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent"> Art</span>?
+              Ready to Bring Your Art to
+              <span className="bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
+                {" "}
+                Web3
+              </span>
+              ?
             </h2>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Join thousands of artists who are already showcasing their work and 
-              building their audience on OnlyArts.
+              Join a decentralized future where your art is truly yours. Mint,
+              share, and sell with full ownership and transparency.
             </p>
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link to="/register">
-                <Button size="lg" className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 cursor-pointer">
+                <Button
+                  size="lg"
+                  className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
+                >
                   Create Account
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
               <Link to="/login">
-                <Button size="lg" variant="outline" className="text-lg px-8 py-6 cursor-pointer">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="text-lg px-8 py-6 cursor-pointer"
+                >
                   Sign In
                 </Button>
               </Link>
@@ -326,7 +408,8 @@ export function LandingPage() {
           <div className="mb-8">
             <FullLogo className="h-10 mx-auto mb-4" />
             <p className="text-muted-foreground max-w-md mx-auto">
-              Empowering digital artists to showcase, connect, and thrive in the creative economy.
+              OnlyArts empowers digital creators with Web3 technology—mint,
+              share, and monetize your art on your terms.
             </p>
           </div>
           <div className="text-sm text-muted-foreground">
