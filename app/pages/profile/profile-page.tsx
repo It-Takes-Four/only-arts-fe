@@ -132,8 +132,8 @@ export function ProfilePage({ artistId }: ProfilePageProps) {
 										name={collection.collectionName}
 										description={collection.description || "No description"}
 										artworkCount={isOwnProfile ?
-											(collection as any).arts?.length || 0 :
-											(collection as any).artsCount || 0
+											(collection as any).arts?.length :
+											(collection as any).artsCount
 										}
 										previewImage={collection.coverImageFileId ? collectionService.getCollectionImageUrl(collection.coverImageFileId) : "/placeholder.svg"}
 										createdBy={collection.artist.artistName}

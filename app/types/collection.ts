@@ -124,6 +124,7 @@ export interface MyCollection {
 	price?: string | null; // Price as string or null
 	tokenId?: string | null;
 	isPublished: boolean;
+	isPurchased: boolean;
 	createdAt: string;
 	updatedAt: string;
 	artistId: string;
