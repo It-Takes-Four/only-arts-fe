@@ -1,6 +1,6 @@
-# Welcome to React Router!
+# OnlyArts
 
-A modern, production-ready template for building full-stack React applications using React Router.
+Only Arts platform — a Web3-powered interface enabling artists to showcase, manage, and monetize their work. Built with modern frameworks and blockchain integration, it provides seamless wallet connectivity, decentralized identity support, and smart contract interactions. Artists can mint, share, and sell their digital art easily and securely.
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
 
