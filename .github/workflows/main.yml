@@ -1,0 +1,81 @@
+name: Build and Deploy App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 23.10.0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+        env:
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_WALLETCONNECT_PROJECT_ID: ${{ secrets.VITE_WALLETCONNECT_PROJECT_ID }}
+          VITE_TARGET_CHAIN_ID: ${{ secrets.VITE_TARGET_CHAIN_ID }}
+          VITE_DEFAULT_CURRENCY: ${{ secrets.VITE_DEFAULT_CURRENCY }}
+          VITE_CURRENCY_DECIMALS: ${{ secrets.VITE_CURRENCY_DECIMALS }}
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: react-router-build
+          path: |
+            build
+            package.json
+            package-lock.json
+            vite.config.ts
+            tsconfig*.json
+    
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: react-router-build
+          path: ./downloaded
+    
+      - name: Copy build files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "./downloaded/*"
+          target: "/var/www/sharkcat/onlyarts-fe/deploy"
+          strip_components: 1
+          rm: true
+          overwrite: true
+
+      - name: Install dependencies and restart service
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm use 23
+            cd /var/www/sharkcat/onlyarts-fe/deploy
+            cp /var/www/sharkcat/onlyarts-fe/.env .
+            npm ci --omit=dev
+            sudo systemctl daemon-reload
+            sudo systemctl restart sharkcat-onlyarts-fe
