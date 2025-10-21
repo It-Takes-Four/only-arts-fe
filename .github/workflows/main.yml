@@ -78,4 +78,4 @@ jobs:
             cp /var/www/sharkcat/onlyarts-fe/.env .
             npm ci --omit=dev
             sudo systemctl daemon-reload
-            sudo systemctl restart onlyarts-fe
+            sudo systemctl restart sharkcat-onlyarts-fe
