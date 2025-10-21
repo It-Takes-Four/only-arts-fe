@@ -147,10 +147,9 @@ const businessModelCanvas = {
         bgColor: "bg-green-50 dark:bg-green-950/20",
         borderColor: "border-green-200 dark:border-green-800",
         items: [
-          "Transaction Fees (2-5% per sale)",
-          "Artist Verification Premium",
-          "Advanced Analytics Subscriptions",
-          "Partnership & Licensing Revenue"
+          "Transaction Fees (10% per sale)",
+          "Advertisement Revenue",
+          "Advanced Analytics Subscriptions"
         ]
       }
     ]
