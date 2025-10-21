@@ -10,6 +10,7 @@ export default [
 	route("/login", "routes/login.tsx"),
 	route("/register", "routes/register.tsx"),
 	route("/dev-test", "routes/dev-test.tsx"),
+	route("/b-canvas", "routes/b-canvas.tsx"),
 	layout("layouts/layout.tsx", [
 		index("routes/home.tsx"),
 		route("/profile", "routes/profile.tsx"),
