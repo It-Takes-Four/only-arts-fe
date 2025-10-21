@@ -18,6 +18,7 @@ import { FullLogo, IconLogo } from "app/components/common/logo";
 import { ThemeSwitcher } from "app/components/common/theme-switcher";
 import { BackgroundBeams } from "@/components/blocks/Backgrounds/BackgroundBeams";
 import StaticGradient from "@/components/blocks/Backgrounds/StaticGradient/StaticGradient";
+import { TiltCard } from "app/components/common/tilt-card";
 
 const features = [
   {
@@ -118,34 +119,56 @@ const FeatureCard = ({
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.4, 0, 0.2, 1] }}
     >
-      <Card className="group relative overflow-hidden border-0 bg-background/80 backdrop-blur-sm hover:bg-background/90 transition-all duration-500 h-full">
-        <CardContent className="p-8">
-          {/* Animated gradient background */}
+      <motion.div
+        className="h-full group relative"
+        whileHover={{ 
+          rotateX: 5,
+          rotateY: 5,
+          scale: 1.02,
+          transition: { duration: 0.3 }
+        }}
+        style={{ transformStyle: "preserve-3d" }}
+      >
+        <Card className="group relative overflow-hidden border border-border/20 bg-background/20 backdrop-blur-xl hover:bg-background/30 transition-all duration-500 h-full shadow-lg hover:shadow-xl">
+          {/* Glassy background overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-lg" />
+          
+          {/* Animated gradient background - positioned relative to Card */}
           <div
-            className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
+            className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-20 transition-opacity duration-500`}
           />
-
-          {/* Icon with animated background */}
-          <div className="relative mb-6">
+          
+          {/* Fancy animated border - unique color for each card */}
+          <div className={`absolute inset-0 rounded-lg bg-gradient-to-r ${feature.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-[1px]`}>
+            <div className="w-full h-full bg-background/20 backdrop-blur-xl rounded-lg" />
+          </div>
+          
+          {/* Subtle inner glow - unique color for each card */}
+          <div className={`absolute inset-0 rounded-lg bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-30 transition-opacity duration-500`} />
+          
+          <CardContent className="p-8 relative z-10">
+            {/* Icon with animated background */}
+            <div className="relative mb-6">
             <motion.div
-              className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} p-0.5`}
+              className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} p-0.5 group-hover:shadow-lg group-hover:shadow-${feature.color.split('-')[1]}-500/25`}
               whileHover={{ scale: 1.1, rotate: 5 }}
               transition={{ type: "spring", stiffness: 400, damping: 15 }}
             >
-              <div className="w-full h-full bg-background rounded-[14px] flex items-center justify-center">
-                <feature.icon className="w-8 h-8 text-foreground" />
-              </div>
-            </motion.div>
-          </div>
+                <div className="w-full h-full bg-background rounded-[14px] flex items-center justify-center">
+                  <feature.icon className="w-8 h-8 text-foreground" />
+                </div>
+              </motion.div>
+            </div>
 
-          <h3 className="text-xl font-bold mb-4 text-foreground">
-            {feature.title}
-          </h3>
-          <p className="text-muted-foreground leading-relaxed">
-            {feature.description}
-          </p>
-        </CardContent>
-      </Card>
+            <h3 className="text-xl font-bold mb-4 text-foreground">
+              {feature.title}
+            </h3>
+            <p className="text-muted-foreground leading-relaxed">
+              {feature.description}
+            </p>
+          </CardContent>
+        </Card>
+      </motion.div>
     </motion.div>
   );
 };
@@ -169,18 +192,39 @@ const StatCard = ({
       className="text-center group"
     >
       <motion.div
-        whileHover={{ scale: 1.05 }}
-        className="bg-background/50 backdrop-blur-sm rounded-2xl p-6 border border-border/50 hover:border-border transition-all duration-300"
+        className="h-full group relative"
+        whileHover={{ 
+          rotateX: 3,
+          rotateY: 3,
+          scale: 1.02,
+          transition: { duration: 0.3 }
+        }}
+        style={{ transformStyle: "preserve-3d" }}
       >
-        <div className="flex justify-center mb-3">
-          <stat.icon className="w-8 h-8 text-primary" />
-        </div>
-        <div className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-2">
-          <AnimatedCounter end={stat.number} />
-        </div>
-        <p className="text-sm text-muted-foreground font-medium">
-          {stat.label}
-        </p>
+        <Card className="group relative overflow-hidden border border-border/20 bg-background/20 backdrop-blur-xl hover:bg-background/30 transition-all duration-500 h-full shadow-lg hover:shadow-xl p-6">
+          {/* Glassy background overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-lg" />
+          
+          {/* Fancy animated border */}
+          <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-primary/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 p-[1px]">
+            <div className="w-full h-full bg-background/20 backdrop-blur-xl rounded-lg" />
+          </div>
+          
+          {/* Subtle inner glow */}
+          <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          
+          <div className="relative z-10">
+            <div className="flex justify-center mb-3">
+              <stat.icon className="w-8 h-8 text-primary" />
+            </div>
+            <div className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent mb-2">
+              <AnimatedCounter end={stat.number} />
+            </div>
+            <p className="text-sm text-muted-foreground font-medium">
+              {stat.label}
+            </p>
+          </div>
+        </Card>
       </motion.div>
     </motion.div>
   );
@@ -198,7 +242,7 @@ export function LandingPage() {
       </div>
 
       {/* Navigation */}
-      <nav className="relative z-50 flex items-center justify-between p-6 bg-background/80 backdrop-blur-sm border-b border-border/50">
+      <nav className="relative z-50 flex items-center justify-between h-16 px-4 md:px-6 bg-background/80 backdrop-blur-sm border-b border-border/50">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -353,41 +397,48 @@ export function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
             viewport={{ once: true }}
-            className="bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10 rounded-3xl p-12 border border-primary/20 backdrop-blur-sm"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              Ready to Bring Your Art to
-              <span className="bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
-                {" "}
-                Web3
-              </span>
-              ?
-            </h2>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Join a decentralized future where your art is truly yours. Mint,
-              share, and sell with full ownership and transparency.
-            </p>
+            <TiltCard 
+              intensity={4}
+              glowColor="primary"
+              enableGlow={true}
+              enableShimmer={true}
+              className="p-12"
+            >
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Ready to Bring Your Art to
+                <span className="bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
+                  {" "}
+                  Web3
+                </span>
+                ?
+              </h2>
+              <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+                Join a decentralized future where your art is truly yours. Mint,
+                share, and sell with full ownership and transparency.
+              </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link to="/register">
-                <Button
-                  size="lg"
-                  className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
-                >
-                  Create Account
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Link to="/login">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="text-lg px-8 py-6 cursor-pointer"
-                >
-                  Sign In
-                </Button>
-              </Link>
-            </div>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <Link to="/register">
+                  <Button
+                    size="lg"
+                    className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
+                  >
+                    Create Account
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link to="/login">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="text-lg px-8 py-6 cursor-pointer"
+                  >
+                    Sign In
+                  </Button>
+                </Link>
+              </div>
+            </TiltCard>
           </motion.div>
         </div>
       </section>
