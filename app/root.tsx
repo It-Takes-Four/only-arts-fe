@@ -55,13 +55,13 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <SearchProvider>
         <ThemeProvider>
-        <WalletProvider>
+        {/* <WalletProvider> */}
           <AuthProvider>
             <Outlet />
             <ToastProvider />
             <Toaster />
           </AuthProvider>
-        </WalletProvider>
+        {/* </WalletProvider> */}
       </ThemeProvider>
       </SearchProvider>
     </QueryClientProvider>
