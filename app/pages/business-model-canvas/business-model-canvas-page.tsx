@@ -32,9 +32,8 @@ const businessModelCanvas = {
         borderColor: "border-blue-200 dark:border-blue-800",
         items: [
           "RainbowKit & WalletConnect",
-          "Blockchain Networks (Ethereum, Polygon)",
-          "Digital Artists & Collectors",
-          "Web3 Technology Partners"
+          "Blockchain Networks (Ethereum)",
+          "Digital Artists & Collectors"
         ]
       },
       {
@@ -59,7 +58,8 @@ const businessModelCanvas = {
         bgColor: "bg-orange-50 dark:bg-orange-950/20",
         borderColor: "border-orange-200 dark:border-orange-800",
         items: [
-          "Easy NFT Creation for Artists",
+          "NFTs as Access Tokens",
+          "Original Artwork Ownership Preserved",
           "Secure Web3 Transactions",
           "Direct Artist Monetization",
           "Decentralized Art Marketplace"
@@ -75,8 +75,7 @@ const businessModelCanvas = {
         items: [
           "Self-Service Artist Tools",
           "Community-Driven Discovery",
-          "Direct Artist-Collector Connection",
-          "Educational Web3 Resources"
+          "Direct Artist-Collector Connection"
         ]
       },
       {
@@ -88,7 +87,7 @@ const businessModelCanvas = {
         borderColor: "border-yellow-200 dark:border-yellow-800",
         items: [
           "Digital Artists (Emerging & Established)",
-          "NFT Collectors & Investors",
+          
           "Web3 Art Enthusiasts",
           "Crypto-Native Creators"
         ]
@@ -118,10 +117,9 @@ const businessModelCanvas = {
         bgColor: "bg-yellow-50 dark:bg-yellow-950/20",
         borderColor: "border-yellow-200 dark:border-yellow-800",
         items: [
-          "OnlyArts Web Platform",
-          "Artist Studio Dashboard",
-          "Social Media & Community",
-          "Web3 Wallet Integration"
+          "Social Media",
+          "Community Forums",
+          "Art Gallery & Events"
         ]
       }
     ],
@@ -195,6 +193,7 @@ const valuePropositions = [
     title: "For Artists",
     icon: Palette,
     benefits: [
+      "NFTs as Access Tokens - Sell access, keep original art",
       "Easy NFT Creation without technical complexity",
       "Direct Monetization with wallet-to-wallet payments",
       "Professional Tools with analytics and management",
@@ -205,7 +204,8 @@ const valuePropositions = [
     title: "For Collectors",
     icon: Shield,
     benefits: [
-      "Authentic Art with blockchain-verified ownership",
+      "Access to Exclusive Art Collections via NFT ownership",
+      "Authentic Art with blockchain-verified access rights",
       "Secure Transactions through smart contracts",
       "Investment Opportunities with potential appreciation",
       "Social Features for following and sharing"
@@ -215,6 +215,7 @@ const valuePropositions = [
     title: "For Platform",
     icon: Globe,
     benefits: [
+      "Revolutionary Access Token Model - NFTs as keys to art",
       "Web3 Innovation with cutting-edge technology",
       "User-friendly Interface making Web3 accessible",
       "Scalable Architecture for growth and expansion",
@@ -447,7 +448,7 @@ export function BusinessModelCanvasPage() {
             {/* Canvas Description */}
             <div className="mt-6 p-4 bg-muted/30 rounded-lg">
               <p className="text-sm text-center text-muted-foreground">
-                OnlyArts' business model focuses on empowering digital artists through Web3 technology, creating a decentralized marketplace where creators can mint, manage, and monetize their digital art with blockchain security and direct peer-to-peer transactions.
+                OnlyArts' revolutionary business model uses NFTs as access tokens rather than ownership certificates. Artists maintain original artwork ownership while selling exclusive viewing rights, creating a unique value proposition that differentiates from traditional NFT marketplaces through blockchain security and direct peer-to-peer transactions.
               </p>
             </div>
           </div>
@@ -515,21 +516,21 @@ export function BusinessModelCanvasPage() {
               <CardContent className="pt-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <h3 className="font-semibold mb-3">Technology Advantages</h3>
+                    <h3 className="font-semibold mb-3">Unique Value Proposition</h3>
                     <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li>• Web3 Native - Built specifically for blockchain</li>
-                      <li>• Multi-chain Support - Cross-blockchain compatibility</li>
-                      <li>• User-friendly Interface - Complex Web3 made simple</li>
-                      <li>• Scalable Architecture - Designed for growth</li>
+                      <li>• NFT Access Token Model - Revolutionary approach to digital art</li>
+                      <li>• Original Ownership Preserved - Artists keep their original artwork</li>
+                      <li>• Exclusive Access Rights - NFTs unlock viewing privileges</li>
+                      <li>• Differentiated from Traditional NFT Marketplaces</li>
                     </ul>
                   </div>
                   <div>
-                    <h3 className="font-semibold mb-3">Business Model Advantages</h3>
+                    <h3 className="font-semibold mb-3">Technology & Business Advantages</h3>
                     <ul className="space-y-2 text-sm text-muted-foreground">
+                      <li>• Web3 Native - Built specifically for blockchain</li>
                       <li>• Low Barriers to Entry - Easy artist onboarding</li>
                       <li>• Direct Monetization - Artists receive payments directly</li>
                       <li>• Transparent Fees - Clear and fair transaction costs</li>
-                      <li>• Sustainable Growth - Long-term platform development</li>
                     </ul>
                   </div>
                 </div>
