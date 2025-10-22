@@ -10,3 +10,4 @@ export function meta() {
 export default function BCanvas() {
   return <BusinessModelCanvasPage />;
 }
+
