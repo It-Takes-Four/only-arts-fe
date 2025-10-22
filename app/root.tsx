@@ -59,7 +59,6 @@ export default function App() {
           <AuthProvider>
             <Outlet />
             <ToastProvider />
-            <Toaster />
           </AuthProvider>
         </WalletProvider>
       </ThemeProvider>
